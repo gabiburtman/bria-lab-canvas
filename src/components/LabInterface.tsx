@@ -18,7 +18,7 @@ const LabInterface = () => {
       <div className="flex items-center justify-between mb-6">
         {/* Left Group - Logo & Title */}
         <div className="flex items-center gap-3">
-          <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="w-8 h-8" />
+          <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="h-8 w-auto" />
           <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">
             Bria 4 Lab
           </h1>
