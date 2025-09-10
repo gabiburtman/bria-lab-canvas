@@ -14,9 +14,9 @@
     --lab-primary-glow: 261 81% 71%; /* Purple glow for focus states */
     
     /* Dark Mode Background System */
-    --lab-background: 220 43% 15%; /* #111827 - Deep near-black background */
-    --lab-surface: 215 28% 17%; /* #1F2937 - Dark grey for panels and cards */
-    --lab-surface-elevated: 215 28% 19%; /* Slightly lighter for elevated surfaces */
+    --lab-background: 216 4% 23%; /* #38393d - Dark gray background */
+    --lab-surface: 216 13% 15%; /* #21252b - Darker gray for panels and cards */
+    --lab-surface-elevated: 216 13% 17%; /* Slightly lighter for elevated surfaces */
     
     /* Dark Mode Text Hierarchy */
     --lab-text-primary: 217 33% 97%; /* #F3F4F6 - Light off-white for high readability */
