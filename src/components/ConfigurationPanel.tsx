@@ -403,7 +403,23 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
         setJsonData(JSON.stringify(imageBasedJSON, null, 2));
         const fieldsToUpdate = new Set(['short_description', 'context', 'style_medium']);
         setUpdatedFields(fieldsToUpdate);
-        setIsGenerating(false);
+        
+        // Auto-generate images after parameters are populated
+        setTimeout(() => {
+          const mockImages = [
+            "https://picsum.photos/512/512?random=5",
+            "https://picsum.photos/512/512?random=6", 
+            "https://picsum.photos/512/512?random=7",
+            "https://picsum.photos/512/512?random=8"
+          ];
+          
+          if (onImagesGenerated) {
+            onImagesGenerated(mockImages);
+          }
+          
+          setIsGenerating(false);
+          setHasGenerated(true);
+        }, 1000);
       }, 2000);
     }
     // Reset the input
@@ -426,7 +442,23 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
         setJsonData(JSON.stringify(briefBasedJSON, null, 2));
         const fieldsToUpdate = new Set(['short_description', 'context', 'artistic_style']);
         setUpdatedFields(fieldsToUpdate);
-        setIsGenerating(false);
+        
+        // Auto-generate images after parameters are populated
+        setTimeout(() => {
+          const mockImages = [
+            "https://picsum.photos/512/512?random=9",
+            "https://picsum.photos/512/512?random=10", 
+            "https://picsum.photos/512/512?random=11",
+            "https://picsum.photos/512/512?random=12"
+          ];
+          
+          if (onImagesGenerated) {
+            onImagesGenerated(mockImages);
+          }
+          
+          setIsGenerating(false);
+          setHasGenerated(true);
+        }, 1000);
       }, 2000);
     }
     // Reset the input
