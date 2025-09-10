@@ -36,13 +36,23 @@ const ParameterEditor = ({
     try {
       const parsed = JSON.parse(value);
       setParsedJSON(parsed);
-      // Check if the parsed JSON has actual content (not just empty structure)
+      // Check if the parsed JSON has actual meaningful content
       const hasContent = Object.values(parsed).some(val => {
         if (typeof val === 'string') return val.trim() !== '';
-        if (Array.isArray(val)) return val.length > 0;
+        if (Array.isArray(val)) {
+          return val.some(item => {
+            if (typeof item === 'string') return item.trim() !== '';
+            if (typeof item === 'object' && item !== null) {
+              return Object.values(item).some(subVal => 
+                typeof subVal === 'string' ? subVal.trim() !== '' : subVal !== null && subVal !== undefined && subVal !== ''
+              );
+            }
+            return item !== null && item !== undefined && item !== '';
+          });
+        }
         if (typeof val === 'object' && val !== null) {
           return Object.values(val).some(subVal => 
-            typeof subVal === 'string' ? subVal.trim() !== '' : subVal !== null && subVal !== undefined
+            typeof subVal === 'string' ? subVal.trim() !== '' : subVal !== null && subVal !== undefined && subVal !== ''
           );
         }
         return val !== null && val !== undefined && val !== '';
