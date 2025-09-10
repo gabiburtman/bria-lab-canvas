@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -279,7 +279,7 @@ const PromptComponent = ({
   );
 };
 
-  const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images: string[]) => void }) => {
+const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images: string[]) => void }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [originalPrompt, setOriginalPrompt] = useState("");
   const [mainPrompt, setMainPrompt] = useState("");
@@ -291,6 +291,10 @@ const PromptComponent = ({
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // File input refs
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const briefInputRef = useRef<HTMLInputElement>(null);
 
   const aspectRatios = [
     { value: "9:16", label: "9:16" },
@@ -374,49 +378,59 @@ const PromptComponent = ({
   };
 
   const handleUploadImage = () => {
-    // Simulate image upload and populate parameters
-    setIsGenerating(true);
-    setTimeout(() => {
-      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
-      const fieldsToUpdate = new Set(['short_description', 'background_setting']);
-      setUpdatedFields(fieldsToUpdate);
-      setIsGenerating(false);
-      
-      // Generate mock images
-      const mockImages = [
-        "https://picsum.photos/512/512?random=5",
-        "https://picsum.photos/512/512?random=6", 
-        "https://picsum.photos/512/512?random=7",
-        "https://picsum.photos/512/512?random=8"
-      ];
-      
-      if (onImagesGenerated) {
-        onImagesGenerated(mockImages);
-      }
-    }, 2000);
+    // Trigger file input for images
+    imageInputRef.current?.click();
   };
 
   const handleUploadDocument = () => {
-    // Simulate brief upload and populate parameters
-    setIsGenerating(true);
-    setTimeout(() => {
-      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
-      const fieldsToUpdate = new Set(['context', 'artistic_style', 'style_medium']);
-      setUpdatedFields(fieldsToUpdate);
-      setIsGenerating(false);
-      
-      // Generate mock images
-      const mockImages = [
-        "https://picsum.photos/512/512?random=9",
-        "https://picsum.photos/512/512?random=10", 
-        "https://picsum.photos/512/512?random=11",
-        "https://picsum.photos/512/512?random=12"
-      ];
-      
-      if (onImagesGenerated) {
-        onImagesGenerated(mockImages);
-      }
-    }, 2000);
+    // Trigger file input for documents
+    briefInputRef.current?.click();
+  };
+
+  const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Simulate processing the image and extracting parameters
+      setIsGenerating(true);
+      setTimeout(() => {
+        const imageBasedJSON = {
+          ...mockFilledJSON,
+          short_description: `Analysis of uploaded image: ${file.name}`,
+          context: "Image analysis and parameter extraction",
+          style_medium: "Based on uploaded reference image"
+        };
+        
+        setJsonData(JSON.stringify(imageBasedJSON, null, 2));
+        const fieldsToUpdate = new Set(['short_description', 'context', 'style_medium']);
+        setUpdatedFields(fieldsToUpdate);
+        setIsGenerating(false);
+      }, 2000);
+    }
+    // Reset the input
+    event.target.value = '';
+  };
+
+  const handleBriefFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Simulate processing the brief and extracting parameters
+      setIsGenerating(true);
+      setTimeout(() => {
+        const briefBasedJSON = {
+          ...mockFilledJSON,
+          short_description: `Parameters extracted from brief: ${file.name}`,
+          context: "Brief-based parameter extraction",
+          artistic_style: "Style defined in uploaded brief document"
+        };
+        
+        setJsonData(JSON.stringify(briefBasedJSON, null, 2));
+        const fieldsToUpdate = new Set(['short_description', 'context', 'artistic_style']);
+        setUpdatedFields(fieldsToUpdate);
+        setIsGenerating(false);
+      }, 2000);
+    }
+    // Reset the input
+    event.target.value = '';
   };
 
   // Clear updated fields highlight after 3 seconds
@@ -431,6 +445,22 @@ const PromptComponent = ({
 
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+      {/* Hidden file inputs */}
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleImageFileChange}
+      />
+      <input
+        ref={briefInputRef}
+        type="file"
+        accept=".pdf,.doc,.docx,.txt"
+        style={{ display: 'none' }}
+        onChange={handleBriefFileChange}
+      />
+      
       <div className="flex-1 p-6 overflow-y-auto">
         {/* Prompt Area */}
         <div className="space-y-4 mb-4">
