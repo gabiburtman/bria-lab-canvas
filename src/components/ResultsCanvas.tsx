@@ -60,49 +60,48 @@ response = requests.post(
       <div className="flex gap-2">
         <Button
           size="sm"
-          variant="secondary"
-          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
+          variant="ghost" 
+          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
         >
-          <Badge className="w-3 h-3 mr-1" />
-          CR
+          <Badge className="w-4 h-4" />
         </Button>
         <Button
           size="sm"
-          variant="secondary"
-          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
+          variant="ghost"
+          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
         >
-          <Download className="w-3 h-3" />
+          <Download className="w-4 h-4" />
         </Button>
       </div>
       
       <div className="flex gap-2">
         <Button
           size="sm"
-          variant="secondary"
-          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
+          variant="ghost"
+          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
         >
-          <Share className="w-3 h-3" />
+          <Share className="w-4 h-4" />
         </Button>
         
         <Popover>
           <PopoverTrigger asChild>
             <Button
               size="sm"
-              variant="secondary"
-              className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
+              variant="ghost"
+              className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
             >
-              <Code className="w-3 h-3" />
+              <Code className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
+          <PopoverContent className="w-80 bg-background border-border shadow-lg z-50">
             <div className="space-y-3">
-              <h4 className="font-medium text-lab-text-primary text-sm">Code Snippets</h4>
+              <h4 className="font-medium text-foreground text-sm">Code Snippets</h4>
               {Object.entries(mockCodeSnippets).map(([lang, code]) => (
                 <div key={lang} className="space-y-1">
-                  <div className="text-xs font-medium text-lab-text-secondary uppercase tracking-wide">
+                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                     {lang}
                   </div>
-                  <pre className="text-xs bg-lab-code-bg text-lab-code-text p-2 rounded-lab-sm overflow-x-auto">
+                  <pre className="text-xs bg-muted text-muted-foreground p-2 rounded overflow-x-auto">
                     <code>{code}</code>
                   </pre>
                 </div>
@@ -119,25 +118,25 @@ response = requests.post(
       <div className="flex gap-2">
         <Button
           size="sm"
-          variant="secondary"
+          variant="ghost"
           onClick={() => setLiked(true)}
           className={cn(
-            "bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle",
-            liked === true && "bg-lab-status-success text-white hover:bg-lab-status-success"
+            "w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm",
+            liked === true && "bg-green-500 text-white border-green-500 hover:bg-green-600"
           )}
         >
-          <ThumbsUp className="w-3 h-3" />
+          <ThumbsUp className="w-4 h-4" />
         </Button>
         <Button
           size="sm"
-          variant="secondary"
+          variant="ghost"
           onClick={() => setLiked(false)}
           className={cn(
-            "bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle",
-            liked === false && "bg-lab-status-error text-white hover:bg-lab-status-error"
+            "w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm",
+            liked === false && "bg-red-500 text-white border-red-500 hover:bg-red-600"
           )}
         >
-          <ThumbsDown className="w-3 h-3" />
+          <ThumbsDown className="w-4 h-4" />
         </Button>
       </div>
     </div>
