@@ -14,7 +14,7 @@ const Header = () => {
     <header className="w-full h-16 bg-lab-surface border-b border-lab-border px-6 flex items-center justify-between">
       {/* Left Group - Logo & Title */}
       <div className="flex items-center gap-3">
-        <img src={briaLogo} alt="Bria Logo" className="w-8 h-8" />
+        <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="w-8 h-8" />
         <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">
           Bria 4 Lab
         </h1>
