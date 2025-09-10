@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -343,14 +343,15 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
     "A mysterious cave entrance with glowing crystals inside"
   ];
 
-  const handleSurpriseMe = () => {
+  // Handle surprise me functionality
+  const handleSurpriseMe = useCallback(() => {
     const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
     if (hasGenerated) {
       setRefinementPrompt(randomPrompt);
     } else {
       setMainPrompt(randomPrompt);
     }
-  };
+  }, [hasGenerated, randomPrompts]);
 
   // Helper function to get image dimensions based on aspect ratio
   const getImageDimensions = (aspectRatio: string) => {
