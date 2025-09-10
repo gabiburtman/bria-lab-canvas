@@ -320,13 +320,15 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
       // Populate parameters with mock data based on the prompt
       setJsonData(JSON.stringify(mockFilledJSON, null, 2));
       
-      // Mark some fields as updated to show the animation
-      const fieldsToUpdate = new Set([
+      // Mark some fields as updated, but exclude locked fields
+      const potentialUpdatedFields = new Set([
         'short_description', 
         'background_setting', 
         'lighting.conditions',
         'aesthetics.mood_atmosphere'
       ]);
+      
+      const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
       
       // Generate mock images
@@ -407,7 +409,10 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
         };
         
         setJsonData(JSON.stringify(imageBasedJSON, null, 2));
-        const fieldsToUpdate = new Set(['short_description', 'context', 'style_medium']);
+        
+        // Mark fields as updated, but exclude locked fields
+        const potentialUpdatedFields = new Set(['short_description', 'context', 'style_medium']);
+        const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
         setUpdatedFields(fieldsToUpdate);
         setIsGenerating(false);
       }, 2000);
@@ -436,7 +441,10 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
         };
         
         setJsonData(JSON.stringify(briefBasedJSON, null, 2));
-        const fieldsToUpdate = new Set(['short_description', 'context', 'artistic_style']);
+        
+        // Mark fields as updated, but exclude locked fields
+        const potentialUpdatedFields = new Set(['short_description', 'context', 'artistic_style']);
+        const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
         setUpdatedFields(fieldsToUpdate);
         setIsGenerating(false);
       }, 2000);
