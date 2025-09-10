@@ -306,6 +306,27 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
     { value: "16:9", label: "16:9" },
   ];
 
+  // Helper function to get image dimensions based on aspect ratio
+  const getImageDimensions = (aspectRatio: string) => {
+    const baseSize = 512;
+    switch (aspectRatio) {
+      case "9:16":
+        return { width: Math.round(baseSize * 9/16), height: baseSize }; // 288x512
+      case "2:3":
+        return { width: Math.round(baseSize * 2/3), height: baseSize }; // 341x512
+      case "3:4":
+        return { width: Math.round(baseSize * 3/4), height: baseSize }; // 384x512
+      case "4:3":
+        return { width: baseSize, height: Math.round(baseSize * 3/4) }; // 512x384
+      case "3:2":
+        return { width: baseSize, height: Math.round(baseSize * 2/3) }; // 512x341
+      case "16:9":
+        return { width: baseSize, height: Math.round(baseSize * 9/16) }; // 512x288
+      default: // 1:1
+        return { width: baseSize, height: baseSize }; // 512x512
+    }
+  };
+
   const handleGenerate = () => {
     if (!hasGenerated && mainPrompt.trim()) {
       setOriginalPrompt(mainPrompt);
@@ -331,13 +352,14 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
       
-      // Generate new mock images with different random numbers each time
+      // Generate new mock images with correct aspect ratio
       const timestamp = Date.now();
+      const dimensions = getImageDimensions(aspectRatio);
       const mockImages = [
-        `https://picsum.photos/512/512?random=${timestamp + 1}`,
-        `https://picsum.photos/512/512?random=${timestamp + 2}`, 
-        `https://picsum.photos/512/512?random=${timestamp + 3}`,
-        `https://picsum.photos/512/512?random=${timestamp + 4}`
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 1}`,
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 2}`, 
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 3}`,
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 4}`
       ];
       
       // Notify parent component about generated images
