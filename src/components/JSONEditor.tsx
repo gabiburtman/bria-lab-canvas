@@ -69,7 +69,7 @@ const JSONEditor = ({
       const trimmedLine = line.trim();
       const match = trimmedLine.match(/"([^"]+)":/);
       const fieldName = match ? match[1] : null;
-      const isField = fieldName && !line.includes('{') && !line.includes('[');
+      const isField = fieldName && !line.includes('{') && !line.includes('[') && !line.includes('}') && !line.includes(']');
       const isLocked = fieldName && lockedFields.has(fieldName);
       const isUpdated = fieldName && updatedFields.has(fieldName);
       
@@ -81,7 +81,7 @@ const JSONEditor = ({
         <div 
           key={index} 
           className={cn(
-            "flex items-center group relative",
+            "flex items-center group relative min-h-[24px]",
             isUpdated && "bg-yellow-200/20 animate-pulse"
           )}
         >
@@ -98,7 +98,7 @@ const JSONEditor = ({
               </div>
             )}
             <span 
-              className="text-sm font-mono leading-6 flex-1"
+              className="text-sm font-mono leading-6 flex-1 cursor-text"
               style={{ 
                 fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
                 paddingLeft: indentLevel > 0 ? '0' : '8px'
@@ -113,8 +113,8 @@ const JSONEditor = ({
                       variant="ghost"
                       size="sm"
                       className={cn(
-                        "absolute right-1 top-0 w-6 h-6 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 opacity-0 group-hover:opacity-100 shadow-sm",
-                        isLocked && "opacity-100 bg-accent text-accent-foreground"
+                        "absolute right-1 top-0 w-6 h-6 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm",
+                        isLocked ? "opacity-100 bg-accent text-accent-foreground" : "opacity-0 group-hover:opacity-100"
                       )}
                       onClick={() => fieldName && onFieldLock(fieldName, !isLocked)}
                     >
@@ -212,7 +212,7 @@ const JSONEditor = ({
           ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 w-full h-full font-mono text-sm bg-transparent text-transparent caret-white border-none resize-none focus:ring-0 p-4 leading-6 z-10 overflow-hidden"
+          className="absolute inset-0 w-full h-full font-mono text-sm bg-transparent text-transparent caret-primary border-none resize-none focus:ring-0 p-4 leading-6 z-10 pointer-events-auto"
           style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace' }}
           spellCheck={false}
         />
