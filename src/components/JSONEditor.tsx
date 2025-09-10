@@ -199,7 +199,7 @@ const JSONEditor = ({
       </div>
 
       {/* Editor content */}
-      <div className="relative min-h-[300px]">
+      <div className="relative h-80 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-muted-foreground/20">
         {/* Syntax highlighted display */}
         <div className="p-4">
           <div className="space-y-0">
@@ -212,7 +212,7 @@ const JSONEditor = ({
           ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 w-full h-full font-mono text-sm bg-transparent text-transparent caret-white border-none resize-none focus:ring-0 p-4 leading-6 z-10"
+          className="absolute inset-0 w-full h-full font-mono text-sm bg-transparent text-transparent caret-white border-none resize-none focus:ring-0 p-4 leading-6 z-10 overflow-hidden"
           style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace' }}
           spellCheck={false}
         />
