@@ -58,10 +58,8 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
         </Button>
         
         <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="writing-mode-vertical text-xs font-medium text-lab-text-muted tracking-widest">
-            <span style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
-              HISTORY
-            </span>
+          <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
+            HISTORY
           </div>
         </div>
       </div>
@@ -69,7 +67,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
   }
 
   return (
-    <div className="w-80 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
       <div className="flex items-center justify-between p-6 pb-4">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-lab-text-secondary" />
