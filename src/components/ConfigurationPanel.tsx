@@ -6,7 +6,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MoreHorizontal, Upload, FileText, Copy, Lock, Unlock } from "lucide-react";
+import { 
+  ArrowRight, 
+  Upload, 
+  FileText, 
+  Copy, 
+  Lock, 
+  Unlock, 
+  Sliders, 
+  RectangleHorizontal 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const defaultJSON = {
@@ -77,15 +86,13 @@ const ConfigurationPanel = () => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const aspectRatios = [
-    { value: "1:1", label: "1:1 (Square)" },
-    { value: "3:4", label: "3:4 (Portrait)" },
-    { value: "4:3", label: "4:3 (Landscape)" },
-    { value: "4:5", label: "4:5 (Portrait)" },
-    { value: "5:4", label: "5:4 (Landscape)" },
-    { value: "2:3", label: "2:3 (Portrait)" },
-    { value: "3:2", label: "3:2 (Landscape)" },
-    { value: "9:16", label: "9:16 (Vertical)" },
-    { value: "16:9", label: "16:9 (Horizontal)" },
+    { value: "9:16", label: "9:16" },
+    { value: "2:3", label: "2:3" },
+    { value: "3:4", label: "3:4" },
+    { value: "1:1", label: "1:1" },
+    { value: "4:3", label: "4:3" },
+    { value: "3:2", label: "3:2" },
+    { value: "16:9", label: "16:9" },
   ];
 
   const handleGenerate = () => {
@@ -97,7 +104,9 @@ const ConfigurationPanel = () => {
     // Simulate generation
     setTimeout(() => {
       setIsGenerating(false);
-      setRefinementPrompt("");
+      if (hasGenerated) {
+        setRefinementPrompt("");
+      }
     }, 3000);
   };
 
@@ -118,79 +127,72 @@ const ConfigurationPanel = () => {
     navigator.clipboard.writeText(jsonData);
   };
 
-  return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
-      <div className="flex-1 p-6 overflow-y-auto">
-        {/* Prompt Area */}
-        <div className="mb-8">
-          {!hasGenerated ? (
-            <>
-              <h2 className="text-lg font-medium text-lab-text-primary mb-4">
-                Main Prompt
-              </h2>
-              <Textarea
-                id="main-prompt"
-                placeholder="Enter your prompt here..."
-                value={mainPrompt}
-                onChange={(e) => setMainPrompt(e.target.value)}
-                className="min-h-[120px] resize-none bg-lab-surface border-lab-border focus:border-lab-border-focus text-lab-text-primary placeholder:text-lab-text-muted rounded-lg"
-              />
-            </>
-          ) : (
-            <>
-              <h2 className="text-lg font-medium text-lab-text-primary mb-4">
-                Original Prompt
-              </h2>
-              <div className="p-4 bg-lab-interactive-hover border border-lab-border rounded-lg text-sm text-lab-text-secondary mb-6">
-                {originalPrompt}
-              </div>
-              
-              <h2 className="text-lg font-medium text-lab-text-primary mb-4">
-                Refinement Prompt
-              </h2>
-              <Textarea
-                id="refinement-prompt"
-                placeholder="Refine with new instructions..."
-                value={refinementPrompt}
-                onChange={(e) => setRefinementPrompt(e.target.value)}
-                className="min-h-[80px] resize-none bg-lab-surface border-lab-border focus:border-lab-border-focus text-lab-text-primary placeholder:text-lab-text-muted rounded-lg"
-              />
-            </>
-          )}
-        </div>
-
-        {/* Parameter Controls */}
-        <div className="mb-8 space-y-6">
-          <div>
-            <h3 className="text-base font-medium text-lab-text-primary mb-3">
-              Aspect Ratio
-            </h3>
-            <Select value={aspectRatio} onValueChange={setAspectRatio}>
-              <SelectTrigger className="bg-lab-surface border-lab-border focus:border-lab-border-focus rounded-lg">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-lab-surface border-lab-border shadow-lab-glow-subtle">
-                {aspectRatios.map((ratio) => (
-                  <SelectItem key={ratio.value} value={ratio.value} className="hover:bg-lab-interactive-hover">
-                    {ratio.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
+  const PromptComponent = ({ 
+    value, 
+    onChange, 
+    placeholder, 
+    isRefinement = false 
+  }: { 
+    value: string; 
+    onChange: (value: string) => void; 
+    placeholder: string;
+    isRefinement?: boolean;
+  }) => (
+    <div className="border border-lab-border rounded-lg bg-lab-surface overflow-hidden">
+      <Textarea
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="min-h-[120px] resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4"
+      />
+      
+      {/* Controls Bar */}
+      <div className="flex items-center justify-between p-3 border-t border-lab-border bg-lab-surface">
+        <div className="flex items-center gap-2">
+          {/* Aspect Ratio Button */}
           <Popover>
             <PopoverTrigger asChild>
               <Button 
-                variant="ghost" 
+                variant="outline" 
                 size="sm" 
-                className="text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover"
+                className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
               >
-                <MoreHorizontal className="w-4 h-4 mr-2" />
-                Advanced Options
+                <RectangleHorizontal className="w-4 h-4" />
+                {aspectRatio}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-glow-subtle rounded-lg">
+            <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
+              <div className="space-y-1">
+                {aspectRatios.map((ratio) => (
+                  <button
+                    key={ratio.value}
+                    onClick={() => setAspectRatio(ratio.value)}
+                    className={cn(
+                      "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
+                      aspectRatio === ratio.value 
+                        ? "bg-lab-primary text-lab-primary-foreground" 
+                        : "hover:bg-lab-interactive-hover text-lab-text-secondary"
+                    )}
+                  >
+                    {ratio.label}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Advanced Settings Button */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+              >
+                <Sliders className="w-4 h-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lg">
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
@@ -213,7 +215,7 @@ const ConfigurationPanel = () => {
                     placeholder="Random"
                     value={seed}
                     onChange={(e) => setSeed(e.target.value)}
-                    className="bg-lab-surface border-lab-border focus:border-lab-border-focus rounded-lg"
+                    className="bg-lab-surface border-lab-border focus:border-lab-border-focus"
                   />
                 </div>
               </div>
@@ -221,11 +223,50 @@ const ConfigurationPanel = () => {
           </Popover>
         </div>
 
-        {/* JSON Editor */}
-        <div className="mb-8">
+        {/* Generate Button */}
+        <Button 
+          onClick={handleGenerate}
+          disabled={(!value.trim() && !hasGenerated) || isGenerating}
+          size="sm"
+          className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground disabled:opacity-50"
+        >
+          {isGenerating ? (
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+          ) : (
+            <ArrowRight className="w-4 h-4" />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+      <div className="flex-1 p-6 overflow-y-auto space-y-6">
+        {/* Prompt Area */}
+        <div className="space-y-4">
+          {hasGenerated && (
+            <div>
+              <h3 className="text-sm font-medium text-lab-text-secondary mb-2">Original Prompt</h3>
+              <div className="p-3 bg-lab-interactive-hover border border-lab-border rounded-lg text-sm text-lab-text-primary">
+                {originalPrompt}
+              </div>
+            </div>
+          )}
+          
+          <PromptComponent
+            value={hasGenerated ? refinementPrompt : mainPrompt}
+            onChange={hasGenerated ? setRefinementPrompt : setMainPrompt}
+            placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."}
+            isRefinement={hasGenerated}
+          />
+        </div>
+
+        {/* JSON Input */}
+        <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-medium text-lab-text-primary">
-              Parameters
+              JSON Input
             </h3>
             <Button
               variant="ghost"
@@ -256,26 +297,26 @@ const ConfigurationPanel = () => {
         </div>
 
         {/* Parameter Input from File */}
-        <div className="mb-6">
+        <div>
           <h3 className="text-base font-medium text-lab-text-primary mb-3">
-            Import Parameters
+            Parameter Input from File
           </h3>
           <div className="flex items-center gap-3">
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary rounded-lg"
+              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
             >
-              <Upload className="w-4 h-4 mr-2" />
+              <Upload className="w-4 h-4" />
               Image
             </Button>
             <span className="text-lab-text-muted text-sm">or</span>
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary rounded-lg"
+              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
             >
-              <FileText className="w-4 h-4 mr-2" />
+              <FileText className="w-4 h-4" />
               Document
             </Button>
           </div>
@@ -287,8 +328,8 @@ const ConfigurationPanel = () => {
         <div className="flex gap-3">
           <Button 
             onClick={handleGenerate}
-            disabled={(!mainPrompt.trim() && !hasGenerated) || isGenerating}
-            className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium hover:shadow-lab-glow-primary transition-all disabled:opacity-50 rounded-lg"
+            disabled={(!mainPrompt.trim() && !hasGenerated && !refinementPrompt.trim()) || isGenerating}
+            className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium hover:shadow-lab-glow-primary transition-all disabled:opacity-50"
           >
             {isGenerating ? (
               <>
@@ -302,7 +343,7 @@ const ConfigurationPanel = () => {
           <Button 
             variant="outline"
             onClick={handleStartOver}
-            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary rounded-lg"
+            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
           >
             Start Over
           </Button>
