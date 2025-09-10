@@ -390,6 +390,12 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
   const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Move to refine state if we're in initial state
+      if (!hasGenerated) {
+        setOriginalPrompt(`Uploaded image: ${file.name}`);
+        setHasGenerated(true);
+      }
+      
       // Simulate processing the image and extracting parameters
       setIsGenerating(true);
       setTimeout(() => {
@@ -413,6 +419,12 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
   const handleBriefFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Move to refine state if we're in initial state
+      if (!hasGenerated) {
+        setOriginalPrompt(`Uploaded brief: ${file.name}`);
+        setHasGenerated(true);
+      }
+      
       // Simulate processing the brief and extracting parameters
       setIsGenerating(true);
       setTimeout(() => {
