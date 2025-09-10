@@ -40,9 +40,11 @@ const Header = () => {
                 size="icon" 
                 className="w-9 h-9 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12.54 10.5h-.55v-.55h.55v.55zm6.18-7.32c-.9-1.44-3.02-1.44-3.92 0L12 8.48 9.2 3.18c-.9-1.44-3.02-1.44-3.92 0L2.48 9.9c-.9 1.44-.12 3.27 1.44 3.27h1.64v4.37c0 1.38 1.12 2.5 2.5 2.5h1.88v-4.37H12v4.37h1.88c1.38 0 2.5-1.12 2.5-2.5v-4.37h1.64c1.56 0 2.34-1.83 1.44-3.27L16.72 3.18zM12 16.5h-1v-1h1v1zm-1-2h1v-1h-1v1zm1-2h-1v-1h1v1zm0-2h-1v-1h1v1z"/>
-                </svg>
+                <img 
+                  src="/lovable-uploads/d7168b47-d969-4810-b373-9a25ca8d305d.png" 
+                  alt="Hugging Face" 
+                  className="w-4 h-4"
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
