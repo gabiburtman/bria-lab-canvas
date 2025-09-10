@@ -288,9 +288,9 @@ const ConfigurationPanel = () => {
 
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
-      <div className="flex-1 p-6 overflow-y-auto space-y-4">
+      <div className="flex-1 p-6 overflow-y-auto">
         {/* Prompt Area */}
-        <div className="space-y-4">
+        <div className="space-y-4 mb-4">
           {hasGenerated && (
             <div>
               <h3 className="text-sm font-medium text-lab-text-secondary mb-2">Original Prompt</h3>
@@ -309,18 +309,16 @@ const ConfigurationPanel = () => {
         </div>
 
         {/* JSON Editor */}
-        <div className="pb-2">
-          <JSONEditor
-            value={jsonData}
-            onChange={setJsonData}
-            isGenerating={isGenerating}
-            lockedFields={lockedFields}
-            onFieldLock={handleFieldLock}
-            onUploadImage={handleUploadImage}
-            onUploadDocument={handleUploadDocument}
-            updatedFields={updatedFields}
-          />
-        </div>
+        <JSONEditor
+          value={jsonData}
+          onChange={setJsonData}
+          isGenerating={isGenerating}
+          lockedFields={lockedFields}
+          onFieldLock={handleFieldLock}
+          onUploadImage={handleUploadImage}
+          onUploadDocument={handleUploadDocument}
+          updatedFields={updatedFields}
+        />
       </div>
 
       {/* Action Buttons - Sticky Bottom */}
