@@ -195,9 +195,9 @@ const ResultsCanvas = () => {
 
   if (!hasResults) {
     return (
-      <div className="w-full h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex items-center justify-center">
+      <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex items-center justify-center">
         <div className="text-center max-w-sm px-6">
-          <div className="w-16 h-16 mx-auto mb-4 bg-lab-interactive-hover rounded-lab flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-lab-interactive-hover rounded-lg flex items-center justify-center">
             <Grid3X3 className="w-8 h-8 text-lab-text-muted" />
           </div>
           <h3 className="text-lg font-medium text-lab-text-primary mb-2">
@@ -211,7 +211,7 @@ const ResultsCanvas = () => {
             onClick={loadMockImages}
             variant="outline"
             size="sm"
-            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary"
+            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary rounded-lg"
           >
             Load Demo Images
           </Button>
@@ -221,7 +221,7 @@ const ResultsCanvas = () => {
   }
 
   return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle p-6">
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6">
       <div className="grid grid-cols-2 gap-4 h-full">
         {Array.from({ length: 4 }).map((_, index) => (
           <ImageCard 

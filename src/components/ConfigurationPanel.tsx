@@ -119,54 +119,54 @@ const ConfigurationPanel = () => {
   };
 
   return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex flex-col">
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
       <div className="flex-1 p-6 overflow-y-auto">
         {/* Prompt Area */}
-        <div className="mb-6">
+        <div className="mb-8">
           {!hasGenerated ? (
             <>
-              <Label htmlFor="main-prompt" className="text-sm font-medium text-lab-text-primary mb-2 block">
+              <h2 className="text-lg font-medium text-lab-text-primary mb-4">
                 Main Prompt
-              </Label>
+              </h2>
               <Textarea
                 id="main-prompt"
                 placeholder="Enter your prompt here..."
                 value={mainPrompt}
                 onChange={(e) => setMainPrompt(e.target.value)}
-                className="min-h-[120px] resize-none bg-lab-surface border-lab-border focus:border-lab-border-focus text-lab-text-primary placeholder:text-lab-text-muted"
+                className="min-h-[120px] resize-none bg-lab-surface border-lab-border focus:border-lab-border-focus text-lab-text-primary placeholder:text-lab-text-muted rounded-lg"
               />
             </>
           ) : (
             <>
-              <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+              <h2 className="text-lg font-medium text-lab-text-primary mb-4">
                 Original Prompt
-              </Label>
-              <div className="p-3 bg-lab-interactive-hover border border-lab-border rounded-lab text-sm text-lab-text-secondary mb-4">
+              </h2>
+              <div className="p-4 bg-lab-interactive-hover border border-lab-border rounded-lg text-sm text-lab-text-secondary mb-6">
                 {originalPrompt}
               </div>
               
-              <Label htmlFor="refinement-prompt" className="text-sm font-medium text-lab-text-primary mb-2 block">
+              <h2 className="text-lg font-medium text-lab-text-primary mb-4">
                 Refinement Prompt
-              </Label>
+              </h2>
               <Textarea
                 id="refinement-prompt"
                 placeholder="Refine with new instructions..."
                 value={refinementPrompt}
                 onChange={(e) => setRefinementPrompt(e.target.value)}
-                className="min-h-[80px] resize-none bg-lab-surface border-lab-border focus:border-lab-border-focus text-lab-text-primary placeholder:text-lab-text-muted"
+                className="min-h-[80px] resize-none bg-lab-surface border-lab-border focus:border-lab-border-focus text-lab-text-primary placeholder:text-lab-text-muted rounded-lg"
               />
             </>
           )}
         </div>
 
         {/* Parameter Controls */}
-        <div className="mb-6 space-y-4">
+        <div className="mb-8 space-y-6">
           <div>
-            <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+            <h3 className="text-base font-medium text-lab-text-primary mb-3">
               Aspect Ratio
-            </Label>
+            </h3>
             <Select value={aspectRatio} onValueChange={setAspectRatio}>
-              <SelectTrigger className="bg-lab-surface border-lab-border focus:border-lab-border-focus">
+              <SelectTrigger className="bg-lab-surface border-lab-border focus:border-lab-border-focus rounded-lg">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-lab-surface border-lab-border shadow-lab-glow-subtle">
@@ -190,7 +190,7 @@ const ConfigurationPanel = () => {
                 Advanced Options
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
+            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-glow-subtle rounded-lg">
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
@@ -213,7 +213,7 @@ const ConfigurationPanel = () => {
                     placeholder="Random"
                     value={seed}
                     onChange={(e) => setSeed(e.target.value)}
-                    className="bg-lab-surface border-lab-border focus:border-lab-border-focus"
+                    className="bg-lab-surface border-lab-border focus:border-lab-border-focus rounded-lg"
                   />
                 </div>
               </div>
@@ -222,11 +222,11 @@ const ConfigurationPanel = () => {
         </div>
 
         {/* JSON Editor */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <Label className="text-sm font-medium text-lab-text-primary">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base font-medium text-lab-text-primary">
               Parameters
-            </Label>
+            </h3>
             <Button
               variant="ghost"
               size="sm"
@@ -238,7 +238,7 @@ const ConfigurationPanel = () => {
           </div>
           
           <div className={cn(
-            "relative bg-lab-code-bg rounded-lab border border-lab-code-border overflow-hidden",
+            "relative bg-lab-code-bg rounded-lg border border-lab-code-border overflow-hidden",
             isGenerating && "opacity-50 pointer-events-none"
           )}>
             <Textarea
@@ -257,14 +257,14 @@ const ConfigurationPanel = () => {
 
         {/* Parameter Input from File */}
         <div className="mb-6">
-          <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+          <h3 className="text-base font-medium text-lab-text-primary mb-3">
             Import Parameters
-          </Label>
+          </h3>
           <div className="flex items-center gap-3">
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary rounded-lg"
             >
               <Upload className="w-4 h-4 mr-2" />
               Image
@@ -273,7 +273,7 @@ const ConfigurationPanel = () => {
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary rounded-lg"
             >
               <FileText className="w-4 h-4 mr-2" />
               Document
@@ -288,7 +288,7 @@ const ConfigurationPanel = () => {
           <Button 
             onClick={handleGenerate}
             disabled={(!mainPrompt.trim() && !hasGenerated) || isGenerating}
-            className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium hover:shadow-lab-glow-primary transition-all disabled:opacity-50"
+            className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium hover:shadow-lab-glow-primary transition-all disabled:opacity-50 rounded-lg"
           >
             {isGenerating ? (
               <>
@@ -302,7 +302,7 @@ const ConfigurationPanel = () => {
           <Button 
             variant="outline"
             onClick={handleStartOver}
-            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary rounded-lg"
           >
             Start Over
           </Button>

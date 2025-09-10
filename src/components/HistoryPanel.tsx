@@ -74,7 +74,7 @@ const HistoryPanel = () => {
 
   if (isCollapsed) {
     return (
-      <div className="w-12 h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex flex-col">
+      <div className="w-12 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
         <Button
           variant="ghost"
           size="sm"
@@ -96,11 +96,11 @@ const HistoryPanel = () => {
   }
 
   return (
-    <div className="w-80 h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-lab-border">
+    <div className="w-80 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+      <div className="flex items-center justify-between p-6 pb-4">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-lab-text-secondary" />
-          <h3 className="font-medium text-lab-text-primary text-sm">
+          <h3 className="font-medium text-lab-text-primary text-base">
             History
           </h3>
         </div>
@@ -115,7 +115,7 @@ const HistoryPanel = () => {
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-2">
+        <div className="px-6 pb-6">
           {history.length === 0 ? (
             <div className="text-center py-8">
               <Clock className="w-8 h-8 mx-auto mb-2 text-lab-text-muted" />
@@ -124,13 +124,13 @@ const HistoryPanel = () => {
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {history.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleItemClick(item)}
                   className={cn(
-                    "p-3 border border-lab-border rounded-lab cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
+                    "p-4 border border-lab-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
                     activeId === item.id 
                       ? "bg-lab-primary/10 border-lab-border-focus shadow-lab-glow-focus" 
                       : "bg-lab-surface hover:bg-lab-interactive-hover"
@@ -142,22 +142,22 @@ const HistoryPanel = () => {
                         <img
                           src={item.thumbnail}
                           alt="Experiment thumbnail"
-                          className="w-12 h-12 rounded-lab-sm object-cover border border-lab-border"
+                          className="w-12 h-12 rounded-lg object-cover border border-lab-border"
                         />
                       </div>
                     )}
                     
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-lab-text-primary font-medium leading-tight mb-1">
+                      <p className="text-sm text-lab-text-primary font-medium leading-tight mb-2">
                         {truncatePrompt(item.prompt, 50)}
                       </p>
                       
-                      <div className="flex items-center gap-2 text-xs text-lab-text-muted">
+                      <div className="flex items-center gap-2 text-xs text-lab-text-muted mb-1">
                         <Clock className="w-3 h-3" />
                         <span>{formatTimeAgo(item.timestamp)}</span>
                       </div>
                       
-                      <div className="flex items-center gap-2 mt-1 text-xs text-lab-text-secondary">
+                      <div className="flex items-center gap-2 text-xs text-lab-text-secondary">
                         <span>{item.parameters.aspectRatio}</span>
                         <span>•</span>
                         <span>{item.parameters.steps} steps</span>
