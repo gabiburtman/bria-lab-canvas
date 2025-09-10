@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import JSONEditor from "./JSONEditor";
 import { 
   ArrowRight, 
   Upload, 
@@ -83,6 +84,7 @@ const ConfigurationPanel = () => {
   const [seed, setSeed] = useState("");
   const [jsonData, setJsonData] = useState(JSON.stringify(defaultJSON, null, 2));
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
+  const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
 
   const aspectRatios = [
@@ -120,12 +122,39 @@ const ConfigurationPanel = () => {
     setSeed("");
     setJsonData(JSON.stringify(defaultJSON, null, 2));
     setLockedFields(new Set());
+    setUpdatedFields(new Set());
     setIsGenerating(false);
   };
 
-  const copyJsonToClipboard = () => {
-    navigator.clipboard.writeText(jsonData);
+  const handleFieldLock = (field: string, locked: boolean) => {
+    const newLockedFields = new Set(lockedFields);
+    if (locked) {
+      newLockedFields.add(field);
+    } else {
+      newLockedFields.delete(field);
+    }
+    setLockedFields(newLockedFields);
   };
+
+  const handleUploadImage = () => {
+    // TODO: Implement image upload functionality
+    console.log("Upload image clicked");
+  };
+
+  const handleUploadDocument = () => {
+    // TODO: Implement document upload functionality
+    console.log("Upload document clicked");
+  };
+
+  // Clear updated fields highlight after 3 seconds
+  useEffect(() => {
+    if (updatedFields.size > 0) {
+      const timer = setTimeout(() => {
+        setUpdatedFields(new Set());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [updatedFields]);
 
   const PromptComponent = ({ 
     value, 
@@ -264,62 +293,20 @@ const ConfigurationPanel = () => {
 
         {/* JSON Input */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-medium text-lab-text-primary">
-              JSON Input
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={copyJsonToClipboard}
-              className="text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover p-1"
-            >
-              <Copy className="w-4 h-4" />
-            </Button>
-          </div>
-          
-          <div className={cn(
-            "relative bg-lab-code-bg rounded-lg border border-lab-code-border overflow-hidden",
-            isGenerating && "opacity-50 pointer-events-none"
-          )}>
-            <Textarea
-              value={jsonData}
-              onChange={(e) => setJsonData(e.target.value)}
-              className="w-full h-96 font-mono text-sm bg-transparent text-lab-code-text border-none resize-none focus:ring-0 p-4 leading-6"
-              style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace' }}
-            />
-            {isGenerating && (
-              <div className="absolute inset-0 bg-lab-code-bg/80 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-lab-primary"></div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Parameter Input from File */}
-        <div>
-          <h3 className="text-base font-medium text-lab-text-primary mb-3">
-            Parameter Input from File
+          <h3 className="text-base font-medium text-lab-text-primary mb-4">
+            JSON Input
           </h3>
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
-            >
-              <Upload className="w-4 h-4" />
-              Image
-            </Button>
-            <span className="text-lab-text-muted text-sm">or</span>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              Document
-            </Button>
-          </div>
+          
+          <JSONEditor
+            value={jsonData}
+            onChange={setJsonData}
+            isGenerating={isGenerating}
+            lockedFields={lockedFields}
+            onFieldLock={handleFieldLock}
+            onUploadImage={handleUploadImage}
+            onUploadDocument={handleUploadDocument}
+            updatedFields={updatedFields}
+          />
         </div>
       </div>
 

@@ -34,9 +34,10 @@
     --lab-error: 0 84% 70%; /* Brighter red for dark backgrounds */
     
     /* Dark Mode Interactive States */
-    --lab-hover: 217 19% 24%; /* Subtle dark hover background */
+    --lab-interactive-hover: 217 19% 24%; /* Subtle dark hover background */
     --lab-active: 217 19% 21%; /* Slightly darker active state */
     --lab-disabled: 217 19% 20%; /* Disabled background */
+    --lab-accent: 261 81% 71%; /* Purple accent for interactive elements */
     
     /* Minimal Elevation (No Heavy Shadows) */
     --lab-glow-subtle: 0 0 0 1px hsl(var(--lab-border-hover));
@@ -91,4 +92,47 @@
   body {
     @apply bg-background text-foreground font-roboto;
   }
+}
+
+/* JSON Editor Syntax Highlighting */
+.text-lab-code-key {
+  color: hsl(201 96% 80%); /* Light blue for keys */
+}
+
+.text-lab-code-string {
+  color: hsl(25 83% 63%); /* Orange for strings */
+}
+
+.text-lab-code-number {
+  color: hsl(113 25% 71%); /* Light green for numbers */
+}
+
+.text-lab-code-boolean {
+  color: hsl(207 82% 66%); /* Blue for booleans */
+}
+
+.text-lab-code-null {
+  color: hsl(0 0% 50%); /* Gray for null */
+}
+
+/* Custom scrollbar for JSON editor */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-track-lab-code-bg::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-track-lab-code-bg::-webkit-scrollbar-track {
+  background: hsl(var(--lab-code-bg));
+}
+
+.scrollbar-thumb-lab-text-muted\/20::-webkit-scrollbar-thumb {
+  background: hsl(var(--lab-text-muted) / 0.2);
+  border-radius: 4px;
+}
+
+.scrollbar-thumb-lab-text-muted\/20::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--lab-text-muted) / 0.3);
 }
