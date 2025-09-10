@@ -288,7 +288,7 @@ const ConfigurationPanel = () => {
 
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
-      <div className="flex-1 p-6 overflow-y-auto space-y-6">
+      <div className="flex-1 p-6 overflow-y-auto space-y-4">
         {/* Prompt Area */}
         <div className="space-y-4">
           {hasGenerated && (
