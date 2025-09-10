@@ -16,7 +16,8 @@ import {
   Lock, 
   Unlock, 
   Sliders, 
-  RectangleHorizontal 
+  RectangleHorizontal,
+  Wand2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -143,7 +144,8 @@ const PromptComponent = ({
   setSeed,
   handleGenerate,
   hasGenerated,
-  isGenerating
+  isGenerating,
+  onSurpriseMe
 }: { 
   value: string; 
   onChange: (value: string) => void; 
@@ -158,6 +160,7 @@ const PromptComponent = ({
   handleGenerate: () => void;
   hasGenerated: boolean;
   isGenerating: boolean;
+  onSurpriseMe: () => void;
 }) => {
   return (
     <div className="border border-lab-border rounded-lg bg-lab-surface overflow-hidden">
@@ -261,18 +264,38 @@ const PromptComponent = ({
           </div>
 
           {/* Generate Button */}
-          <Button 
-            onClick={handleGenerate}
-            disabled={(!value.trim() && !hasGenerated) || isGenerating}
-            size="sm"
-            className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground disabled:opacity-50"
-          >
-            {isGenerating ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-            ) : (
-              <ArrowRight className="w-4 h-4" />
-            )}
-          </Button>
+          <div className="flex items-center gap-1">
+            {/* Surprise Me Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={onSurpriseMe}
+                  disabled={isGenerating}
+                  variant="ghost"
+                  size="sm"
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <Wand2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Surprise me with a random prompt</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Button 
+              onClick={handleGenerate}
+              disabled={(!value.trim() && !hasGenerated) || isGenerating}
+              size="sm"
+              className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground disabled:opacity-50"
+            >
+              {isGenerating ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+              ) : (
+                <ArrowRight className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </div>
       </TooltipProvider>
     </div>
@@ -305,6 +328,29 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
     { value: "3:2", label: "3:2" },
     { value: "16:9", label: "16:9" },
   ];
+
+  // Random prompts for the "Surprise Me" feature
+  const randomPrompts = [
+    "A majestic mountain landscape at sunrise with golden light",
+    "A cozy coffee shop in a bustling city street during autumn",
+    "A futuristic cityscape with flying cars and neon lights",
+    "A peaceful forest clearing with sunbeams filtering through trees",
+    "A vintage bookstore filled with antique books and warm lighting",
+    "A modern architectural marvel reflecting in still water",
+    "A vibrant market scene with colorful fruits and busy vendors",
+    "A serene beach at sunset with gentle waves and palm trees",
+    "A snow-covered village with twinkling lights and smoke from chimneys",
+    "A mysterious cave entrance with glowing crystals inside"
+  ];
+
+  const handleSurpriseMe = () => {
+    const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
+    if (hasGenerated) {
+      setRefinementPrompt(randomPrompt);
+    } else {
+      setMainPrompt(randomPrompt);
+    }
+  };
 
   // Helper function to get image dimensions based on aspect ratio
   const getImageDimensions = (aspectRatio: string) => {
@@ -530,6 +576,7 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
             handleGenerate={handleGenerate}
             hasGenerated={hasGenerated}
             isGenerating={isGenerating}
+            onSurpriseMe={handleSurpriseMe}
           />
         </div>
 
