@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import JSONEditor from "./JSONEditor";
+import ParameterEditor from "./ParameterEditor";
 import { 
   ArrowRight, 
   Upload, 
@@ -337,8 +337,8 @@ const PromptComponent = ({
           />
         </div>
 
-        {/* JSON Editor */}
-        <JSONEditor
+        {/* Parameter Editor */}
+        <ParameterEditor
           value={jsonData}
           onChange={setJsonData}
           isGenerating={isGenerating}
