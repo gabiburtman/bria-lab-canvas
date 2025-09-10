@@ -291,13 +291,8 @@ const ConfigurationPanel = () => {
           />
         </div>
 
-        {/* JSON Input */}
-        <div>
-          <h3 className="text-base font-medium text-lab-text-primary mb-4">
-            JSON Input
-          </h3>
-          
-          <JSONEditor
+        {/* JSON Editor */}
+        <JSONEditor
             value={jsonData}
             onChange={setJsonData}
             isGenerating={isGenerating}
@@ -307,7 +302,6 @@ const ConfigurationPanel = () => {
             onUploadDocument={handleUploadDocument}
             updatedFields={updatedFields}
           />
-        </div>
       </div>
 
       {/* Action Buttons - Sticky Bottom */}
