@@ -74,7 +74,7 @@ const HistoryPanel = () => {
 
   if (isCollapsed) {
     return (
-      <div className="w-12 h-full bg-lab-surface border-r border-lab-border flex flex-col">
+      <div className="w-12 h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex flex-col">
         <Button
           variant="ghost"
           size="sm"
@@ -96,7 +96,7 @@ const HistoryPanel = () => {
   }
 
   return (
-    <div className="w-80 h-full bg-lab-surface flex flex-col">
+    <div className="w-80 h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-lab-border">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-lab-text-secondary" />

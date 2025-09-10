@@ -119,7 +119,7 @@ const ConfigurationPanel = () => {
   };
 
   return (
-    <div className="w-full h-full bg-lab-surface border-r border-lab-border flex flex-col">
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lab-glow-subtle flex flex-col">
       <div className="flex-1 p-6 overflow-y-auto">
         {/* Prompt Area */}
         <div className="mb-6">
@@ -283,7 +283,7 @@ const ConfigurationPanel = () => {
       </div>
 
       {/* Action Buttons - Sticky Bottom */}
-      <div className="p-6 bg-lab-surface border-t border-lab-border">
+      <div className="p-6 bg-lab-surface border-t border-lab-border rounded-b-lg">
         <div className="flex gap-3">
           <Button 
             onClick={handleGenerate}

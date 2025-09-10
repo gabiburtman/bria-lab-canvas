@@ -11,7 +11,7 @@ import briaLogo from "@/assets/bria-logo.png";
 
 const Header = () => {
   return (
-    <header className="w-full h-16 bg-lab-surface border-b border-lab-border px-6 flex items-center justify-between">
+    <header className="w-full h-16 bg-lab-surface rounded-lg px-6 flex items-center justify-between shadow-lab-glow-subtle">
       {/* Left Group - Logo & Title */}
       <div className="flex items-center gap-3">
         <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="w-8 h-8" />

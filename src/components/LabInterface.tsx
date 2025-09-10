@@ -5,12 +5,14 @@ import HistoryPanel from "./HistoryPanel";
 
 const LabInterface = () => {
   return (
-    <div className="min-h-screen bg-lab-background font-roboto">
-      {/* Header */}
-      <Header />
+    <div className="min-h-screen bg-lab-background font-roboto p-4">
+      {/* Floating Header */}
+      <div className="mb-4">
+        <Header />
+      </div>
       
-      {/* Main Content Area */}
-      <div className="flex h-[calc(100vh-4rem)]">
+      {/* Main Content Area - Floating Panels */}
+      <div className="flex gap-4 h-[calc(100vh-6rem)]">
         {/* Configuration Panel - 45% width */}
         <div className="w-[45%] min-w-0">
           <ConfigurationPanel />
