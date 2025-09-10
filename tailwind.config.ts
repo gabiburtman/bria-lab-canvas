@@ -14,6 +14,7 @@ export default {
     },
     extend: {
       colors: {
+        // Shadcn UI colors (mapped to lab design system)
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -47,21 +48,68 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        
+        // Bria Lab design system colors
+        lab: {
+          primary: {
+            DEFAULT: "hsl(var(--lab-primary))",
+            hover: "hsl(var(--lab-primary-hover))",
+            foreground: "hsl(var(--lab-primary-foreground))",
+          },
+          background: "hsl(var(--lab-background))",
+          surface: {
+            DEFAULT: "hsl(var(--lab-surface))",
+            elevated: "hsl(var(--lab-surface-elevated))",
+          },
+          text: {
+            primary: "hsl(var(--lab-text-primary))",
+            secondary: "hsl(var(--lab-text-secondary))",
+            muted: "hsl(var(--lab-text-muted))",
+          },
+          border: {
+            DEFAULT: "hsl(var(--lab-border))",
+            focus: "hsl(var(--lab-border-focus))",
+          },
+          status: {
+            success: "hsl(var(--lab-success))",
+            warning: "hsl(var(--lab-warning))",
+            error: "hsl(var(--lab-error))",
+          },
+          interactive: {
+            hover: "hsl(var(--lab-hover))",
+            active: "hsl(var(--lab-active))",
+            disabled: "hsl(var(--lab-disabled))",
+          },
+          code: {
+            bg: "hsl(var(--lab-code-bg))",
+            text: "hsl(var(--lab-code-text))",
+            highlight: "hsl(var(--lab-code-highlight))",
+            line: "hsl(var(--lab-code-line))",
+          },
         },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        lab: {
+          DEFAULT: "var(--lab-radius)",
+          sm: "var(--lab-radius-sm)",
+          lg: "var(--lab-radius-lg)",
+        },
+      },
+      fontFamily: {
+        'roboto': ['Roboto', 'sans-serif'],
+        'google-sans': ['Google Sans', 'sans-serif'],
+      },
+      boxShadow: {
+        'lab-sm': 'var(--lab-shadow-sm)',
+        'lab-md': 'var(--lab-shadow-md)',
+        'lab-lg': 'var(--lab-shadow-lg)',
+      },
+      transitionProperty: {
+        'lab': 'var(--lab-transition)',
+        'lab-fast': 'var(--lab-transition-fast)',
       },
       keyframes: {
         "accordion-down": {
