@@ -223,19 +223,19 @@ const ParameterEditor = ({
   };
 
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center h-80 space-y-6">
-      <div className="text-center space-y-2">
-        <h3 className="text-lg font-semibold text-foreground">Populate Parameters</h3>
-        <p className="text-sm text-muted-foreground max-w-md">
+    <div className="flex flex-col items-center justify-center h-80 space-y-6 p-8">
+      <div className="text-center space-y-3">
+        <h3 className="text-xl font-semibold text-foreground">Populate Parameters</h3>
+        <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
           Upload an image or file to extract parameters, or describe the desired output in the prompt above.
         </p>
       </div>
       
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <Button
           variant="secondary"
           onClick={onUploadImage}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 px-6 py-3"
           disabled={isGenerating}
         >
           <Image className="w-4 h-4" />
@@ -245,7 +245,7 @@ const ParameterEditor = ({
         <Button
           variant="secondary"
           onClick={onUploadDocument}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 px-6 py-3"
           disabled={isGenerating}
         >
           <FileText className="w-4 h-4" />
