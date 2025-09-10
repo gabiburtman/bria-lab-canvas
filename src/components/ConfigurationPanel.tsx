@@ -356,6 +356,11 @@ const PromptComponent = ({
     setLockedFields(new Set());
     setUpdatedFields(new Set());
     setIsGenerating(false);
+    
+    // Clear the results panel
+    if (onImagesGenerated) {
+      onImagesGenerated([]);
+    }
   };
 
   const handleFieldLock = (field: string, locked: boolean) => {
