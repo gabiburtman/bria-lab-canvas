@@ -4,49 +4,24 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeft, ChevronRight, History, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface HistoryItem {
+export interface HistoryItem {
   id: string;
   prompt: string;
   timestamp: Date;
   thumbnail?: string;
   parameters: Record<string, any>;
+  images?: string[];
+  jsonConfig?: any;
 }
 
-const HistoryPanel = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeId, setActiveId] = useState<string | null>(null);
+interface HistoryPanelProps {
+  history: HistoryItem[];
+  activeId: string | null;
+  onItemClick: (item: HistoryItem) => void;
+}
 
-  // Mock history data
-  const [history, setHistory] = useState<HistoryItem[]>([
-    {
-      id: "1",
-      prompt: "A beautiful sunset over mountains with vibrant colors",
-      timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-      thumbnail: "https://picsum.photos/64/64?random=1",
-      parameters: { aspectRatio: "16:9", steps: 30 }
-    },
-    {
-      id: "2", 
-      prompt: "Portrait of a wise old wizard with a long beard",
-      timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
-      thumbnail: "https://picsum.photos/64/64?random=2",
-      parameters: { aspectRatio: "3:4", steps: 25 }
-    },
-    {
-      id: "3",
-      prompt: "Futuristic cityscape with neon lights and flying cars",
-      timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-      thumbnail: "https://picsum.photos/64/64?random=3", 
-      parameters: { aspectRatio: "16:9", steps: 35 }
-    },
-    {
-      id: "4",
-      prompt: "Serene forest path with morning sunlight filtering through trees",
-      timestamp: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
-      thumbnail: "https://picsum.photos/64/64?random=4",
-      parameters: { aspectRatio: "4:5", steps: 30 }
-    }
-  ]);
+const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
@@ -67,9 +42,7 @@ const HistoryPanel = () => {
   };
 
   const handleItemClick = (item: HistoryItem) => {
-    setActiveId(item.id);
-    // In a real app, this would reload the configuration and results
-    console.log("Loading experiment:", item);
+    onItemClick(item);
   };
 
   if (isCollapsed) {
@@ -117,10 +90,13 @@ const HistoryPanel = () => {
       <ScrollArea className="flex-1">
         <div className="px-6 pb-6">
           {history.length === 0 ? (
-            <div className="text-center py-8">
-              <Clock className="w-8 h-8 mx-auto mb-2 text-lab-text-muted" />
-              <p className="text-sm text-lab-text-secondary">
+            <div className="text-center py-12">
+              <History className="w-12 h-12 mx-auto mb-3 text-lab-text-muted" />
+              <p className="text-sm text-lab-text-secondary mb-1">
                 No experiments yet
+              </p>
+              <p className="text-xs text-lab-text-muted">
+                Generate an image to start building your history
               </p>
             </div>
           ) : (

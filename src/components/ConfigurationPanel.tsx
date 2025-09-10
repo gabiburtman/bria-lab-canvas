@@ -302,15 +302,18 @@ const PromptComponent = ({
   );
 };
 
-const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images: string[]) => void }) => {
+const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: { 
+  onImagesGenerated?: (images: string[], config: any) => void;
+  initialConfig?: any;
+}) => {
   const [hasGenerated, setHasGenerated] = useState(false);
-  const [originalPrompt, setOriginalPrompt] = useState("");
-  const [mainPrompt, setMainPrompt] = useState("");
+  const [originalPrompt, setOriginalPrompt] = useState(initialConfig?.mainPrompt || "");
+  const [mainPrompt, setMainPrompt] = useState(initialConfig?.mainPrompt || "");
   const [refinementPrompt, setRefinementPrompt] = useState("");
-  const [aspectRatio, setAspectRatio] = useState("1:1");
-  const [steps, setSteps] = useState([30]);
-  const [seed, setSeed] = useState("");
-  const [jsonData, setJsonData] = useState(JSON.stringify(defaultJSON, null, 2));
+  const [aspectRatio, setAspectRatio] = useState(initialConfig?.aspectRatio || "1:1");
+  const [steps, setSteps] = useState([initialConfig?.steps || 30]);
+  const [seed, setSeed] = useState(initialConfig?.seed || "");
+  const [jsonData, setJsonData] = useState(initialConfig?.jsonConfig || JSON.stringify(defaultJSON, null, 2));
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
@@ -318,6 +321,20 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
   const briefInputRef = useRef<HTMLInputElement>(null);
+  
+  // Effect to sync with initial config
+  useEffect(() => {
+    if (initialConfig) {
+      setMainPrompt(initialConfig.mainPrompt || "");
+      setOriginalPrompt(initialConfig.mainPrompt || "");
+      setAspectRatio(initialConfig.aspectRatio || "1:1");
+      setSteps([initialConfig.steps || 30]);
+      setSeed(initialConfig.seed || "");
+      if (initialConfig.jsonConfig) {
+        setJsonData(initialConfig.jsonConfig);
+      }
+    }
+  }, [initialConfig]);
 
   const aspectRatios = [
     { value: "9:16", label: "9:16" },
@@ -410,8 +427,18 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
       ];
       
       // Notify parent component about generated images
+      const config = {
+        mainPrompt,
+        refinementPrompt,
+        aspectRatio,
+        steps: steps[0],
+        seed,
+        jsonConfig: jsonData,
+        prompt: hasGenerated ? refinementPrompt : mainPrompt
+      };
+      
       if (onImagesGenerated) {
-        onImagesGenerated(mockImages);
+        onImagesGenerated(mockImages, config);
       }
       
       if (hasGenerated) {
@@ -435,7 +462,7 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
     
     // Clear the results panel
     if (onImagesGenerated) {
-      onImagesGenerated([]);
+      onImagesGenerated([], {});
     }
   };
 

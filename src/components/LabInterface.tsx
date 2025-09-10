@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import ConfigurationPanel from "./ConfigurationPanel";
 import ResultsCanvas from "./ResultsCanvas";
-import HistoryPanel from "./HistoryPanel";
+import HistoryPanel, { HistoryItem } from "./HistoryPanel";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,11 +13,48 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ExternalLink, User, Settings, LogOut, FileText } from "lucide-react";
 
 const LabInterface = () => {
-  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [activeHistoryId, setActiveHistoryId] = useState<string | null>(null);
+  const [currentConfig, setCurrentConfig] = useState<any>(null);
 
-  const handleImagesGenerated = (images: string[]) => {
-    setGeneratedImages(images);
-  };
+  const handleImagesGenerated = useCallback((images: string[], config: any) => {
+    setImages(images);
+    
+    // Add to history
+    const historyItem: HistoryItem = {
+      id: Date.now().toString(),
+      prompt: config.prompt || config.mainPrompt || "Untitled experiment",
+      timestamp: new Date(),
+      thumbnail: images[0], // Use first generated image as thumbnail
+      parameters: {
+        aspectRatio: config.aspectRatio || "1:1",
+        steps: config.steps || 30,
+        seed: config.seed
+      },
+      images,
+      jsonConfig: config.jsonConfig
+    };
+    
+    setHistory(prev => [historyItem, ...prev]);
+    setActiveHistoryId(historyItem.id);
+    setCurrentConfig(config);
+  }, []);
+
+  const handleHistoryItemClick = useCallback((item: HistoryItem) => {
+    setActiveHistoryId(item.id);
+    setImages(item.images || []);
+    
+    // In a real implementation, this would restore the configuration
+    // For now, we'll just set the current config
+    setCurrentConfig({
+      mainPrompt: item.prompt,
+      aspectRatio: item.parameters.aspectRatio,
+      steps: item.parameters.steps,
+      seed: item.parameters.seed,
+      jsonConfig: item.jsonConfig
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-lab-background font-roboto p-4">
@@ -144,17 +181,24 @@ const LabInterface = () => {
       <div className="flex gap-4 h-[calc(100vh-8rem)]">
         {/* Configuration Panel - 45% width */}
         <div className="w-[45%] min-w-0">
-          <ConfigurationPanel onImagesGenerated={handleImagesGenerated} />
+          <ConfigurationPanel 
+            onImagesGenerated={handleImagesGenerated}
+            initialConfig={currentConfig}
+          />
         </div>
         
         {/* Results Canvas - 45% width */}
         <div className="w-[45%] min-w-0">
-          <ResultsCanvas images={generatedImages} />
+          <ResultsCanvas images={images} />
         </div>
         
         {/* History Panel - 10% width, collapsible */}
         <div className="w-[10%] min-w-0 max-w-80">
-          <HistoryPanel />
+          <HistoryPanel 
+            history={history}
+            activeId={activeHistoryId}
+            onItemClick={handleHistoryItemClick}
+          />
         </div>
       </div>
     </div>
