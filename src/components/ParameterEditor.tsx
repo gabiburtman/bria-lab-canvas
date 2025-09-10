@@ -237,7 +237,7 @@ const ParameterEditor = ({
       <div className="text-center space-y-3">
         <h3 className="text-xl font-semibold text-foreground">Populate Parameters</h3>
         <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-          Upload an image or file to extract parameters, or describe the desired output in the prompt above.
+          Upload an image or brief to extract parameters, or describe the desired output in the prompt above.
         </p>
       </div>
       
@@ -259,7 +259,7 @@ const ParameterEditor = ({
           disabled={isGenerating}
         >
           <FileText className="w-4 h-4" />
-          Upload File
+          Upload Brief
         </Button>
       </div>
     </div>
@@ -364,7 +364,7 @@ const ParameterEditor = ({
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Upload Document</p>
+                    <p>Upload Brief</p>
                   </TooltipContent>
                 </Tooltip>
                 

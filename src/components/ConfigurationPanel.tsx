@@ -369,13 +369,49 @@ const PromptComponent = ({
   };
 
   const handleUploadImage = () => {
-    // TODO: Implement image upload functionality
-    console.log("Upload image clicked");
+    // Simulate image upload and populate parameters
+    setIsGenerating(true);
+    setTimeout(() => {
+      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+      const fieldsToUpdate = new Set(['short_description', 'background_setting']);
+      setUpdatedFields(fieldsToUpdate);
+      setIsGenerating(false);
+      
+      // Generate mock images
+      const mockImages = [
+        "https://picsum.photos/512/512?random=5",
+        "https://picsum.photos/512/512?random=6", 
+        "https://picsum.photos/512/512?random=7",
+        "https://picsum.photos/512/512?random=8"
+      ];
+      
+      if (onImagesGenerated) {
+        onImagesGenerated(mockImages);
+      }
+    }, 2000);
   };
 
   const handleUploadDocument = () => {
-    // TODO: Implement document upload functionality
-    console.log("Upload document clicked");
+    // Simulate brief upload and populate parameters
+    setIsGenerating(true);
+    setTimeout(() => {
+      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+      const fieldsToUpdate = new Set(['context', 'artistic_style', 'style_medium']);
+      setUpdatedFields(fieldsToUpdate);
+      setIsGenerating(false);
+      
+      // Generate mock images
+      const mockImages = [
+        "https://picsum.photos/512/512?random=9",
+        "https://picsum.photos/512/512?random=10", 
+        "https://picsum.photos/512/512?random=11",
+        "https://picsum.photos/512/512?random=12"
+      ];
+      
+      if (onImagesGenerated) {
+        onImagesGenerated(mockImages);
+      }
+    }, 2000);
   };
 
   // Clear updated fields highlight after 3 seconds
