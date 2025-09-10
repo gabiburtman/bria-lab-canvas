@@ -331,12 +331,13 @@ const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
       
-      // Generate mock images
+      // Generate new mock images with different random numbers each time
+      const timestamp = Date.now();
       const mockImages = [
-        "https://picsum.photos/512/512?random=1",
-        "https://picsum.photos/512/512?random=2", 
-        "https://picsum.photos/512/512?random=3",
-        "https://picsum.photos/512/512?random=4"
+        `https://picsum.photos/512/512?random=${timestamp + 1}`,
+        `https://picsum.photos/512/512?random=${timestamp + 2}`, 
+        `https://picsum.photos/512/512?random=${timestamp + 3}`,
+        `https://picsum.photos/512/512?random=${timestamp + 4}`
       ];
       
       // Notify parent component about generated images
