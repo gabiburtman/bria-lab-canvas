@@ -77,7 +77,7 @@ const Header = () => {
                 className="w-9 h-9 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
               >
                 <img 
-                  src="/lovable-uploads/b061754b-22ad-4dbf-a33f-1430ec82d5ff.png" 
+                  src="/lovable-uploads/ae118f43-dd1c-4862-9ac5-47b536da3b12.png" 
                   alt="Discord" 
                   className="w-4 h-4"
                 />
