@@ -76,7 +76,11 @@ const Header = () => {
                 size="icon" 
                 className="w-9 h-9 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
               >
-                <MessageSquare className="w-4 h-4" />
+                <img 
+                  src="/lovable-uploads/b061754b-22ad-4dbf-a33f-1430ec82d5ff.png" 
+                  alt="Discord" 
+                  className="w-4 h-4"
+                />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
