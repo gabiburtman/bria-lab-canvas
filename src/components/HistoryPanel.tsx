@@ -54,7 +54,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
           onClick={() => setIsCollapsed(false)}
           className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
         >
-          <ChevronRight className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" />
         </Button>
         
         <div className="flex-1 flex flex-col items-center justify-center">
@@ -67,7 +67,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
   }
 
   return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+    <div className="w-80 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
       <div className="flex items-center justify-between p-6 pb-4">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-lab-text-secondary" />
@@ -81,7 +81,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
           onClick={() => setIsCollapsed(true)}
           className="p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
 

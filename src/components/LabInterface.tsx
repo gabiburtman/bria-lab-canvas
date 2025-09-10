@@ -179,8 +179,8 @@ const LabInterface = () => {
       
       {/* Main Content Area - Floating Panels */}
       <div className="flex gap-4 h-[calc(100vh-8rem)]">
-        {/* Configuration Panel - Flexible */}
-        <div className="w-80 min-w-80 flex-shrink-0">
+        {/* Configuration Panel - 45% width */}
+        <div className="w-[45%] min-w-0">
           <ConfigurationPanel 
             onImagesGenerated={handleImagesGenerated}
             initialConfig={currentConfig}
@@ -192,8 +192,8 @@ const LabInterface = () => {
           <ResultsCanvas images={images} />
         </div>
         
-        {/* History Panel - Flexible width, collapsible */}
-        <div className="w-80 min-w-12 flex-shrink-0">
+        {/* History Panel - Collapsible from right */}
+        <div className="flex-shrink-0">
           <HistoryPanel 
             history={history}
             activeId={activeHistoryId}
