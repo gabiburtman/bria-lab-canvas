@@ -174,9 +174,7 @@ response = requests.post(
   );
 };
 
-const ResultsCanvas = () => {
-  // Mock generated images - in real app this would come from props/state
-  const [images, setImages] = useState<string[]>([]);
+const ResultsCanvas = ({ images = [] }: { images?: string[] }) => {
   const hasResults = images.length > 0;
 
   // Mock function to simulate image generation
@@ -186,11 +184,6 @@ const ResultsCanvas = () => {
     "https://picsum.photos/512/512?random=3",
     "https://picsum.photos/512/512?random=4"
   ];
-
-  // Temporary demo function
-  const loadMockImages = () => {
-    setImages(mockImages);
-  };
 
   if (!hasResults) {
     return (
@@ -205,15 +198,6 @@ const ResultsCanvas = () => {
           <p className="text-sm text-lab-text-secondary mb-4">
             Define parameters and prompt in the left panel to run an experiment.
           </p>
-          {/* Temporary demo button */}
-          <Button 
-            onClick={loadMockImages}
-            variant="outline"
-            size="sm"
-            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary rounded-lg"
-          >
-            Load Demo Images
-          </Button>
         </div>
       </div>
     );

@@ -75,6 +75,61 @@ const defaultJSON = {
   "artistic_style": ""
 };
 
+const mockFilledJSON = {
+  "short_description": "A serene mountain landscape at sunrise with vibrant colors",
+  "objects": [
+    {
+      "description": "Majestic snow-capped mountain peak",
+      "location": "Center background of the image",
+      "relationship": "Dominates the skyline",
+      "relative_size": "Large, occupying 60% of the frame",
+      "shape_and_color": "Triangular peak with white snow and gray rock faces",
+      "texture": "Rocky with smooth snow patches",
+      "appearance_details": "Sharp edges with dramatic shadows",
+      "pose": "Static mountain formation",
+      "expression": "N/A",
+      "clothing": "N/A",
+      "action": "Standing majestically",
+      "gender": "N/A",
+      "skin_tone_and_texture": "N/A",
+      "orientation": "Vertical peak pointing upward",
+      "number_of_objects": "1 main peak with 2 smaller peaks"
+    }
+  ],
+  "background_setting": "Alpine mountain range during golden hour with clear sky",
+  "lighting": {
+    "conditions": "Golden hour sunrise lighting",
+    "direction": "Side lighting from the left",
+    "shadows": "Long dramatic shadows cast to the right"
+  },
+  "aesthetics": {
+    "composition": "Rule of thirds with mountain peak in upper third",
+    "color_scheme": "Warm oranges and yellows contrasting with cool blues",
+    "mood_atmosphere": "Peaceful, inspiring, and majestic",
+    "preference_score": "9.2",
+    "aesthetic_score": "8.8"
+  },
+  "photographic_characteristics": {
+    "depth_of_field": "Deep focus with sharp foreground and background",
+    "focus": "Sharp focus throughout the scene",
+    "camera_angle": "Low angle looking up at the mountain",
+    "lens_focal_length": "35mm wide angle"
+  },
+  "style_medium": "Photorealistic digital photography",
+  "text_render": [
+    {
+      "text": "ALPINE SUNRISE",
+      "location": "Bottom left corner",
+      "size": "Medium, 24pt font",
+      "color": "White with subtle shadow",
+      "font": "Modern sans-serif",
+      "appearance_details": "Clean, minimalist typography"
+    }
+  ],
+  "context": "Nature photography showcasing the beauty of mountain landscapes",
+  "artistic_style": "Contemporary landscape photography with emphasis on natural lighting"
+};
+
 const PromptComponent = ({ 
   value, 
   onChange, 
@@ -224,7 +279,7 @@ const PromptComponent = ({
   );
 };
 
-  const ConfigurationPanel = () => {
+  const ConfigurationPanel = ({ onImagesGenerated }: { onImagesGenerated?: (images: string[]) => void }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [originalPrompt, setOriginalPrompt] = useState("");
   const [mainPrompt, setMainPrompt] = useState("");
@@ -253,9 +308,36 @@ const PromptComponent = ({
       setHasGenerated(true);
     }
     setIsGenerating(true);
-    // Simulate generation
+    
+    // Simulate generation and populate parameters with mock data
     setTimeout(() => {
       setIsGenerating(false);
+      
+      // Populate parameters with mock data based on the prompt
+      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+      
+      // Mark some fields as updated to show the animation
+      const fieldsToUpdate = new Set([
+        'short_description', 
+        'background_setting', 
+        'lighting.conditions',
+        'aesthetics.mood_atmosphere'
+      ]);
+      setUpdatedFields(fieldsToUpdate);
+      
+      // Generate mock images
+      const mockImages = [
+        "https://picsum.photos/512/512?random=1",
+        "https://picsum.photos/512/512?random=2", 
+        "https://picsum.photos/512/512?random=3",
+        "https://picsum.photos/512/512?random=4"
+      ];
+      
+      // Notify parent component about generated images
+      if (onImagesGenerated) {
+        onImagesGenerated(mockImages);
+      }
+      
       if (hasGenerated) {
         setRefinementPrompt("");
       }

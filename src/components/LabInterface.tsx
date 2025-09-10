@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ConfigurationPanel from "./ConfigurationPanel";
 import ResultsCanvas from "./ResultsCanvas";
 import HistoryPanel from "./HistoryPanel";
@@ -12,6 +13,12 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ExternalLink, User, Settings, LogOut, FileText } from "lucide-react";
 
 const LabInterface = () => {
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+
+  const handleImagesGenerated = (images: string[]) => {
+    setGeneratedImages(images);
+  };
+
   return (
     <div className="min-h-screen bg-lab-background font-roboto p-4">
       {/* Floating Header Elements */}
@@ -137,12 +144,12 @@ const LabInterface = () => {
       <div className="flex gap-4 h-[calc(100vh-8rem)]">
         {/* Configuration Panel - 45% width */}
         <div className="w-[45%] min-w-0">
-          <ConfigurationPanel />
+          <ConfigurationPanel onImagesGenerated={handleImagesGenerated} />
         </div>
         
         {/* Results Canvas - 45% width */}
         <div className="w-[45%] min-w-0">
-          <ResultsCanvas />
+          <ResultsCanvas images={generatedImages} />
         </div>
         
         {/* History Panel - 10% width, collapsible */}
