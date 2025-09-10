@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -176,96 +177,112 @@ const ConfigurationPanel = () => {
       />
       
       {/* Controls Bar */}
-      <div className="flex items-center justify-between p-3 border-t border-lab-border bg-lab-surface">
-        <div className="flex items-center gap-2">
-          {/* Aspect Ratio Button */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
-              >
-                <RectangleHorizontal className="w-4 h-4" />
-                {aspectRatio}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
-              <div className="space-y-1">
-                {aspectRatios.map((ratio) => (
-                  <button
-                    key={ratio.value}
-                    onClick={() => setAspectRatio(ratio.value)}
-                    className={cn(
-                      "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
-                      aspectRatio === ratio.value 
-                        ? "bg-lab-primary text-lab-primary-foreground" 
-                        : "hover:bg-lab-interactive-hover text-lab-text-secondary"
-                    )}
-                  >
-                    {ratio.label}
-                  </button>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
+      <TooltipProvider>
+        <div className="flex items-center justify-between p-3 border-t border-lab-border bg-lab-surface">
+          <div className="flex items-center gap-2">
+            {/* Aspect Ratio Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2"
+                    >
+                      <RectangleHorizontal className="w-4 h-4" />
+                      {aspectRatio}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
+                    <div className="space-y-1">
+                      {aspectRatios.map((ratio) => (
+                        <button
+                          key={ratio.value}
+                          onClick={() => setAspectRatio(ratio.value)}
+                          className={cn(
+                            "w-full text-left px-3 py-2 text-sm rounded-md transition-colors",
+                            aspectRatio === ratio.value 
+                              ? "bg-lab-primary text-lab-primary-foreground" 
+                              : "hover:bg-lab-interactive-hover text-lab-text-secondary"
+                          )}
+                        >
+                          {ratio.label}
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Change aspect ratio</p>
+              </TooltipContent>
+            </Tooltip>
 
-          {/* Advanced Settings Button */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
-              >
-                <Sliders className="w-4 h-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lg">
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                    Steps: {steps[0]}
-                  </Label>
-                  <Slider
-                    value={steps}
-                    onValueChange={setSteps}
-                    max={50}
-                    min={20}
-                    step={1}
-                    className="w-full"
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                    Seed
-                  </Label>
-                  <Input
-                    placeholder="Random"
-                    value={seed}
-                    onChange={(e) => setSeed(e.target.value)}
-                    className="bg-lab-surface border-lab-border focus:border-lab-border-focus"
-                  />
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+            {/* Advanced Settings Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="ghost"
+                      size="sm" 
+                      className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                    >
+                      <Sliders className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lg">
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+                          Steps: {steps[0]}
+                        </Label>
+                        <Slider
+                          value={steps}
+                          onValueChange={setSteps}
+                          max={50}
+                          min={20}
+                          step={1}
+                          className="w-full"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+                          Seed
+                        </Label>
+                        <Input
+                          placeholder="Random"
+                          value={seed}
+                          onChange={(e) => setSeed(e.target.value)}
+                          className="bg-lab-surface border-lab-border focus:border-lab-border-focus"
+                        />
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Advanced settings</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          {/* Generate Button */}
+          <Button 
+            onClick={handleGenerate}
+            disabled={(!value.trim() && !hasGenerated) || isGenerating}
+            size="sm"
+            className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+            ) : (
+              <ArrowRight className="w-4 h-4" />
+            )}
+          </Button>
         </div>
-
-        {/* Generate Button */}
-        <Button 
-          onClick={handleGenerate}
-          disabled={(!value.trim() && !hasGenerated) || isGenerating}
-          size="sm"
-          className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground disabled:opacity-50"
-        >
-          {isGenerating ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-          ) : (
-            <ArrowRight className="w-4 h-4" />
-          )}
-        </Button>
-      </div>
+      </TooltipProvider>
     </div>
   );
 

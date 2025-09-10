@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Copy, Upload, FileText, Lock, Unlock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -82,21 +83,30 @@ const JSONEditor = ({
               dangerouslySetInnerHTML={{ __html: highlightSyntax(line) }}
             />
             {isField && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className={cn(
-                  "absolute right-1 top-0 w-5 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity",
-                  isLocked && "opacity-100"
-                )}
-                onClick={() => fieldName && onFieldLock(fieldName, !isLocked)}
-              >
-                {isLocked ? (
-                  <Lock className="w-3 h-3 text-lab-accent" />
-                ) : (
-                  <Unlock className="w-3 h-3 text-lab-text-muted" />
-                )}
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "absolute right-1 top-0 w-5 h-5 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200 opacity-0 group-hover:opacity-100",
+                        isLocked && "opacity-100"
+                      )}
+                      onClick={() => fieldName && onFieldLock(fieldName, !isLocked)}
+                    >
+                      {isLocked ? (
+                        <Lock className="w-3 h-3" />
+                      ) : (
+                        <Unlock className="w-3 h-3" />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{isLocked ? 'Unlock field' : 'Lock field'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>
@@ -112,32 +122,57 @@ const JSONEditor = ({
       {/* Header with buttons */}
       <div className="flex items-center justify-between p-3 border-b border-lab-code-border bg-lab-code-bg">
         <span className="text-sm font-medium text-lab-text-primary">JSON Editor</span>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onUploadImage}
-            className="text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover p-1.5 h-auto"
-          >
-            <Upload className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onUploadDocument}
-            className="text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover p-1.5 h-auto"
-          >
-            <FileText className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={copyToClipboard}
-            className="text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover p-1.5 h-auto"
-          >
-            <Copy className="w-4 h-4" />
-          </Button>
-        </div>
+        <TooltipProvider>
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onUploadImage}
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <Upload className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Upload Image</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onUploadDocument}
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <FileText className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Upload Document</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={copyToClipboard}
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Copy JSON</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       {/* Editor content */}
