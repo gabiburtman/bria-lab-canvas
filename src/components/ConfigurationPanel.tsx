@@ -309,7 +309,8 @@ const ConfigurationPanel = () => {
         </div>
 
         {/* JSON Editor */}
-        <JSONEditor
+        <div className="pb-2">
+          <JSONEditor
             value={jsonData}
             onChange={setJsonData}
             isGenerating={isGenerating}
@@ -319,10 +320,11 @@ const ConfigurationPanel = () => {
             onUploadDocument={handleUploadDocument}
             updatedFields={updatedFields}
           />
+        </div>
       </div>
 
       {/* Action Buttons - Sticky Bottom */}
-      <div className="sticky bottom-0 p-6 bg-lab-surface border-t border-lab-border rounded-b-lg">
+      <div className="sticky bottom-0 p-6 pt-3 bg-lab-surface border-t border-lab-border rounded-b-lg">
         <div className="flex gap-3">
           <Button 
             onClick={handleGenerate}
