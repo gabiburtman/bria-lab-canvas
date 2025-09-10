@@ -199,9 +199,9 @@ const JSONEditor = ({
       </div>
 
       {/* Editor content */}
-      <div className="relative h-96 overflow-hidden">
+      <div className="relative h-96 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-muted-foreground/20">
         {/* Syntax highlighted display */}
-        <div className="absolute inset-0 p-4 overflow-y-auto scrollbar-thin scrollbar-track-lab-code-bg scrollbar-thumb-lab-text-muted/20">
+        <div className="p-4">
           <div className="space-y-0">
             {renderJSONWithLocks()}
           </div>
@@ -212,15 +212,15 @@ const JSONEditor = ({
           ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 w-full h-full font-mono text-sm bg-transparent text-transparent caret-lab-primary border-none resize-none focus:ring-0 p-4 leading-6 z-10"
+          className="absolute inset-0 w-full h-full font-mono text-sm bg-transparent text-transparent caret-white border-none resize-none focus:ring-0 p-4 leading-6 z-10 pointer-events-auto"
           style={{ fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace' }}
           spellCheck={false}
         />
 
         {/* Generation overlay */}
         {isGenerating && (
-          <div className="absolute inset-0 bg-lab-code-bg/80 flex items-center justify-center z-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-lab-primary"></div>
+          <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-20">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         )}
       </div>
