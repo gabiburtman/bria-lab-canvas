@@ -90,8 +90,8 @@ const JSONEditor = ({
                       variant="ghost"
                       size="sm"
                       className={cn(
-                        "absolute right-1 top-0 w-5 h-5 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200 opacity-0 group-hover:opacity-100",
-                        isLocked && "opacity-100"
+                        "absolute right-1 top-0 w-6 h-6 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 opacity-0 group-hover:opacity-100 shadow-sm",
+                        isLocked && "opacity-100 bg-accent text-accent-foreground"
                       )}
                       onClick={() => fieldName && onFieldLock(fieldName, !isLocked)}
                     >
