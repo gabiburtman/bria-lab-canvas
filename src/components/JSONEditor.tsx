@@ -73,6 +73,10 @@ const JSONEditor = ({
       const isLocked = fieldName && lockedFields.has(fieldName);
       const isUpdated = fieldName && updatedFields.has(fieldName);
       
+      // Calculate indentation level
+      const leadingSpaces = line.length - line.trimStart().length;
+      const indentLevel = Math.floor(leadingSpaces / 2);
+      
       return (
         <div 
           key={index} 
@@ -81,13 +85,25 @@ const JSONEditor = ({
             isUpdated && "bg-yellow-200/20 animate-pulse"
           )}
         >
-          <span className="w-8 text-xs text-lab-text-muted text-right pr-2 select-none flex-shrink-0">
+          <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
             {index + 1}
           </span>
-          <div className="flex-1 relative">
+          <div className="flex-1 relative flex items-center">
+            {/* Visual indentation guides */}
+            {indentLevel > 0 && (
+              <div className="flex">
+                {Array.from({ length: indentLevel }).map((_, i) => (
+                  <div key={i} className="w-4 border-l border-border/30 mr-2 h-6" />
+                ))}
+              </div>
+            )}
             <span 
-              className="text-sm font-mono leading-6"
-              dangerouslySetInnerHTML={{ __html: highlightSyntax(line) }}
+              className="text-sm font-mono leading-6 flex-1"
+              style={{ 
+                fontFamily: 'Monaco, Menlo, "Ubuntu Mono", monospace',
+                paddingLeft: indentLevel > 0 ? '0' : '8px'
+              }}
+              dangerouslySetInnerHTML={{ __html: highlightSyntax(trimmedLine) }}
             />
             {isField && (
               <TooltipProvider>
