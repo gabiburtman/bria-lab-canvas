@@ -3,60 +3,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Bria 4 Lab Design System - Professional AI Lab Interface */
+/* Bria 4 Lab Design System - Minimalist Dark Mode Interface */
 
 @layer base {
   :root {
-    /* Bria Lab Brand Colors */
+    /* Bria Lab Dark Mode Colors */
     --lab-primary: 261 81% 71%; /* #8B5CF6 - Vibrant purple for primary actions */
     --lab-primary-hover: 261 81% 65%; /* Darker purple for hover states */
     --lab-primary-foreground: 0 0% 100%; /* White text on purple */
+    --lab-primary-glow: 261 81% 71%; /* Purple glow for focus states */
     
-    /* Background System */
-    --lab-background: 210 14% 97%; /* #f8f9fa - Off-white background */
-    --lab-surface: 0 0% 100%; /* #ffffff - White cards and panels */
-    --lab-surface-elevated: 0 0% 100%; /* White with shadow for elevation */
+    /* Dark Mode Background System */
+    --lab-background: 220 43% 15%; /* #111827 - Deep near-black background */
+    --lab-surface: 215 28% 17%; /* #1F2937 - Dark grey for panels and cards */
+    --lab-surface-elevated: 215 28% 19%; /* Slightly lighter for elevated surfaces */
     
-    /* Text Hierarchy */
-    --lab-text-primary: 214 9% 24%; /* #3c4043 - High contrast text */
-    --lab-text-secondary: 213 6% 38%; /* #5f6368 - Secondary text */
-    --lab-text-muted: 213 6% 50%; /* Lighter grey for hints */
+    /* Dark Mode Text Hierarchy */
+    --lab-text-primary: 217 33% 97%; /* #F3F4F6 - Light off-white for high readability */
+    --lab-text-secondary: 220 14% 66%; /* #9CA3AF - Lighter grey for labels and secondary text */
+    --lab-text-muted: 220 14% 56%; /* Slightly darker grey for muted text */
     
-    /* Border System */
-    --lab-border: 220 13% 85%; /* #dadce0 - Subtle borders */
+    /* Dark Mode Border System */
+    --lab-border: 217 19% 27%; /* #374151 - Subtle grey borders */
     --lab-border-focus: 261 81% 71%; /* Purple focus states */
+    --lab-border-hover: 217 19% 32%; /* Lighter grey for hover states */
     
-    /* Status Colors */
-    --lab-success: 142 76% 36%; /* Green for success states */
-    --lab-warning: 38 92% 50%; /* Orange for warnings */
-    --lab-error: 0 84% 60%; /* Red for errors */
+    /* Status Colors (Dark Mode Adjusted) */
+    --lab-success: 142 76% 46%; /* Brighter green for dark backgrounds */
+    --lab-warning: 38 92% 60%; /* Brighter orange for dark backgrounds */
+    --lab-error: 0 84% 70%; /* Brighter red for dark backgrounds */
     
-    /* Interactive States */
-    --lab-hover: 220 14% 96%; /* Light grey hover */
-    --lab-active: 220 14% 93%; /* Slightly darker active state */
-    --lab-disabled: 220 9% 95%; /* Disabled background */
+    /* Dark Mode Interactive States */
+    --lab-hover: 217 19% 24%; /* Subtle dark hover background */
+    --lab-active: 217 19% 21%; /* Slightly darker active state */
+    --lab-disabled: 217 19% 20%; /* Disabled background */
     
-    /* Shadows & Elevation */
-    --lab-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --lab-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --lab-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    /* Minimal Elevation (No Heavy Shadows) */
+    --lab-glow-subtle: 0 0 0 1px hsl(var(--lab-border-hover));
+    --lab-glow-focus: 0 0 0 2px hsl(var(--lab-primary-glow) / 0.3);
+    --lab-glow-primary: 0 0 16px hsl(var(--lab-primary) / 0.2);
     
-    /* Layout & Spacing */
-    --lab-radius: 0.5rem; /* 8px consistent border radius */
+    /* Layout & Spacing (8px grid, 6px radius) */
+    --lab-radius: 0.375rem; /* 6px sharp modern radius */
     --lab-radius-sm: 0.25rem; /* 4px for smaller elements */
-    --lab-radius-lg: 0.75rem; /* 12px for larger cards */
+    --lab-radius-lg: 0.5rem; /* 8px for larger cards */
     
-    /* JSON Editor */
-    --lab-code-bg: 250 24% 9%; /* Dark background for code */
-    --lab-code-text: 213 31% 91%; /* Light text in code */
-    --lab-code-highlight: 261 81% 71%; /* Purple highlights */
-    --lab-code-line: 215 28% 17%; /* Line number background */
+    /* JSON Editor Dark Theme */
+    --lab-code-bg: 220 43% 12%; /* Darker than main background */
+    --lab-code-text: 217 33% 95%; /* Light text */
+    --lab-code-highlight: 261 81% 76%; /* Brighter purple highlights */
+    --lab-code-line: 217 19% 15%; /* Line number background */
+    --lab-code-border: 217 19% 20%; /* Code editor border */
     
     /* Animation Timing */
     --lab-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --lab-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     
-    /* Apply Bria Lab theme to shadcn variables */
+    /* Apply Dark Mode theme to shadcn variables */
     --background: var(--lab-background);
     --foreground: var(--lab-text-primary);
     --card: var(--lab-surface);
@@ -72,7 +75,7 @@
     --accent: var(--lab-active);
     --accent-foreground: var(--lab-text-primary);
     --destructive: var(--lab-error);
-    --destructive-foreground: var(--lab-primary-foreground);
+    --destructive-foreground: var(--lab-text-primary);
     --border: var(--lab-border);
     --input: var(--lab-border);
     --ring: var(--lab-border-focus);

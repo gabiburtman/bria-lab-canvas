@@ -61,7 +61,7 @@ response = requests.post(
         <Button
           size="sm"
           variant="secondary"
-          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-sm"
+          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
         >
           <Badge className="w-3 h-3 mr-1" />
           CR
@@ -69,7 +69,7 @@ response = requests.post(
         <Button
           size="sm"
           variant="secondary"
-          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-sm"
+          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
         >
           <Download className="w-3 h-3" />
         </Button>
@@ -79,7 +79,7 @@ response = requests.post(
         <Button
           size="sm"
           variant="secondary"
-          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-sm"
+          className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
         >
           <Share className="w-3 h-3" />
         </Button>
@@ -89,12 +89,12 @@ response = requests.post(
             <Button
               size="sm"
               variant="secondary"
-              className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-sm"
+              className="bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle"
             >
               <Code className="w-3 h-3" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-md">
+          <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
             <div className="space-y-3">
               <h4 className="font-medium text-lab-text-primary text-sm">Code Snippets</h4>
               {Object.entries(mockCodeSnippets).map(([lang, code]) => (
@@ -122,7 +122,7 @@ response = requests.post(
           variant="secondary"
           onClick={() => setLiked(true)}
           className={cn(
-            "bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-sm",
+            "bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle",
             liked === true && "bg-lab-status-success text-white hover:bg-lab-status-success"
           )}
         >
@@ -133,7 +133,7 @@ response = requests.post(
           variant="secondary"
           onClick={() => setLiked(false)}
           className={cn(
-            "bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-sm",
+            "bg-white/90 hover:bg-white text-lab-text-primary h-8 px-2 shadow-lab-glow-subtle",
             liked === false && "bg-lab-status-error text-white hover:bg-lab-status-error"
           )}
         >
@@ -147,7 +147,7 @@ response = requests.post(
     <Dialog>
       <DialogTrigger asChild>
         <div 
-          className="group aspect-square bg-lab-surface border border-lab-border rounded-lab overflow-hidden cursor-pointer hover:shadow-lab-md transition-shadow duration-200 relative"
+          className="group aspect-square bg-lab-surface border border-lab-border rounded-lab overflow-hidden cursor-pointer hover:border-lab-border-hover hover:shadow-lab-glow-subtle transition-all duration-200 relative"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >

@@ -49,12 +49,13 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         
-        // Bria Lab design system colors
+        // Bria Lab dark mode design system colors
         lab: {
           primary: {
             DEFAULT: "hsl(var(--lab-primary))",
             hover: "hsl(var(--lab-primary-hover))",
             foreground: "hsl(var(--lab-primary-foreground))",
+            glow: "hsl(var(--lab-primary-glow))",
           },
           background: "hsl(var(--lab-background))",
           surface: {
@@ -69,6 +70,7 @@ export default {
           border: {
             DEFAULT: "hsl(var(--lab-border))",
             focus: "hsl(var(--lab-border-focus))",
+            hover: "hsl(var(--lab-border-hover))",
           },
           status: {
             success: "hsl(var(--lab-success))",
@@ -85,6 +87,7 @@ export default {
             text: "hsl(var(--lab-code-text))",
             highlight: "hsl(var(--lab-code-highlight))",
             line: "hsl(var(--lab-code-line))",
+            border: "hsl(var(--lab-code-border))",
           },
         },
       },
@@ -103,9 +106,9 @@ export default {
         'google-sans': ['Google Sans', 'sans-serif'],
       },
       boxShadow: {
-        'lab-sm': 'var(--lab-shadow-sm)',
-        'lab-md': 'var(--lab-shadow-md)',
-        'lab-lg': 'var(--lab-shadow-lg)',
+        'lab-glow-subtle': 'var(--lab-glow-subtle)',
+        'lab-glow-focus': 'var(--lab-glow-focus)',
+        'lab-glow-primary': 'var(--lab-glow-primary)',
       },
       transitionProperty: {
         'lab': 'var(--lab-transition)',

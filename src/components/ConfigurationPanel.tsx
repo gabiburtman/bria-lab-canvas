@@ -169,7 +169,7 @@ const ConfigurationPanel = () => {
               <SelectTrigger className="bg-lab-surface border-lab-border focus:border-lab-border-focus">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-lab-surface border-lab-border shadow-lab-md">
+              <SelectContent className="bg-lab-surface border-lab-border shadow-lab-glow-subtle">
                 {aspectRatios.map((ratio) => (
                   <SelectItem key={ratio.value} value={ratio.value} className="hover:bg-lab-interactive-hover">
                     {ratio.label}
@@ -190,7 +190,7 @@ const ConfigurationPanel = () => {
                 Advanced Options
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-md">
+            <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
@@ -238,7 +238,7 @@ const ConfigurationPanel = () => {
           </div>
           
           <div className={cn(
-            "relative bg-lab-code-bg rounded-lab border border-lab-border overflow-hidden",
+            "relative bg-lab-code-bg rounded-lab border border-lab-code-border overflow-hidden",
             isGenerating && "opacity-50 pointer-events-none"
           )}>
             <Textarea
@@ -288,7 +288,7 @@ const ConfigurationPanel = () => {
           <Button 
             onClick={handleGenerate}
             disabled={(!mainPrompt.trim() && !hasGenerated) || isGenerating}
-            className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium shadow-lab-sm disabled:opacity-50"
+            className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium hover:shadow-lab-glow-primary transition-all disabled:opacity-50"
           >
             {isGenerating ? (
               <>

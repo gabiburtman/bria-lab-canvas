@@ -11,7 +11,7 @@ import briaLogo from "@/assets/bria-logo.png";
 
 const Header = () => {
   return (
-    <header className="w-full h-16 bg-lab-surface border-b border-lab-border px-6 flex items-center justify-between shadow-lab-sm">
+    <header className="w-full h-16 bg-lab-surface border-b border-lab-border px-6 flex items-center justify-between">
       {/* Left Group - Logo & Title */}
       <div className="flex items-center gap-3">
         <img src={briaLogo} alt="Bria Logo" className="w-8 h-8" />
@@ -25,7 +25,7 @@ const Header = () => {
         {/* Primary CTA */}
         <Button 
           variant="default" 
-          className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium px-4 shadow-lab-sm"
+          className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium px-4 hover:shadow-lab-glow-primary transition-all"
         >
           Bria Platform
           <ExternalLink className="ml-2 h-4 w-4" />
@@ -92,7 +92,7 @@ const Header = () => {
               <User className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-lab-surface border-lab-border shadow-lab-md">
+          <DropdownMenuContent align="end" className="w-48 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
             <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
               <Settings className="mr-2 h-4 w-4" />
               <span>Account Settings</span>

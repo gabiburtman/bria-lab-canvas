@@ -130,9 +130,9 @@ const HistoryPanel = () => {
                   key={item.id}
                   onClick={() => handleItemClick(item)}
                   className={cn(
-                    "p-3 border border-lab-border rounded-lab cursor-pointer transition-all duration-200 hover:shadow-lab-sm",
+                    "p-3 border border-lab-border rounded-lab cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
                     activeId === item.id 
-                      ? "bg-lab-primary/10 border-lab-border-focus shadow-lab-sm" 
+                      ? "bg-lab-primary/10 border-lab-border-focus shadow-lab-glow-focus" 
                       : "bg-lab-surface hover:bg-lab-interactive-hover"
                   )}
                 >
