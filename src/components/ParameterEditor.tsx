@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Copy, Upload, FileText, Lock, Unlock, Code2, ArrowLeft, Image } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ParameterEditorProps {
@@ -67,67 +68,134 @@ const ParameterEditor = ({
   }, [value]);
 
   const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0) => {
-    const isLocked = lockedFields.has(key);
-    const isUpdated = updatedFields.has(key);
-    const indent = level * 16;
+    const fieldPath = path ? `${path}.${key}` : key;
+    const isLocked = lockedFields.has(fieldPath);
+    const isUpdated = updatedFields.has(fieldPath);
 
+    // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
       return (
-        <div key={path + key} style={{ marginLeft: `${indent}px` }}>
-          <div className="flex items-center py-1">
-            <span className="text-sm font-medium text-foreground">{key}</span>
-          </div>
-          <div className="ml-4">
-            {Object.entries(val).map(([subKey, subVal]) => 
-              renderFieldValue(subKey, subVal, `${path}${key}.`, level + 1)
-            )}
-          </div>
-        </div>
+        <Collapsible key={fieldPath} defaultOpen={true} className="mb-2">
+          <CollapsibleTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start p-2 hover:bg-muted/50 text-foreground font-medium"
+              style={{ paddingLeft: `${level * 16 + 8}px` }}
+            >
+              <ChevronRight className="w-4 h-4 mr-2 transition-transform group-data-[state=open]:rotate-90" />
+              {key}
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1">
+            <div style={{ paddingLeft: `${(level + 1) * 16}px` }}>
+              {Object.entries(val).map(([subKey, subVal]) => 
+                renderFieldValue(subKey, subVal, fieldPath, level + 1)
+              )}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       );
     }
 
+    // Handle arrays (like objects, text_render)
+    if (Array.isArray(val)) {
+      return (
+        <Collapsible key={fieldPath} defaultOpen={true} className="mb-2">
+          <CollapsibleTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="w-full justify-start p-2 hover:bg-muted/50 text-foreground font-medium"
+              style={{ paddingLeft: `${level * 16 + 8}px` }}
+            >
+              <ChevronRight className="w-4 h-4 mr-2 transition-transform group-data-[state=open]:rotate-90" />
+              {key} ({val.length} items)
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-1">
+            <div style={{ paddingLeft: `${(level + 1) * 16}px` }}>
+              {val.map((item, index) => {
+                if (typeof item === 'object' && item !== null) {
+                  return (
+                    <div key={`${fieldPath}[${index}]`} className="mb-3 p-2 border border-border/50 rounded-md bg-muted/20">
+                      <div className="text-xs text-muted-foreground mb-2">Item {index + 1}</div>
+                      {Object.entries(item).map(([subKey, subVal]) => 
+                        renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 1)
+                      )}
+                    </div>
+                  );
+                }
+                return renderFieldValue(`[${index}]`, item, fieldPath, level + 1);
+              })}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+      );
+    }
+
+    // Handle primitive values
     return (
       <div 
-        key={path + key} 
+        key={fieldPath} 
         className={cn(
-          "flex items-center justify-between py-2 px-3 rounded-md group hover:bg-muted/50 transition-colors",
+          "flex items-center gap-3 py-2 px-3 group hover:bg-muted/30 transition-colors rounded-md",
           isUpdated && "bg-yellow-200/20 animate-pulse",
         )}
-        style={{ marginLeft: `${indent}px` }}
+        style={{ marginLeft: `${level * 16}px` }}
       >
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
-          <span className="text-sm font-medium text-muted-foreground flex-shrink-0 w-24">
-            {key}
-          </span>
-          <input
-            type="text"
-            value={String(val)}
-            onChange={(e) => {
-              if (!isLocked) {
-                // Update the JSON value
-                try {
-                  const updated = { ...parsedJSON };
-                  const keys = (path + key).split('.').filter(Boolean);
-                  let current = updated;
-                  for (let i = 0; i < keys.length - 1; i++) {
-                    current = current[keys[i]];
-                  }
-                  current[keys[keys.length - 1]] = e.target.value;
-                  onChange(JSON.stringify(updated, null, 2));
-                } catch (error) {
-                  console.error('Error updating field:', error);
-                }
-              }
-            }}
-            disabled={isLocked || isGenerating}
-            className={cn(
-              "flex-1 px-2 py-1 text-sm bg-transparent border border-transparent rounded focus:border-border focus:outline-none",
-              isLocked && "opacity-50 cursor-not-allowed",
-              !isLocked && "hover:border-border/50"
-            )}
-          />
-        </div>
+        {/* Field Name */}
+        <span className="text-sm font-medium text-[#9CA3AF] flex-shrink-0 w-32">
+          {key}
+        </span>
         
+        {/* Value Input */}
+        <input
+          type="text"
+          value={String(val)}
+          placeholder="String"
+          onChange={(e) => {
+            if (!isLocked) {
+              try {
+                const updated = { ...parsedJSON };
+                const keys = fieldPath.split('.');
+                let current = updated;
+                
+                // Navigate to the correct nested location
+                for (let i = 0; i < keys.length - 1; i++) {
+                  const key = keys[i];
+                  // Handle array indices
+                  if (key.includes('[') && key.includes(']')) {
+                    const [arrayKey, indexStr] = key.split('[');
+                    const index = parseInt(indexStr.replace(']', ''));
+                    current = current[arrayKey][index];
+                  } else {
+                    current = current[key];
+                  }
+                }
+                
+                const finalKey = keys[keys.length - 1];
+                if (finalKey.includes('[') && finalKey.includes(']')) {
+                  const [arrayKey, indexStr] = finalKey.split('[');
+                  const index = parseInt(indexStr.replace(']', ''));
+                  current[arrayKey][index] = e.target.value;
+                } else {
+                  current[finalKey] = e.target.value;
+                }
+                
+                onChange(JSON.stringify(updated, null, 2));
+              } catch (error) {
+                console.error('Error updating field:', error);
+              }
+            }
+          }}
+          disabled={isLocked || isGenerating}
+          className={cn(
+            "flex-1 px-3 py-2 text-sm bg-background border border-border rounded-md focus:border-primary focus:outline-none transition-colors",
+            isLocked && "opacity-50 cursor-not-allowed bg-muted",
+            !isLocked && "hover:border-border/80"
+          )}
+        />
+        
+        {/* Lock Icon Button */}
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -135,12 +203,14 @@ const ParameterEditor = ({
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground transition-all",
-                  isLocked ? "opacity-100 bg-accent text-accent-foreground" : "opacity-0 group-hover:opacity-100"
+                  "w-8 h-8 rounded-full p-0 transition-all hover:bg-muted",
+                  isLocked 
+                    ? "text-[#8B5CF6] hover:text-[#8B5CF6]/80" 
+                    : "text-[#9CA3AF] hover:text-foreground opacity-60 group-hover:opacity-100"
                 )}
-                onClick={() => onFieldLock(key, !isLocked)}
+                onClick={() => onFieldLock(fieldPath, !isLocked)}
               >
-                {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                {isLocked ? <Lock className="w-4 h-4" /> : <LockOpen className="w-4 h-4" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
