@@ -305,7 +305,7 @@ const ConfigurationPanel = () => {
       </div>
 
       {/* Action Buttons - Sticky Bottom */}
-      <div className="p-6 bg-lab-surface border-t border-lab-border rounded-b-lg">
+      <div className="sticky bottom-0 p-6 bg-lab-surface border-t border-lab-border rounded-b-lg">
         <div className="flex gap-3">
           <Button 
             onClick={handleGenerate}
@@ -324,7 +324,7 @@ const ConfigurationPanel = () => {
           <Button 
             variant="outline"
             onClick={handleStartOver}
-            className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+            className="flex-1 border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
           >
             Start Over
           </Button>
