@@ -30,7 +30,13 @@ const JSONEditor = ({
 
   useEffect(() => {
     try {
-      setParsedJSON(JSON.parse(value));
+      const parsed = JSON.parse(value);
+      setParsedJSON(parsed);
+      // Format the JSON with proper indentation if it's valid
+      const formatted = JSON.stringify(parsed, null, 2);
+      if (formatted !== value) {
+        onChange(formatted);
+      }
     } catch {
       setParsedJSON(null);
     }
@@ -47,11 +53,12 @@ const JSONEditor = ({
 
   const highlightSyntax = (text: string) => {
     return text
-      .replace(/"([^"]+)":/g, '<span class="text-lab-code-key">"$1":</span>')
-      .replace(/:\s*"([^"]*)"/g, ': <span class="text-lab-code-string">"$1"</span>')
-      .replace(/:\s*(\d+)/g, ': <span class="text-lab-code-number">$1</span>')
-      .replace(/:\s*(true|false)/g, ': <span class="text-lab-code-boolean">$1</span>')
-      .replace(/:\s*(null)/g, ': <span class="text-lab-code-null">$1</span>');
+      .replace(/"([^"]+)":/g, '<span class="text-blue-400 font-medium">"$1":</span>')
+      .replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
+      .replace(/:\s*(\d+)/g, ': <span class="text-orange-400">$1</span>')
+      .replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>')
+      .replace(/:\s*(null)/g, ': <span class="text-gray-400">$1</span>')
+      .replace(/([{}[\],])/g, '<span class="text-gray-300">$1</span>');
   };
 
   const renderJSONWithLocks = () => {
