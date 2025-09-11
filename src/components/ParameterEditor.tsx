@@ -353,6 +353,43 @@ const ParameterEditor = ({
     }
   };
 
+  // Helper function to delete an entire array/group
+  const deleteEntireGroup = (path: string) => {
+    // Only allow deleting specific groups
+    const allowedGroups = ['objects', 'text_render'];
+    const groupName = path.split('.').pop() || path;
+    
+    if (!allowedGroups.includes(groupName)) {
+      return;
+    }
+
+    try {
+      const updated = { ...parsedJSON };
+      const keys = path.split('.');
+      let current = updated;
+      
+      // Navigate to the parent of the target group
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (key.includes('[') && key.includes(']')) {
+          const [arrayKey, indexStr] = key.split('[');
+          const index = parseInt(indexStr.replace(']', ''));
+          current = current[arrayKey][index];
+        } else {
+          current = current[key];
+        }
+      }
+      
+      // Delete the entire group by setting it to an empty array
+      const finalKey = keys[keys.length - 1];
+      current[finalKey] = [];
+      
+      onChange(JSON.stringify(updated, null, 2));
+    } catch (error) {
+      console.error('Error deleting group:', error);
+    }
+  };
+
   // Helper function to delete an array item
   const deleteArrayItem = (path: string, index: number) => {
     // Only allow deleting from specific arrays
@@ -508,7 +545,7 @@ const ParameterEditor = ({
       const parentLocked = isParentPathLocked(fieldPath);
       
       return (
-        <Collapsible key={fieldPath} defaultOpen={true}>
+        <Collapsible key={fieldPath} defaultOpen={key !== 'objects' && key !== 'text_render'}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
             <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
@@ -566,6 +603,28 @@ const ParameterEditor = ({
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Add new {key === 'objects' ? 'object' : 'text element'}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              
+              {/* Delete Group Button - Only for objects and text_render */}
+              {(key === 'objects' || key === 'text_render') && val.length > 0 && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                        onClick={() => deleteEntireGroup(fieldPath)}
+                        disabled={parentLocked || isGenerating}
+                      >
+                        <Minus className="w-3 h-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Delete entire {key === 'objects' ? 'objects' : 'text_render'} group</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
