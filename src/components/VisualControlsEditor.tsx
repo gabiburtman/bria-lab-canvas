@@ -774,7 +774,7 @@ const VisualControlsEditor = ({
         <div 
           className={cn(
             "flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm",
-            isUpdated && "bg-yellow-100/50 animate-pulse",
+            isUpdated && "bg-yellow-100/50",
           )}
           style={{ paddingLeft: `${level * 20 + 24}px` }}
         >
