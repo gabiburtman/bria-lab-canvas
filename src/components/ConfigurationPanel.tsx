@@ -8,7 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import VisualControlsEditor from "./VisualControlsEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Sparkles } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const defaultJSON = {
@@ -266,7 +266,7 @@ const PromptComponent = ({
                   size="sm" 
                   className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Code2 className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
