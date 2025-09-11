@@ -22,11 +22,39 @@ interface HistoryPanelProps {
 }
 
 const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: HistoryPanelProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Default to collapsed
+  const [wasManuallyExpanded, setWasManuallyExpanded] = useState(false);
+  const [isHoverExpanded, setIsHoverExpanded] = useState(false);
 
-  const handleCollapse = (collapsed: boolean) => {
+  const handleCollapse = (collapsed: boolean, isManual: boolean = false) => {
     setIsCollapsed(collapsed);
     onCollapseChange?.(collapsed);
+    
+    if (isManual) {
+      setWasManuallyExpanded(!collapsed);
+      setIsHoverExpanded(false); // Reset hover state when manual action occurs
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (isCollapsed && !wasManuallyExpanded) {
+      setIsHoverExpanded(true);
+      setIsCollapsed(false);
+      onCollapseChange?.(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    // Only auto-collapse if it was expanded by hover
+    if (isHoverExpanded && !wasManuallyExpanded) {
+      setTimeout(() => {
+        if (isHoverExpanded && !wasManuallyExpanded) {
+          setIsCollapsed(true);
+          setIsHoverExpanded(false);
+          onCollapseChange?.(true);
+        }
+      }, 300); // Small delay to prevent flicker
+    }
   };
 
   const formatTimeAgo = (date: Date) => {
@@ -53,27 +81,69 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
 
   if (isCollapsed) {
     return (
-      <div className="w-12 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+      <div 
+        className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col"
+        onMouseEnter={handleMouseEnter}
+      >
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => handleCollapse(false)}
+          onClick={() => {
+            handleCollapse(false, true);
+          }}
           className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
         
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
+        <div className="flex-1 flex flex-col items-center">
+          <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-4">
             EXPERIMENTS
           </div>
+          
+          {/* Thumbnails */}
+          {history.length > 0 && (
+            <div className="flex flex-col gap-2 px-2 max-h-96 overflow-y-auto">
+              {history.slice(0, 8).map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    onItemClick(item);
+                    handleCollapse(false, true);
+                  }}
+                  className={cn(
+                    "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2",
+                    activeId === item.id 
+                      ? "border-lab-border-focus shadow-lab-glow-focus" 
+                      : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
+                  )}
+                >
+                  {item.thumbnail ? (
+                    <img
+                      src={item.thumbnail}
+                      alt="Experiment"
+                      className="w-full h-full rounded object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
+                      <History className="w-4 h-4 text-lab-text-muted" />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+    <div 
+      className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="flex items-center justify-between p-6 pb-4">
         <div className="flex items-center gap-2">
           <h3 className="font-medium text-lab-text-primary text-base">
@@ -83,7 +153,9 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => handleCollapse(true)}
+          onClick={() => {
+            handleCollapse(true, true);
+          }}
           className="p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
         >
           <ChevronRight className="w-4 h-4" />
