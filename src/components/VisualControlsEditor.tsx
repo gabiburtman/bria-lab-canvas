@@ -429,10 +429,25 @@ const VisualControlsEditor = ({
     }
   };
 
+  // Helper function to check if any child paths of a parent are updated
+  const hasUpdatedChildren = (parentPath: string, obj: any): boolean => {
+    if (!obj || typeof obj !== 'object') return false;
+    
+    const childPaths = getChildPaths(obj, parentPath);
+    return childPaths.some(childPath => updatedFields.has(childPath));
+  };
+
+  // Helper function to check if any fields in the General group are updated
+  const hasUpdatedGeneralFields = (generalData: Record<string, any>): boolean => {
+    return Object.keys(generalData).some(key => updatedFields.has(key));
+  };
+
   const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false) => {
     const fieldPath = path ? `${path}.${key}` : key;
     const isLocked = isFieldLocked(fieldPath);
     const isUpdated = updatedFields.has(fieldPath);
+    const hasUpdatedChild = hasUpdatedChildren(fieldPath, val);
+    const isHighlighted = isUpdated || hasUpdatedChild;
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
 
@@ -444,7 +459,10 @@ const VisualControlsEditor = ({
         <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
+            <div className={cn(
+              "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
+              isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
+            )} style={{ paddingLeft: `${level * 20 + 24}px` }}>
               {/* Parent Lock Button */}
               <TooltipProvider>
                 <Tooltip>
@@ -549,7 +567,10 @@ const VisualControlsEditor = ({
         <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
+            <div className={cn(
+              "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
+              isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
+            )} style={{ paddingLeft: `${level * 20 + 24}px` }}>
               {/* Parent Lock Button */}
               <TooltipProvider>
                 <Tooltip>
@@ -616,7 +637,10 @@ const VisualControlsEditor = ({
                   if (typeof item === 'object' && item !== null) {
                     return (
                       <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={false}>
-                        <div className="relative group/item">
+      <div className={cn(
+        "relative group/item",
+        isUpdated && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
+      )}>
                           {renderTreeLines(level + 1, isLastItem, true)}
                           <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${(level + 1) * 20 + 24}px` }}>
                             {/* Individual Item Lock Button */}
@@ -912,12 +936,16 @@ const VisualControlsEditor = ({
               const generalFieldKeys = Object.keys(val);
               const generalLocked = generalFieldKeys.some(fieldKey => isFieldLocked(fieldKey));
               const allGeneralLocked = generalFieldKeys.length > 0 && generalFieldKeys.every(fieldKey => isFieldLocked(fieldKey));
+              const isGeneralHighlighted = hasUpdatedGeneralFields(val);
               
               return (
                 <Collapsible key="general" defaultOpen={false}>
                   <div className="relative">
                     {renderTreeLines(0, isLast, true)}
-                    <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: '24px' }}>
+                    <div className={cn(
+                      "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
+                      isGeneralHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
+                    )} style={{ paddingLeft: '24px' }}>
                       {/* General Lock Button */}
                       <TooltipProvider>
                         <Tooltip>
