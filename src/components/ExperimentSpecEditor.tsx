@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
-interface VisualControlsEditorProps {
+interface ExperimentSpecEditorProps {
   value: string;
   onChange: (value: string) => void;
   isGenerating: boolean;
@@ -19,7 +19,7 @@ interface VisualControlsEditorProps {
   readOnly?: boolean;
 }
 type ViewState = 'empty' | 'structured' | 'source';
-const VisualControlsEditor = ({
+const ExperimentSpecEditor = ({
   value,
   onChange,
   isGenerating,
@@ -31,7 +31,7 @@ const VisualControlsEditor = ({
   updatedFields = new Set(),
   forceStructuredView = false,
   readOnly = false
-}: VisualControlsEditorProps) => {
+}: ExperimentSpecEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
 
@@ -739,9 +739,9 @@ const VisualControlsEditor = ({
   };
   const renderEmptyState = () => <div className="flex flex-col items-center justify-center h-80 space-y-6 p-8">
       <div className="text-center space-y-3">
-        <h3 className="text-xl font-semibold text-foreground">Populate Visual Controls</h3>
+        <h3 className="text-xl font-semibold text-foreground">Populate Experiment Spec</h3>
         <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-          Upload an image or brief to extract visual controls, or describe the desired output in the prompt above.
+          Upload an image or brief to extract experiment specification, or describe the desired output in the prompt above.
         </p>
       </div>
       
@@ -877,7 +877,7 @@ const VisualControlsEditor = ({
     return <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">
-            Visual Controls
+            Experiment Spec
           </span>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -887,13 +887,13 @@ const VisualControlsEditor = ({
                 </DialogTrigger>
                 <DialogContent className="max-w-6xl w-full h-[90vh] flex flex-col">
                   <DialogHeader>
-                    <DialogTitle>Visual Controls - Expanded View</DialogTitle>
+                    <DialogTitle>Experiment Spec - Expanded View</DialogTitle>
                   </DialogHeader>
                   <div className="flex-1 overflow-hidden">
                     <div className="h-full border border-border rounded-lg bg-background overflow-hidden flex flex-col">
                       <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
                         <span className="text-sm font-medium text-foreground">
-                          Visual Controls
+                          Experiment Spec
                         </span>
                          <div className="flex items-center gap-1">
                            <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
@@ -955,7 +955,7 @@ const VisualControlsEditor = ({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{viewState === 'structured' ? 'View Source' : 'View Tree'}</p>
+                <p>{viewState === 'structured' ? 'View JSON' : 'Config Explorer'}</p>
               </TooltipContent>
             </Tooltip>
             
@@ -987,4 +987,4 @@ const VisualControlsEditor = ({
       </div>
     </div>;
 };
-export default VisualControlsEditor;
+export default ExperimentSpecEditor;

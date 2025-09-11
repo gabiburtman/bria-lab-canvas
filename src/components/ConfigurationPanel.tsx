@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import VisualControlsEditor from "./VisualControlsEditor";
+import ExperimentSpecEditor from "./ExperimentSpecEditor";
 import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
@@ -310,7 +310,7 @@ const ConfigurationPanel = ({
   // Refinement suggestions for when in refinement mode
   const refinementSuggestions = ["Add more dramatic lighting with stronger shadows", "Make the colors more vibrant and saturated", "Add atmospheric fog or mist for depth", "Include more detailed textures on surfaces", "Enhance the contrast between light and dark areas", "Add subtle motion blur to suggest movement", "Increase the depth of field for better focus", "Add warm golden hour lighting", "Include more intricate details in the foreground", "Make the composition more dynamic with diagonal lines", "Add reflections for more visual interest", "Enhance the mood with cooler or warmer tones", "Add subtle lens flare effects", "Include more environmental storytelling elements", "Make the scene more cinematic with wider framing"];
 
-  // Handle translate prompt to visual controls
+  // Handle translate prompt to experiment spec
   const handleTranslatePrompt = useCallback(() => {
     const currentPrompt = hasGenerated ? refinementPrompt : mainPrompt;
     if (!currentPrompt.trim()) return;
@@ -318,7 +318,7 @@ const ConfigurationPanel = ({
     // Clear previous highlights
     setUpdatedFields(new Set());
 
-    // Populate visual controls with mock data based on the prompt
+    // Populate experiment spec with mock data based on the prompt
     setJsonData(JSON.stringify(mockFilledJSON, null, 2));
 
     // Mark some fields as updated, but exclude locked fields
@@ -388,14 +388,14 @@ const ConfigurationPanel = ({
     }
     setIsGenerating(true);
 
-    // Simulate generation and populate visual controls with mock data
+    // Simulate generation and populate experiment spec with mock data
     setTimeout(() => {
       setIsGenerating(false);
 
       // Clear previous highlights on new generation
       setUpdatedFields(new Set());
 
-      // Populate visual controls with mock data based on the prompt
+      // Populate experiment spec with mock data based on the prompt
       setJsonData(JSON.stringify(mockFilledJSON, null, 2));
 
       // Mark some fields as updated, but exclude locked fields
@@ -476,14 +476,14 @@ const ConfigurationPanel = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Simulate processing the image and extracting visual controls
+    // Simulate processing the image and extracting experiment spec
     setIsGenerating(true);
     setTimeout(() => {
       setIsGenerating(false);
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
         short_description: `Analysis of uploaded image: ${file.name}`,
-        context: "Image analysis and visual controls extraction",
+        context: "Image analysis and experiment spec extraction",
         style_medium: "Based on uploaded reference image"
       }, null, 2));
 
@@ -496,14 +496,14 @@ const ConfigurationPanel = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Simulate processing the brief and extracting visual controls
+    // Simulate processing the brief and extracting experiment spec
     setIsGenerating(true);
     setTimeout(() => {
       setIsGenerating(false);
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
-        short_description: `Visual controls extracted from brief: ${file.name}`,
-        context: "Brief-based visual controls extraction",
+        short_description: `Experiment spec extracted from brief: ${file.name}`,
+        context: "Brief-based experiment spec extraction",
         artistic_style: "Style defined in uploaded brief document"
       }, null, 2));
 
@@ -536,10 +536,10 @@ const ConfigurationPanel = ({
           <PromptComponent value={hasGenerated ? refinementPrompt : mainPrompt} onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} placeholder={hasGenerated ? `Refine with new instructions...\n\nOriginal: ${originalPrompt}` : "A futuristic cityscape with flying cars and neon lights."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} seed={seed} setSeed={setSeed} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} onTranslatePrompt={handleTranslatePrompt} isRefinementMode={hasGenerated} />
         </div>
 
-        {/* Visual Controls Editor - Fixed height container with internal scrolling */}
+        {/* Experiment Spec Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <VisualControlsEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
+            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
         </div>
 
