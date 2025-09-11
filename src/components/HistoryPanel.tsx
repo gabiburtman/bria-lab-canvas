@@ -82,7 +82,7 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
   if (isCollapsed) {
     return (
       <div 
-        className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col"
+        className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col relative z-10"
         onMouseEnter={handleMouseEnter}
       >
         <Button
@@ -91,47 +91,55 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
           onClick={() => {
             handleCollapse(false, true);
           }}
-          className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+          className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex-shrink-0"
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
         
-        <div className="flex-1 flex flex-col items-center">
-          <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-4">
-            EXPERIMENTS
-          </div>
-          
-          {/* Thumbnails */}
-          {history.length > 0 && (
-            <div className="flex flex-col gap-2 px-2 max-h-96 overflow-y-auto">
-              {history.slice(0, 8).map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    onItemClick(item);
-                    handleCollapse(false, true);
-                  }}
-                  className={cn(
-                    "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2",
-                    activeId === item.id 
-                      ? "border-lab-border-focus shadow-lab-glow-focus" 
-                      : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
-                  )}
-                >
-                  {item.thumbnail ? (
-                    <img
-                      src={item.thumbnail}
-                      alt="Experiment"
-                      className="w-full h-full rounded object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
-                      <History className="w-4 h-4 text-lab-text-muted" />
-                    </div>
-                  )}
-                </div>
-              ))}
+        <div className="flex-1 flex flex-col items-center min-h-0">
+          {history.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
+                EXPERIMENTS
+              </div>
             </div>
+          ) : (
+            <>
+              <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-2 flex-shrink-0">
+                EXPERIMENTS
+              </div>
+              
+              {/* Thumbnails */}
+              <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto">
+                {history.slice(0, 8).map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => {
+                      onItemClick(item);
+                      handleCollapse(false, true);
+                    }}
+                    className={cn(
+                      "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2 flex-shrink-0",
+                      activeId === item.id 
+                        ? "border-lab-border-focus shadow-lab-glow-focus" 
+                        : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
+                    )}
+                  >
+                    {item.thumbnail ? (
+                      <img
+                        src={item.thumbnail}
+                        alt="Experiment"
+                        className="w-full h-full rounded object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
+                        <History className="w-4 h-4 text-lab-text-muted" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -139,72 +147,142 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
   }
 
   return (
-    <div 
-      className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="flex items-center justify-between p-6 pb-4">
-        <div className="flex items-center gap-2">
-          <h3 className="font-medium text-lab-text-primary text-base">
-            Experiments
-          </h3>
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            handleCollapse(true, true);
-          }}
-          className="p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+    <>
+      {/* Collapsed state */}
+      {isCollapsed && (
+        <div 
+          className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col relative z-10"
+          onMouseEnter={handleMouseEnter}
         >
-          <ChevronRight className="w-4 h-4" />
-        </Button>
-      </div>
-
-      <ScrollArea className="flex-1">
-        <div className="px-6 pb-6">
-          {history.length === 0 ? (
-            <div className="text-center py-12">
-              <History className="w-12 h-12 mx-auto mb-3 text-lab-text-muted" />
-              <p className="text-sm text-lab-text-secondary mb-1">
-                No experiments yet
-              </p>
-              <p className="text-xs text-lab-text-muted">
-                Generate an image to start building your history
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {history.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => handleItemClick(item)}
-                  className={cn(
-                    "p-2 border border-lab-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
-                    activeId === item.id 
-                      ? "bg-lab-primary/10 border-lab-border-focus shadow-lab-glow-focus" 
-                      : "bg-lab-surface hover:bg-lab-interactive-hover"
-                  )}
-                >
-                  {item.thumbnail ? (
-                    <img
-                      src={item.thumbnail}
-                      alt="Experiment"
-                      className="w-full aspect-square rounded-md object-cover"
-                    />
-                  ) : (
-                    <div className="w-full aspect-square rounded-md bg-lab-border flex items-center justify-center">
-                      <History className="w-6 h-6 text-lab-text-muted" />
-                    </div>
-                  )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              handleCollapse(false, true);
+            }}
+            className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex-shrink-0"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          
+          <div className="flex-1 flex flex-col items-center min-h-0">
+            {history.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
+                  EXPERIMENTS
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ) : (
+              <>
+                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-2 flex-shrink-0">
+                  EXPERIMENTS
+                </div>
+                
+                {/* Thumbnails */}
+                <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto">
+                  {history.slice(0, 8).map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        onItemClick(item);
+                        handleCollapse(false, true);
+                      }}
+                      className={cn(
+                        "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2 flex-shrink-0",
+                        activeId === item.id 
+                          ? "border-lab-border-focus shadow-lab-glow-focus" 
+                          : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
+                      )}
+                    >
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt="Experiment"
+                          className="w-full h-full rounded object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
+                          <History className="w-4 h-4 text-lab-text-muted" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
-      </ScrollArea>
-    </div>
+      )}
+
+      {/* Expanded overlay */}
+      {!isCollapsed && (
+        <div className="absolute top-0 right-0 h-full w-80 bg-lab-surface rounded-lg shadow-2xl flex flex-col z-50 border border-lab-border"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="flex items-center justify-between p-6 pb-4">
+            <div className="flex items-center gap-2">
+              <h3 className="font-medium text-lab-text-primary text-base">
+                Experiments
+              </h3>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                handleCollapse(true, true);
+              }}
+              className="p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <ScrollArea className="flex-1">
+            <div className="px-6 pb-6">
+              {history.length === 0 ? (
+                <div className="text-center py-12">
+                  <History className="w-12 h-12 mx-auto mb-3 text-lab-text-muted" />
+                  <p className="text-sm text-lab-text-secondary mb-1">
+                    No experiments yet
+                  </p>
+                  <p className="text-xs text-lab-text-muted">
+                    Generate an image to start building your history
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {history.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => handleItemClick(item)}
+                      className={cn(
+                        "p-2 border border-lab-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
+                        activeId === item.id 
+                          ? "bg-lab-primary/10 border-lab-border-focus shadow-lab-glow-focus" 
+                          : "bg-lab-surface hover:bg-lab-interactive-hover"
+                      )}
+                    >
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt="Experiment"
+                          className="w-full aspect-square rounded-md object-cover"
+                        />
+                      ) : (
+                        <div className="w-full aspect-square rounded-md bg-lab-border flex items-center justify-center">
+                          <History className="w-6 h-6 text-lab-text-muted" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+        </div>
+      )}
+    </>
   );
 };
 
