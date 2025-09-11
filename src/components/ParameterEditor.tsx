@@ -659,7 +659,7 @@ const ParameterEditor = ({
                             </CollapsibleTrigger>
                             
                             {/* Delete Array Item Button - Only for objects and text_render */}
-                            {val.length > 1 && (key === 'objects' || key === 'text_render') && (
+                            {(key === 'objects' || key === 'text_render') && (
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -698,7 +698,7 @@ const ParameterEditor = ({
                       {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem)}
                       
                       {/* Delete Array Item Button for primitives - Only for objects and text_render */}
-                      {val.length > 1 && (key === 'objects' || key === 'text_render') && (
+                      {(key === 'objects' || key === 'text_render') && (
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
