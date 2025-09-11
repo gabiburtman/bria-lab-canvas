@@ -11,6 +11,7 @@ interface ParameterEditorProps {
   isGenerating: boolean;
   lockedFields: Set<string>;
   onFieldLock: (field: string, locked: boolean) => void;
+  onBatchFieldLock?: (fields: string[], locked: boolean) => void;
   onUploadImage: () => void;
   onUploadDocument: () => void;
   updatedFields?: Set<string>;
@@ -25,6 +26,7 @@ const ParameterEditor = ({
   isGenerating,
   lockedFields,
   onFieldLock,
+  onBatchFieldLock,
   onUploadImage,
   onUploadDocument,
   updatedFields = new Set(),
@@ -203,18 +205,25 @@ const ParameterEditor = ({
   const handleParentLock = (path: string, obj: any, shouldLock: boolean) => {
     console.log('handleParentLock called:', { path, shouldLock, obj });
     
-    // Lock/unlock the parent itself
-    onFieldLock(path, shouldLock);
-    console.log('Called onFieldLock for parent:', path, shouldLock);
-    
-    // Lock/unlock all children
-    const childPaths = getChildPaths(obj, path);
-    console.log('Child paths to lock/unlock:', childPaths);
-    
-    childPaths.forEach(childPath => {
-      onFieldLock(childPath, shouldLock);
-      console.log('Called onFieldLock for child:', childPath, shouldLock);
-    });
+    if (onBatchFieldLock) {
+      // Use batch locking for better state consistency
+      const childPaths = getChildPaths(obj, path);
+      const allPaths = [path, ...childPaths];
+      console.log('Batch locking paths:', allPaths);
+      onBatchFieldLock(allPaths, shouldLock);
+    } else {
+      // Fallback to individual locking (old behavior)
+      onFieldLock(path, shouldLock);
+      console.log('Called onFieldLock for parent:', path, shouldLock);
+      
+      const childPaths = getChildPaths(obj, path);
+      console.log('Child paths to lock/unlock:', childPaths);
+      
+      childPaths.forEach(childPath => {
+        onFieldLock(childPath, shouldLock);
+        console.log('Called onFieldLock for child:', childPath, shouldLock);
+      });
+    }
   };
 
   // Helper function to add a new property to an object

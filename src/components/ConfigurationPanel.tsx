@@ -498,6 +498,19 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
     setLockedFields(newLockedFields);
   };
 
+  // Handle batch locking of multiple fields (for parent + children)
+  const handleBatchFieldLock = (fields: string[], locked: boolean) => {
+    const newLockedFields = new Set(lockedFields);
+    fields.forEach(field => {
+      if (locked) {
+        newLockedFields.add(field);
+      } else {
+        newLockedFields.delete(field);
+      }
+    });
+    setLockedFields(newLockedFields);
+  };
+
   const handleUploadImage = () => {
     // Trigger file input for images
     imageInputRef.current?.click();
@@ -637,6 +650,7 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
           isGenerating={isGenerating}
           lockedFields={lockedFields}
           onFieldLock={handleFieldLock}
+          onBatchFieldLock={handleBatchFieldLock}
           onUploadImage={handleUploadImage}
           onUploadDocument={handleUploadDocument}
           updatedFields={updatedFields}
