@@ -640,6 +640,7 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
           onUploadImage={handleUploadImage}
           onUploadDocument={handleUploadDocument}
           updatedFields={updatedFields}
+          forceStructuredView={hasGenerated || isGenerating}
         />
       </div>
 

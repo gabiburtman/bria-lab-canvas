@@ -14,6 +14,7 @@ interface ParameterEditorProps {
   onUploadImage: () => void;
   onUploadDocument: () => void;
   updatedFields?: Set<string>;
+  forceStructuredView?: boolean;
 }
 
 type ViewState = 'empty' | 'structured' | 'source';
@@ -26,7 +27,8 @@ const ParameterEditor = ({
   onFieldLock,
   onUploadImage,
   onUploadDocument,
-  updatedFields = new Set()
+  updatedFields = new Set(),
+  forceStructuredView = false
 }: ParameterEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
@@ -64,14 +66,16 @@ const ParameterEditor = ({
     }
   }, [value]);
 
-  // Update view state based on data
+  // Update view state based on data and forceStructuredView
   useEffect(() => {
-    if (hasData() && viewState === 'empty') {
+    if (forceStructuredView && viewState === 'empty') {
       setViewState('structured');
-    } else if (!hasData() && viewState !== 'empty') {
+    } else if (hasData() && viewState === 'empty') {
+      setViewState('structured');
+    } else if (!hasData() && !forceStructuredView && viewState !== 'empty') {
       setViewState('empty');
     }
-  }, [value, viewState, hasData]);
+  }, [value, viewState, hasData, forceStructuredView]);
 
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(value);
