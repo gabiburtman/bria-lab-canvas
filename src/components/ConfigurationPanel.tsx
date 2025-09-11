@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ExperimentSpecEditor from "./ExperimentSpecEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Languages, Hash, Target, Dice6, Zap } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Dice6, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
   "short_description": "",
@@ -281,7 +281,7 @@ const PromptComponent = ({
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
-                      <RectangleHorizontal className="w-3 h-3" />
+                      <Crop className="w-3 h-3" />
                       {aspectRatio}
                     </Button>
                   </PopoverTrigger>
