@@ -126,6 +126,9 @@ const ParameterEditor = ({
     if (typeof val === 'object' && val !== null) {
       return { type: 'object', count: Object.keys(val).length, icon: '{}' };
     }
+    if (val === null) {
+      return { type: 'null', icon: null };
+    }
     return { type: typeof val, icon: null };
   };
 
@@ -286,10 +289,18 @@ const ParameterEditor = ({
             )}
           />
           
-          {/* Type Badge */}
-          <span className="px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded font-mono flex-shrink-0">
-            {typeof val}
-          </span>
+          {/* Type Badge - hide for strings, show for other types */}
+          {typeof val !== 'string' && (
+            <span className={cn(
+              "px-1.5 py-0.5 text-xs rounded font-mono flex-shrink-0",
+              typeof val === 'number' && "bg-blue-500/10 text-blue-600 border border-blue-200/20",
+              typeof val === 'boolean' && "bg-purple-500/10 text-purple-600 border border-purple-200/20",
+              val === null && "bg-gray-500/10 text-gray-600 border border-gray-200/20",
+              typeof val !== 'number' && typeof val !== 'boolean' && val !== null && "bg-muted text-muted-foreground"
+            )}>
+              {val === null ? 'null' : typeof val}
+            </span>
+          )}
           
           {/* Lock Icon Button */}
           <TooltipProvider>
