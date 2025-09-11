@@ -17,6 +17,7 @@ interface VisualControlsEditorProps {
   onUploadDocument: () => void;
   updatedFields?: Set<string>;
   forceStructuredView?: boolean;
+  readOnly?: boolean;
 }
 
 type ViewState = 'empty' | 'structured' | 'source';
@@ -31,7 +32,8 @@ const VisualControlsEditor = ({
   onUploadImage,
   onUploadDocument,
   updatedFields = new Set(),
-  forceStructuredView = false
+  forceStructuredView = false,
+  readOnly = false
 }: VisualControlsEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
@@ -464,31 +466,34 @@ const VisualControlsEditor = ({
               isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
             )} style={{ paddingLeft: `${level * 20 + 24}px` }}>
               {/* Parent Lock Button */}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                        parentLocked 
-                          ? "text-amber-600 hover:text-amber-600/80" 
-                          : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                      )}
-                      onClick={() => {
-                        console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
-                        handleParentLock(fieldPath, val, !parentLocked);
-                      }}
-                    >
-                      {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{parentLocked ? 'Unlock object and all properties' : 'Lock object and all properties'}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {!readOnly && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                          parentLocked 
+                            ? "text-amber-600 hover:text-amber-600/80" 
+                            : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                        )}
+                        onClick={() => {
+                          console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
+                          handleParentLock(fieldPath, val, !parentLocked);
+                        }}
+                      >
+                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{parentLocked ? 'Unlock object and all properties' : 'Lock object and all properties'}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
 
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -572,30 +577,33 @@ const VisualControlsEditor = ({
               isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
             )} style={{ paddingLeft: `${level * 20 + 24}px` }}>
               {/* Parent Lock Button */}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                        parentLocked 
-                          ? "text-amber-600 hover:text-amber-600/80" 
-                          : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                      )}
-                      onClick={() => {
-                        handleParentLock(fieldPath, val, !parentLocked);
-                      }}
-                    >
-                      {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{parentLocked ? 'Unlock array and all items' : 'Lock array and all items'}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {!readOnly && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={cn(
+                          "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                          parentLocked 
+                            ? "text-amber-600 hover:text-amber-600/80" 
+                            : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                        )}
+                        onClick={() => {
+                          handleParentLock(fieldPath, val, !parentLocked);
+                        }}
+                      >
+                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{parentLocked ? 'Unlock array and all items' : 'Lock array and all items'}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
 
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -608,7 +616,7 @@ const VisualControlsEditor = ({
               </CollapsibleTrigger>
               
               {/* Add Item Button - Only for objects and text_render */}
-              {(key === 'objects' || key === 'text_render') && (
+              {!readOnly && (key === 'objects' || key === 'text_render') && (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -641,35 +649,38 @@ const VisualControlsEditor = ({
         "relative group/item",
         isUpdated && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
       )}>
-                          {renderTreeLines(level + 1, isLastItem, true)}
-                          <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${(level + 1) * 20 + 24}px` }}>
-                            {/* Individual Item Lock Button */}
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className={cn(
-                                      "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                                      isFieldLocked(`${fieldPath}[${index}]`) 
-                                        ? "text-amber-600 hover:text-amber-600/80" 
-                                        : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                                    )}
-                                    onClick={() => {
-                                      const itemPath = `${fieldPath}[${index}]`;
-                                      const itemLocked = isFieldLocked(itemPath);
-                                      handleParentLock(itemPath, item, !itemLocked);
-                                    }}
-                                  >
-                                    {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>{isFieldLocked(`${fieldPath}[${index}]`) ? `Unlock ${key === 'objects' ? 'object' : 'text element'} and all properties` : `Lock ${key === 'objects' ? 'object' : 'text element'} and all properties`}</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                           {renderTreeLines(level + 1, isLastItem, true)}
+                           <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${(level + 1) * 20 + 24}px` }}>
+                             {/* Individual Item Lock Button */}
+                             {!readOnly && (
+                               <TooltipProvider>
+                                 <Tooltip>
+                                   <TooltipTrigger asChild>
+                                     <Button
+                                       variant="ghost"
+                                       size="sm"
+                                       className={cn(
+                                         "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                                         isFieldLocked(`${fieldPath}[${index}]`) 
+                                           ? "text-amber-600 hover:text-amber-600/80" 
+                                           : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                                       )}
+                                       onClick={() => {
+                                         const itemPath = `${fieldPath}[${index}]`;
+                                         const itemLocked = isFieldLocked(itemPath);
+                                         handleParentLock(itemPath, item, !itemLocked);
+                                       }}
+                                     >
+                                       {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                                     </Button>
+                                   </TooltipTrigger>
+                                   <TooltipContent>
+                                     <p>{isFieldLocked(`${fieldPath}[${index}]`) ? `Unlock ${key === 'objects' ? 'object' : 'text element'} and all properties` : `Lock ${key === 'objects' ? 'object' : 'text element'} and all properties`}</p>
+                                   </TooltipContent>
+                                 </Tooltip>
+                               </TooltipProvider>
+                             )}
+                             {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
 
                             <CollapsibleTrigger asChild>
                               <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -682,28 +693,28 @@ const VisualControlsEditor = ({
                                 </span>
                               </div>
                             </CollapsibleTrigger>
-                            
-                            {/* Delete Array Item Button - Only for objects and text_render */}
-                            {(key === 'objects' || key === 'text_render') && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
-                                      onClick={() => deleteArrayItem(fieldPath, index)}
-                                      disabled={parentLocked || isGenerating}
-                                    >
-                                      <Minus className="w-3 h-3" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            )}
+                             
+                             {/* Delete Array Item Button - Only for objects and text_render */}
+                             {!readOnly && (key === 'objects' || key === 'text_render') && (
+                               <TooltipProvider>
+                                 <Tooltip>
+                                   <TooltipTrigger asChild>
+                                     <Button
+                                       variant="ghost"
+                                       size="sm"
+                                       className="w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                                       onClick={() => deleteArrayItem(fieldPath, index)}
+                                       disabled={parentLocked || isGenerating}
+                                     >
+                                       <Minus className="w-3 h-3" />
+                                     </Button>
+                                   </TooltipTrigger>
+                                   <TooltipContent>
+                                     <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
+                                   </TooltipContent>
+                                 </Tooltip>
+                               </TooltipProvider>
+                             )}
                           </div>
                           
                           <CollapsibleContent>
@@ -721,28 +732,28 @@ const VisualControlsEditor = ({
                   return (
                     <div key={`${fieldPath}[${index}]`} className="relative group/item">
                       {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem)}
-                      
-                      {/* Delete Array Item Button for primitives - Only for objects and text_render */}
-                      {(key === 'objects' || key === 'text_render') && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
-                                onClick={() => deleteArrayItem(fieldPath, index)}
-                                disabled={parentLocked || isGenerating}
-                              >
-                                <Minus className="w-3 h-3" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
+                       
+                       {/* Delete Array Item Button for primitives - Only for objects and text_render */}
+                       {!readOnly && (key === 'objects' || key === 'text_render') && (
+                         <TooltipProvider>
+                           <Tooltip>
+                             <TooltipTrigger asChild>
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                                 onClick={() => deleteArrayItem(fieldPath, index)}
+                                 disabled={parentLocked || isGenerating}
+                               >
+                                 <Minus className="w-3 h-3" />
+                               </Button>
+                             </TooltipTrigger>
+                             <TooltipContent>
+                               <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
+                             </TooltipContent>
+                           </Tooltip>
+                         </TooltipProvider>
+                       )}
                     </div>
                   );
                 })}
@@ -768,84 +779,98 @@ const VisualControlsEditor = ({
           style={{ paddingLeft: `${level * 20 + 24}px` }}
         >
           {/* Lock Icon Button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                    isLocked 
-                      ? "text-amber-600 hover:text-amber-600/80" 
-                      : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                  )}
-                  onClick={() => onFieldLock(fieldPath, !isLocked)}
-                >
-                  {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{isLocked ? 'Unlock field' : 'Lock field'}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          {!readOnly && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn(
+                      "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                      isLocked 
+                        ? "text-amber-600 hover:text-amber-600/80" 
+                        : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                    )}
+                    onClick={() => onFieldLock(fieldPath, !isLocked)}
+                  >
+                    {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isLocked ? 'Unlock field' : 'Lock field'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
 
           {/* Field Name */}
           <span className="text-foreground font-medium min-w-0 flex-shrink-0">
             {key}:
           </span>
           
-          {/* Value Input */}
-          <input
-            type="text"
-            value={String(val)}
-            placeholder="String"
-            onChange={(e) => {
-              if (!isLocked) {
-                try {
-                  const updated = { ...parsedJSON };
-                  const keys = fieldPath.split('.');
-                  let current = updated;
-                  
-                  // Navigate to the correct nested location
-                  for (let i = 0; i < keys.length - 1; i++) {
-                    const key = keys[i];
-                    // Handle array indices
-                    if (key.includes('[') && key.includes(']')) {
-                      const [arrayKey, indexStr] = key.split('[');
-                      const index = parseInt(indexStr.replace(']', ''));
-                      current = current[arrayKey][index];
-                    } else {
-                      current = current[key];
-                    }
-                  }
-                  
-                  const finalKey = keys[keys.length - 1];
-                  if (finalKey.includes('[') && finalKey.includes(']')) {
-                    const [arrayKey, indexStr] = finalKey.split('[');
-                    const index = parseInt(indexStr.replace(']', ''));
-                    current[arrayKey][index] = e.target.value;
-                  } else {
-                    current[finalKey] = e.target.value;
-                  }
-                  
-                  onChange(JSON.stringify(updated, null, 2));
-                } catch (error) {
-                  console.error('Error updating field:', error);
-                }
-              }
-            }}
-            disabled={isLocked || isGenerating}
-            className={cn(
-              "flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:border-primary focus:outline-none transition-colors font-mono",
-              isLocked && "opacity-50 cursor-not-allowed bg-muted",
-              !isLocked && "hover:border-border/80",
+          {/* Value Display (read-only) or Input (editable) */}
+          {readOnly ? (
+            <span className={cn(
+              "flex-1 px-2 py-1 text-sm font-mono",
               typeof val === 'string' && "text-green-600",
               typeof val === 'number' && "text-blue-600",
               typeof val === 'boolean' && "text-purple-600"
-            )}
-          />
+            )}>
+              {String(val)}
+            </span>
+          ) : (
+            <input
+              type="text"
+              value={String(val)}
+              placeholder="String"
+              onChange={(e) => {
+                if (!isLocked) {
+                  try {
+                    const updated = { ...parsedJSON };
+                    const keys = fieldPath.split('.');
+                    let current = updated;
+                    
+                    // Navigate to the correct nested location
+                    for (let i = 0; i < keys.length - 1; i++) {
+                      const key = keys[i];
+                      // Handle array indices
+                      if (key.includes('[') && key.includes(']')) {
+                        const [arrayKey, indexStr] = key.split('[');
+                        const index = parseInt(indexStr.replace(']', ''));
+                        current = current[arrayKey][index];
+                      } else {
+                        current = current[key];
+                      }
+                    }
+                    
+                    const finalKey = keys[keys.length - 1];
+                    if (finalKey.includes('[') && finalKey.includes(']')) {
+                      const [arrayKey, indexStr] = finalKey.split('[');
+                      const index = parseInt(indexStr.replace(']', ''));
+                      current[arrayKey][index] = e.target.value;
+                    } else {
+                      current[finalKey] = e.target.value;
+                    }
+                    
+                    onChange(JSON.stringify(updated, null, 2));
+                  } catch (error) {
+                    console.error('Error updating field:', error);
+                  }
+                }
+              }}
+              disabled={isLocked || isGenerating}
+              className={cn(
+                "flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:border-primary focus:outline-none transition-colors font-mono",
+                isLocked && "opacity-50 cursor-not-allowed bg-muted",
+                !isLocked && "hover:border-border/80",
+                typeof val === 'string' && "text-green-600",
+                typeof val === 'number' && "text-blue-600",
+                typeof val === 'boolean' && "text-purple-600"
+              )}
+            />
+          )}
           
           {/* Type Badge - hide for strings, show for other types */}
           {typeof val !== 'string' && (
@@ -945,39 +970,42 @@ const VisualControlsEditor = ({
                     <div className={cn(
                       "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
                       isGeneralHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
-                    )} style={{ paddingLeft: '24px' }}>
+                     )} style={{ paddingLeft: '24px' }}>
                       {/* General Lock Button */}
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className={cn(
-                                "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                                allGeneralLocked 
-                                  ? "text-amber-600 hover:text-amber-600/80" 
-                                  : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                              )}
-                              onClick={() => {
-                                const generalFieldsArray = Object.keys(val);
-                                if (onBatchFieldLock) {
-                                  onBatchFieldLock(generalFieldsArray, !allGeneralLocked);
-                                } else {
-                                  generalFieldsArray.forEach(fieldKey => {
-                                    onFieldLock(fieldKey, !allGeneralLocked);
-                                  });
-                                }
-                              }}
-                            >
-                              {allGeneralLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{allGeneralLocked ? 'Unlock all general fields' : 'Lock all general fields'}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      {!readOnly && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={cn(
+                                  "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                                  allGeneralLocked 
+                                    ? "text-amber-600 hover:text-amber-600/80" 
+                                    : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                                )}
+                                onClick={() => {
+                                  const generalFieldsArray = Object.keys(val);
+                                  if (onBatchFieldLock) {
+                                    onBatchFieldLock(generalFieldsArray, !allGeneralLocked);
+                                  } else {
+                                    generalFieldsArray.forEach(fieldKey => {
+                                      onFieldLock(fieldKey, !allGeneralLocked);
+                                    });
+                                  }
+                                }}
+                              >
+                                {allGeneralLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>{allGeneralLocked ? 'Unlock all general fields' : 'Lock all general fields'}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                      {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
                       
                       <CollapsibleTrigger asChild>
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -1081,40 +1109,44 @@ const VisualControlsEditor = ({
                         <span className="text-sm font-medium text-foreground">
                           Visual Controls
                         </span>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
-                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                          >
-                            <Code2 className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={onUploadImage}
-                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                          >
-                            <Image className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={onUploadDocument}
-                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                          >
-                            <FileText className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={copyToClipboard}
-                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                          >
-                            <Copy className="w-4 h-4" />
-                          </Button>
-                        </div>
+                         <div className="flex items-center gap-1">
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
+                             className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                           >
+                             <Code2 className="w-4 h-4" />
+                           </Button>
+                           {!readOnly && (
+                             <>
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 onClick={onUploadImage}
+                                 className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                               >
+                                 <Image className="w-4 h-4" />
+                               </Button>
+                               <Button
+                                 variant="ghost"
+                                 size="sm"
+                                 onClick={onUploadDocument}
+                                 className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                               >
+                                 <FileText className="w-4 h-4" />
+                               </Button>
+                             </>
+                           )}
+                           <Button
+                             variant="ghost"
+                             size="sm"
+                             onClick={copyToClipboard}
+                             className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                           >
+                             <Copy className="w-4 h-4" />
+                           </Button>
+                         </div>
                       </div>
                       <div className="flex-1 overflow-auto h-full">
                         {viewState === 'structured' ? renderStructuredView() : renderSourceView()}
@@ -1152,39 +1184,43 @@ const VisualControlsEditor = ({
             
             {viewState === 'structured' && (
               <>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onUploadImage}
-                      className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                      disabled={isGenerating}
-                    >
-                      <Upload className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Upload Image</p>
-                  </TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onUploadDocument}
-                      className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                      disabled={isGenerating}
-                    >
-                      <FileText className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Upload Brief</p>
-                  </TooltipContent>
-                </Tooltip>
+                {!readOnly && (
+                  <>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={onUploadImage}
+                          className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                          disabled={isGenerating}
+                        >
+                          <Upload className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Upload Image</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={onUploadDocument}
+                          className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                          disabled={isGenerating}
+                        >
+                          <FileText className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Upload Brief</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </>
+                )}
                 
                 <Tooltip>
                   <TooltipTrigger asChild>

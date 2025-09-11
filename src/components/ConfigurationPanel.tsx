@@ -635,6 +635,7 @@ const ConfigurationPanel = ({
               onUploadDocument={handleUploadDocument} 
               updatedFields={updatedFields} 
               forceStructuredView={hasGenerated || isGenerating} 
+              readOnly={true}
             />
           </div>
         </div>
