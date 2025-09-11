@@ -811,66 +811,75 @@ const VisualControlsEditor = ({
           </span>
           
           {/* Value Display (read-only) or Input (editable) */}
-          {readOnly ? (
-            <span className={cn(
-              "flex-1 px-2 py-1 text-sm font-mono",
-              typeof val === 'string' && "text-green-600",
-              typeof val === 'number' && "text-blue-600",
-              typeof val === 'boolean' && "text-purple-600"
-            )}>
-              {String(val)}
-            </span>
-          ) : (
-            <input
-              type="text"
-              value={String(val)}
-              placeholder="String"
-              onChange={(e) => {
-                if (!isLocked) {
-                  try {
-                    const updated = { ...parsedJSON };
-                    const keys = fieldPath.split('.');
-                    let current = updated;
-                    
-                    // Navigate to the correct nested location
-                    for (let i = 0; i < keys.length - 1; i++) {
-                      const key = keys[i];
-                      // Handle array indices
-                      if (key.includes('[') && key.includes(']')) {
-                        const [arrayKey, indexStr] = key.split('[');
-                        const index = parseInt(indexStr.replace(']', ''));
-                        current = current[arrayKey][index];
-                      } else {
-                        current = current[key];
+          <TooltipProvider>
+            {readOnly ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className={cn(
+                    "flex-1 px-2 py-1 text-sm font-mono truncate cursor-help",
+                    typeof val === 'string' && "text-green-600",
+                    typeof val === 'number' && "text-blue-600",
+                    typeof val === 'boolean' && "text-purple-600"
+                  )}>
+                    {String(val)}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="max-w-xs break-words">{String(val)}</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <input
+                type="text"
+                value={String(val)}
+                placeholder="String"
+                onChange={(e) => {
+                  if (!isLocked) {
+                    try {
+                      const updated = { ...parsedJSON };
+                      const keys = fieldPath.split('.');
+                      let current = updated;
+                      
+                      // Navigate to the correct nested location
+                      for (let i = 0; i < keys.length - 1; i++) {
+                        const key = keys[i];
+                        // Handle array indices
+                        if (key.includes('[') && key.includes(']')) {
+                          const [arrayKey, indexStr] = key.split('[');
+                          const index = parseInt(indexStr.replace(']', ''));
+                          current = current[arrayKey][index];
+                        } else {
+                          current = current[key];
+                        }
                       }
+                      
+                      const finalKey = keys[keys.length - 1];
+                      if (finalKey.includes('[') && finalKey.includes(']')) {
+                        const [arrayKey, indexStr] = finalKey.split('[');
+                        const index = parseInt(indexStr.replace(']', ''));
+                        current[arrayKey][index] = e.target.value;
+                      } else {
+                        current[finalKey] = e.target.value;
+                      }
+                      
+                      onChange(JSON.stringify(updated, null, 2));
+                    } catch (error) {
+                      console.error('Error updating field:', error);
                     }
-                    
-                    const finalKey = keys[keys.length - 1];
-                    if (finalKey.includes('[') && finalKey.includes(']')) {
-                      const [arrayKey, indexStr] = finalKey.split('[');
-                      const index = parseInt(indexStr.replace(']', ''));
-                      current[arrayKey][index] = e.target.value;
-                    } else {
-                      current[finalKey] = e.target.value;
-                    }
-                    
-                    onChange(JSON.stringify(updated, null, 2));
-                  } catch (error) {
-                    console.error('Error updating field:', error);
                   }
-                }
-              }}
-              disabled={isLocked || isGenerating}
-              className={cn(
-                "flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:border-primary focus:outline-none transition-colors font-mono",
-                isLocked && "opacity-50 cursor-not-allowed bg-muted",
-                !isLocked && "hover:border-border/80",
-                typeof val === 'string' && "text-green-600",
-                typeof val === 'number' && "text-blue-600",
-                typeof val === 'boolean' && "text-purple-600"
-              )}
-            />
-          )}
+                }}
+                disabled={isLocked || isGenerating}
+                className={cn(
+                  "flex-1 px-2 py-1 text-sm bg-background border border-border rounded focus:border-primary focus:outline-none transition-colors font-mono",
+                  isLocked && "opacity-50 cursor-not-allowed bg-muted",
+                  !isLocked && "hover:border-border/80",
+                  typeof val === 'string' && "text-green-600",
+                  typeof val === 'number' && "text-blue-600",
+                  typeof val === 'boolean' && "text-purple-600"
+                )}
+              />
+            )}
+          </TooltipProvider>
           
           {/* Type Badge - hide for strings, show for other types */}
           {typeof val !== 'string' && (
