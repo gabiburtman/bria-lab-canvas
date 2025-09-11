@@ -157,53 +157,27 @@ const PromptComponent = ({
   const refinedContentHeight = baseEditorHeight - tabsBarHeight;
   
   const renderViewInput = () => {
-    if (!initialInput) return null;
-    
     const contentStyle = { minHeight: `${refinedContentHeight}px` };
     
-    if (initialInput.type === 'text') {
-      return (
-        <div 
-          className="p-4 text-lab-text-primary font-mono text-sm whitespace-pre-wrap overflow-auto bg-transparent"
-          style={contentStyle}
-        >
-          {initialInput.data as string}
-        </div>
-      );
-    }
-    
-    if (initialInput.type === 'image') {
-      const imageData = initialInput.data as { url: string; name?: string };
-      return (
-        <div 
-          className="p-4 flex items-center justify-center bg-transparent"
-          style={contentStyle}
-        >
-          <img 
-            src={imageData.url} 
-            alt={imageData.name || "Uploaded image"} 
-            className="max-w-full max-h-full object-contain rounded"
-          />
-        </div>
-      );
-    }
-    
-    if (initialInput.type === 'brief') {
+    if (!initialInput || initialInput.type !== 'text' || !(initialInput.data as string).trim()) {
       return (
         <div 
           className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
           style={contentStyle}
         >
-          <div className="text-center">
-            <FileText className="w-8 h-8 mx-auto mb-2 text-lab-text-muted" />
-            <p className="text-sm">{initialInput.data as string}</p>
-            <p className="text-xs text-lab-text-muted mt-1">No preview available</p>
-          </div>
+          <p className="text-sm italic">No original prompt</p>
         </div>
       );
     }
     
-    return null;
+    return (
+      <div 
+        className="p-4 text-lab-text-primary font-mono text-sm whitespace-pre-wrap overflow-auto bg-transparent"
+        style={contentStyle}
+      >
+        {initialInput.data as string}
+      </div>
+    );
   };
 
   return (
