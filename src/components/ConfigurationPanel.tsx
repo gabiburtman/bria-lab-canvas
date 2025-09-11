@@ -511,11 +511,13 @@ const ConfigurationPanel = ({
       setHasGenerated(true);
     }
     setIsGenerating(true);
+    setIsProcessingFile(true);
     onGeneratingChange?.(true);
 
     // Simulate generation and populate experiment spec with mock data
     setTimeout(() => {
       setIsGenerating(false);
+      setIsProcessingFile(false);
       onGeneratingChange?.(false);
 
       // Clear previous highlights on new generation
