@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -126,7 +127,8 @@ const PromptComponent = ({
   isGenerating,
   onSurpriseMe,
   onTranslatePrompt,
-  isRefinementMode = false
+  isRefinementMode = false,
+  initialInput
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -147,30 +149,149 @@ const PromptComponent = ({
   onSurpriseMe: () => void;
   onTranslatePrompt: () => void;
   isRefinementMode?: boolean;
+  initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
 }) => {
-  // Adjust heights to ensure both states take exactly same total height
-  const textareaHeight = isRefinementMode ? "min-h-[60px]" : "min-h-[120px]";
-  return <div className="border border-lab-border rounded-lg bg-background overflow-hidden relative">
-      <Textarea placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        if (value.trim() || hasGenerated) {
-          handleGenerate();
-        }
-      }
-    }} className={`${textareaHeight} resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12`} />
-      
-      {/* Surprise Me Button - positioned inside textarea */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button onClick={onSurpriseMe} disabled={isGenerating} variant="ghost" size="sm" className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
-            <Wand2 className="w-4 h-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>Surprise me with a random prompt</p>
-        </TooltipContent>
-      </Tooltip>
+  // Height constants to maintain exact same total height
+  const baseEditorHeight = 120;
+  const tabsBarHeight = 40;
+  const refinedContentHeight = baseEditorHeight - tabsBarHeight;
+  
+  const renderViewInput = () => {
+    if (!initialInput) return null;
+    
+    const contentStyle = { minHeight: `${refinedContentHeight}px` };
+    
+    if (initialInput.type === 'text') {
+      return (
+        <div 
+          className="p-4 text-lab-text-primary font-mono text-sm whitespace-pre-wrap overflow-auto bg-transparent"
+          style={contentStyle}
+        >
+          {initialInput.data as string}
+        </div>
+      );
+    }
+    
+    if (initialInput.type === 'image') {
+      const imageData = initialInput.data as { url: string; name?: string };
+      return (
+        <div 
+          className="p-4 flex items-center justify-center bg-transparent"
+          style={contentStyle}
+        >
+          <img 
+            src={imageData.url} 
+            alt={imageData.name || "Uploaded image"} 
+            className="max-w-full max-h-full object-contain rounded"
+          />
+        </div>
+      );
+    }
+    
+    if (initialInput.type === 'brief') {
+      return (
+        <div 
+          className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
+          style={contentStyle}
+        >
+          <div className="text-center">
+            <FileText className="w-8 h-8 mx-auto mb-2 text-lab-text-muted" />
+            <p className="text-sm">{initialInput.data as string}</p>
+            <p className="text-xs text-lab-text-muted mt-1">No preview available</p>
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  return (
+    <div className="border border-lab-border rounded-lg bg-background overflow-hidden relative">
+      {hasGenerated ? (
+        <Tabs defaultValue="refine" className="w-full">
+          <TabsList className="w-full justify-start rounded-none border-b border-lab-border bg-background h-10">
+            <TabsTrigger value="refine" className="text-sm">Refine</TabsTrigger>
+            <TabsTrigger value="input" className="text-sm">View input</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="refine" className="mt-0 relative">
+            <Textarea 
+              placeholder={placeholder}
+              value={value}
+              onChange={e => onChange(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (value.trim() || hasGenerated) {
+                    handleGenerate();
+                  }
+                }
+              }}
+              className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12"
+              style={{ minHeight: `${refinedContentHeight}px` }}
+            />
+            
+            {/* Surprise Me Button - positioned inside textarea */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={onSurpriseMe} 
+                  disabled={isGenerating} 
+                  variant="ghost" 
+                  size="sm" 
+                  className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <Wand2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Surprise me with a random prompt</p>
+              </TooltipContent>
+            </Tooltip>
+          </TabsContent>
+          
+          <TabsContent value="input" className="mt-0">
+            {renderViewInput()}
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <>
+          <Textarea 
+            placeholder={placeholder}
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (value.trim() || hasGenerated) {
+                  handleGenerate();
+                }
+              }
+            }}
+            className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12"
+            style={{ minHeight: `${baseEditorHeight}px` }}
+          />
+          
+          {/* Surprise Me Button - positioned inside textarea */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                onClick={onSurpriseMe} 
+                disabled={isGenerating} 
+                variant="ghost" 
+                size="sm" 
+                className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+              >
+                <Wand2 className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Surprise me with a random prompt</p>
+            </TooltipContent>
+          </Tooltip>
+        </>
+      )}
       
       {/* Controls Bar */}
       <TooltipProvider>
@@ -241,7 +362,8 @@ const PromptComponent = ({
           </div>
         </div>
       </TooltipProvider>
-    </div>;
+    </div>
+  );
 };
 const ConfigurationPanel = ({
   onImagesGenerated,
@@ -264,6 +386,9 @@ const ConfigurationPanel = ({
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [uploadedBriefName, setUploadedBriefName] = useState<string | null>(null);
 
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -383,8 +508,16 @@ const ConfigurationPanel = ({
     }
   };
   const handleGenerate = () => {
-    if (!hasGenerated && mainPrompt.trim()) {
-      setOriginalPrompt(mainPrompt);
+    if (!hasGenerated) {
+      // Capture the initial input for the first generation
+      if (mainPrompt.trim()) {
+        setInitialInput({ type: 'text', data: mainPrompt });
+        setOriginalPrompt(mainPrompt);
+      } else if (uploadedImageUrl) {
+        setInitialInput({ type: 'image', data: { url: uploadedImageUrl, name: 'uploaded-image' } });
+      } else if (uploadedBriefName) {
+        setInitialInput({ type: 'brief', data: uploadedBriefName });
+      }
       setHasGenerated(true);
     }
     setIsGenerating(true);
@@ -439,6 +572,14 @@ const ConfigurationPanel = ({
     setLockedFields(new Set());
     setUpdatedFields(new Set());
     setIsGenerating(false);
+    setInitialInput(null);
+    
+    // Clean up uploaded file URLs to prevent memory leaks
+    if (uploadedImageUrl) {
+      URL.revokeObjectURL(uploadedImageUrl);
+      setUploadedImageUrl(null);
+    }
+    setUploadedBriefName(null);
 
     // Clear the results panel without adding to history
     if (onClearResults) {
@@ -476,6 +617,15 @@ const ConfigurationPanel = ({
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Clean up previous image URL
+    if (uploadedImageUrl) {
+      URL.revokeObjectURL(uploadedImageUrl);
+    }
+    
+    // Create object URL for the uploaded image
+    const imageUrl = URL.createObjectURL(file);
+    setUploadedImageUrl(imageUrl);
 
     // Simulate processing the image and extracting experiment spec
     setIsProcessingFile(true);
@@ -523,6 +673,9 @@ const ConfigurationPanel = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Store the uploaded brief name
+    setUploadedBriefName(file.name);
+
     // Simulate processing the brief and extracting experiment spec
     setIsProcessingFile(true);
     setTimeout(() => {
@@ -560,7 +713,25 @@ const ConfigurationPanel = ({
       <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
         {/* Prompt Section - Fixed height */}
         <div className="flex-shrink-0">
-          <PromptComponent value={hasGenerated ? refinementPrompt : mainPrompt} onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} placeholder={hasGenerated ? `Refine with new instructions...\n\nOriginal: ${originalPrompt}` : "A futuristic cityscape with flying cars and neon lights."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} seed={seed} setSeed={setSeed} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} onTranslatePrompt={handleTranslatePrompt} isRefinementMode={hasGenerated} />
+          <PromptComponent 
+            value={hasGenerated ? refinementPrompt : mainPrompt} 
+            onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
+            placeholder={hasGenerated ? `Refine with new instructions...\n\nOriginal: ${originalPrompt}` : "A futuristic cityscape with flying cars and neon lights."} 
+            aspectRatio={aspectRatio} 
+            aspectRatios={aspectRatios} 
+            setAspectRatio={setAspectRatio} 
+            steps={steps} 
+            setSteps={setSteps} 
+            seed={seed} 
+            setSeed={setSeed} 
+            handleGenerate={handleGenerate} 
+            hasGenerated={hasGenerated} 
+            isGenerating={isGenerating} 
+            onSurpriseMe={handleSurpriseMe} 
+            onTranslatePrompt={handleTranslatePrompt} 
+            isRefinementMode={hasGenerated}
+            initialInput={initialInput}
+          />
         </div>
 
         {/* Experiment Spec Editor - Fixed height container with internal scrolling */}
@@ -581,6 +752,7 @@ const ConfigurationPanel = ({
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 export default ConfigurationPanel;
