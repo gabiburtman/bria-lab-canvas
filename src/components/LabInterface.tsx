@@ -157,6 +157,21 @@ const LabInterface = () => {
                 <p>Documentation</p>
               </TooltipContent>
             </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200"
+                >
+                  Research Paper
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View Research Paper</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           {/* User Menu */}

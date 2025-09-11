@@ -75,14 +75,6 @@ response = requests.post(
       </div>
       
       <div className="flex gap-2">
-        <Button
-          size="sm"
-          variant="ghost"
-          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
-        >
-          <Share className="w-4 h-4" />
-        </Button>
-        
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -142,35 +134,140 @@ response = requests.post(
     </div>
   );
 
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <div 
-          className="group aspect-square bg-lab-surface border border-lab-border rounded-lab overflow-hidden cursor-pointer hover:border-lab-border-hover hover:shadow-lab-glow-subtle transition-all duration-200 relative"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+  const SharePopover = ({ inDialog = false }: { inDialog?: boolean }) => (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={inDialog ? "ghost" : "outline"}
+          size={inDialog ? "sm" : "default"}
+          className={inDialog ? 
+            "w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm" :
+            "w-full bg-lab-surface hover:bg-lab-interactive-hover border-lab-border hover:border-lab-border-hover text-lab-text-primary transition-all duration-200"
+          }
         >
-          <img 
-            src={src} 
-            alt={`Generated image ${index + 1}`}
-            className="w-full h-full object-cover"
-          />
-          <ActionButtons />
-          <FeedbackButtons />
+          <Share className={inDialog ? "w-4 h-4" : "w-4 h-4 mr-2"} />
+          {!inDialog && "Share"}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+        <div className="space-y-3">
+          <h4 className="font-medium text-lab-text-primary text-sm">Share Image</h4>
+          <div className="space-y-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover"
+              onClick={() => {
+                navigator.clipboard.writeText(src || '');
+              }}
+            >
+              Copy Image Link
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover"
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: `Generated Image ${index + 1}`,
+                    url: src
+                  });
+                }
+              }}
+            >
+              Native Share
+            </Button>
+          </div>
         </div>
-      </DialogTrigger>
-      <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
-        <div className="relative group">
-          <img 
-            src={src} 
-            alt={`Generated image ${index + 1}`}
-            className="w-full max-h-[80vh] object-contain rounded-lab"
-          />
-          <ActionButtons />
-          <FeedbackButtons />
-        </div>
-      </DialogContent>
-    </Dialog>
+      </PopoverContent>
+    </Popover>
+  );
+
+  return (
+    <div className="flex flex-col">
+      <Dialog>
+        <DialogTrigger asChild>
+          <div 
+            className="group aspect-square bg-lab-surface border border-lab-border rounded-lab overflow-hidden cursor-pointer hover:border-lab-border-hover hover:shadow-lab-glow-subtle transition-all duration-200 relative"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <img 
+              src={src} 
+              alt={`Generated image ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
+            <ActionButtons />
+            <FeedbackButtons />
+          </div>
+        </DialogTrigger>
+        <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
+          <div className="relative group">
+            <img 
+              src={src} 
+              alt={`Generated image ${index + 1}`}
+              className="w-full max-h-[80vh] object-contain rounded-lab"
+            />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lab flex items-start justify-between p-3">
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost" 
+                  className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
+                >
+                  <Badge className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              <div className="flex gap-2">
+                <SharePopover inDialog={true} />
+                
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
+                    >
+                      <Code className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 bg-background border-border shadow-lg z-50">
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-foreground text-sm">Code Snippets</h4>
+                      {Object.entries(mockCodeSnippets).map(([lang, code]) => (
+                        <div key={lang} className="space-y-1">
+                          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                            {lang}
+                          </div>
+                          <pre className="text-xs bg-muted text-muted-foreground p-2 rounded overflow-x-auto">
+                            <code>{code}</code>
+                          </pre>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+            <FeedbackButtons />
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Prominent Share Button */}
+      <div className="mt-2">
+        <SharePopover />
+      </div>
+    </div>
   );
 };
 
@@ -205,7 +302,7 @@ const ResultsCanvas = ({ images = [] }: { images?: string[] }) => {
 
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6">
-      <div className="grid grid-cols-2 gap-4 h-full">
+      <div className="grid grid-cols-2 gap-6 h-full items-start">
         {Array.from({ length: 4 }).map((_, index) => (
           <ImageCard 
             key={index}
