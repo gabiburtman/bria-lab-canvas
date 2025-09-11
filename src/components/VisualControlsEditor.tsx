@@ -441,7 +441,7 @@ const VisualControlsEditor = ({
       const parentLocked = isParentPathLocked(fieldPath);
       
       return (
-        <Collapsible key={fieldPath} defaultOpen={true}>
+        <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
             <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
@@ -546,7 +546,7 @@ const VisualControlsEditor = ({
       const parentLocked = isParentPathLocked(fieldPath);
       
       return (
-        <Collapsible key={fieldPath} defaultOpen={key !== 'objects' && key !== 'text_render'}>
+        <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
             <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
