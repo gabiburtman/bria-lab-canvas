@@ -874,11 +874,13 @@ const ParameterEditor = ({
   );
 
   const renderStructuredView = () => (
-    <div className="relative p-4 h-full overflow-y-auto">
-      <div className="space-y-1">
-        {parsedJSON && Object.entries(parsedJSON).map(([key, val], index, arr) => 
-          renderFieldValue(key, val, '', 0, index === arr.length - 1)
-        )}
+    <div className="relative h-full overflow-hidden flex flex-col">
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-1">
+          {parsedJSON && Object.entries(parsedJSON).map(([key, val], index, arr) => 
+            renderFieldValue(key, val, '', 0, index === arr.length - 1)
+          )}
+        </div>
       </div>
     </div>
   );
@@ -897,18 +899,20 @@ const ParameterEditor = ({
     };
 
     return (
-      <div className="p-4 h-full overflow-y-auto font-mono text-sm">
-        {lines.map((line, index) => (
-          <div key={index} className="flex items-center min-h-[24px]">
-            <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
-              {index + 1}
-            </span>
-            <span 
-              className="flex-1"
-              dangerouslySetInnerHTML={{ __html: highlightSyntax(line) }}
-            />
-          </div>
-        ))}
+      <div className="h-full overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm">
+          {lines.map((line, index) => (
+            <div key={index} className="flex items-center min-h-[24px]">
+              <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
+                {index + 1}
+              </span>
+              <span 
+                className="flex-1"
+                dangerouslySetInnerHTML={{ __html: highlightSyntax(line) }}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
