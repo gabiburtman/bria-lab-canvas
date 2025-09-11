@@ -547,7 +547,7 @@ const ConfigurationPanel = ({
         <div className="p-4 border-t border-lab-border bg-background">
           <div className="flex gap-3">
             <Button onClick={handleGenerate} disabled={isGenerating || !hasGenerated && !mainPrompt.trim()} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
-              {isGenerating ? "Generating..." : hasGenerated ? "Refine" : "Generate"}
+              {isGenerating ? "Generating..." : "Generate"}
             </Button>
             
             
