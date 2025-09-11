@@ -280,7 +280,7 @@ const PromptComponent = ({
               <TooltipTrigger asChild>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm" className="border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2">
+                    <Button variant="ghost" size="sm" className="hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2">
                       <RectangleHorizontal className="w-4 h-4" />
                       {aspectRatio}
                     </Button>
