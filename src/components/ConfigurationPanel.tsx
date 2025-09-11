@@ -523,7 +523,7 @@ const ConfigurationPanel = ({
       return () => clearTimeout(timer);
     }
   }, [updatedFields]);
-  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" style={{
       display: 'none'
@@ -532,7 +532,7 @@ const ConfigurationPanel = ({
       display: 'none'
     }} onChange={handleBriefFileChange} />
       
-      <div className="flex-1 p-6 flex flex-col">
+      <div className="flex-1 min-h-0 p-6 flex flex-col overflow-hidden">
         {/* Prompt Area */}
         <div className="space-y-4 mb-4 flex-shrink-0">
           {hasGenerated && <div className="mb-2">
@@ -546,7 +546,7 @@ const ConfigurationPanel = ({
         </div>
 
         {/* Parameter Editor - Fixed height container with internal scrolling */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
             <ParameterEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} />
           </div>

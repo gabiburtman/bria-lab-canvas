@@ -64,9 +64,9 @@ const LabInterface = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-lab-background font-roboto p-4">
+    <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
       {/* Floating Header Elements */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between p-4 flex-none">
         {/* Left Group - Logo & Title */}
         <div className="flex items-center gap-3">
           <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="h-8 w-auto" />
@@ -185,29 +185,31 @@ const LabInterface = () => {
       </div>
       
       {/* Main Content Area - Floating Panels */}
-      <div className="flex gap-4 h-[calc(100vh-8rem)]">
-        {/* Configuration Panel - Dynamic width based on history collapse */}
-        <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
+      <div className="flex-1 min-h-0 p-4">
+        <div className="flex gap-4 h-full min-h-0">
+          {/* Configuration Panel - Dynamic width based on history collapse */}
+          <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
           <ConfigurationPanel 
             onImagesGenerated={handleImagesGenerated}
             onClearResults={clearResults}
             initialConfig={currentConfig}
           />
-        </div>
-        
-        {/* Results Canvas - Dynamic width based on history collapse */}
-        <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
-          <ResultsCanvas images={images} />
-        </div>
-        
-        {/* History Panel - 10% when open, narrow when collapsed */}
-        <div className={`flex-shrink-0 ${isHistoryCollapsed ? 'w-12' : 'w-[10%]'}`}>
-          <HistoryPanel 
-            history={history}
-            activeId={activeHistoryId}
-            onItemClick={handleHistoryItemClick}
-            onCollapseChange={setIsHistoryCollapsed}
-          />
+          </div>
+          
+          {/* Results Canvas - Dynamic width based on history collapse */}
+          <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
+            <ResultsCanvas images={images} />
+          </div>
+          
+          {/* History Panel - 10% when open, narrow when collapsed */}
+          <div className={`flex-shrink-0 ${isHistoryCollapsed ? 'w-12' : 'w-[10%]'}`}>
+            <HistoryPanel 
+              history={history}
+              activeId={activeHistoryId}
+              onItemClick={handleHistoryItemClick}
+              onCollapseChange={setIsHistoryCollapsed}
+            />
+          </div>
         </div>
       </div>
     </div>

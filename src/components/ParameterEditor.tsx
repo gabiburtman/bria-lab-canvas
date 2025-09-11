@@ -875,7 +875,7 @@ const ParameterEditor = ({
 
   const renderStructuredView = () => (
     <div className="relative h-full overflow-hidden flex flex-col">
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto overscroll-contain p-4">
         <div className="space-y-1">
           {parsedJSON && Object.entries(parsedJSON).map(([key, val], index, arr) => 
             renderFieldValue(key, val, '', 0, index === arr.length - 1)
@@ -900,7 +900,7 @@ const ParameterEditor = ({
 
     return (
       <div className="h-full overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 font-mono text-sm">
           {lines.map((line, index) => (
             <div key={index} className="flex items-center min-h-[24px]">
               <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
