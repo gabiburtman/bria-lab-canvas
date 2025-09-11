@@ -196,13 +196,19 @@ const ParameterEditor = ({
 
   // Helper function to handle parent locking/unlocking
   const handleParentLock = (path: string, obj: any, shouldLock: boolean) => {
+    console.log('handleParentLock called:', { path, shouldLock, obj });
+    
     // Lock/unlock the parent itself
     onFieldLock(path, shouldLock);
+    console.log('Called onFieldLock for parent:', path, shouldLock);
     
     // Lock/unlock all children
     const childPaths = getChildPaths(obj, path);
+    console.log('Child paths to lock/unlock:', childPaths);
+    
     childPaths.forEach(childPath => {
       onFieldLock(childPath, shouldLock);
+      console.log('Called onFieldLock for child:', childPath, shouldLock);
     });
   };
 
@@ -345,6 +351,7 @@ const ParameterEditor = ({
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
       const parentLocked = isFieldLocked(fieldPath);
+      console.log('Rendering object lock button:', fieldPath, 'parentLocked:', parentLocked, 'lockedFields:', Array.from(lockedFields));
       
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
@@ -368,17 +375,20 @@ const ParameterEditor = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={cn(
-                        "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                        parentLocked 
-                          ? "text-amber-600 hover:text-amber-600/80" 
-                          : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                      )}
-                      onClick={() => handleParentLock(fieldPath, val, !parentLocked)}
-                    >
+                     <Button
+                       variant="ghost"
+                       size="sm"
+                       className={cn(
+                         "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                         parentLocked 
+                           ? "text-amber-600 hover:text-amber-600/80" 
+                           : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                       )}
+                       onClick={() => {
+                         console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
+                         handleParentLock(fieldPath, val, !parentLocked);
+                       }}
+                     >
                       {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                     </Button>
                   </TooltipTrigger>
@@ -448,6 +458,7 @@ const ParameterEditor = ({
     // Handle arrays
     if (Array.isArray(val)) {
       const parentLocked = isFieldLocked(fieldPath);
+      console.log('Rendering array lock button:', fieldPath, 'parentLocked:', parentLocked, 'lockedFields:', Array.from(lockedFields));
       
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
@@ -480,7 +491,10 @@ const ParameterEditor = ({
                           ? "text-amber-600 hover:text-amber-600/80" 
                           : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
                       )}
-                      onClick={() => handleParentLock(fieldPath, val, !parentLocked)}
+                       onClick={() => {
+                         console.log('Lock button clicked for array:', fieldPath, 'current lock state:', parentLocked);
+                         handleParentLock(fieldPath, val, !parentLocked);
+                       }}
                     >
                       {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                     </Button>
