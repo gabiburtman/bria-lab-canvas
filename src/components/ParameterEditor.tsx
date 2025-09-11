@@ -365,44 +365,30 @@ const ParameterEditor = ({
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
-      console.log('Rendering object lock button:', fieldPath, 'parentLocked:', parentLocked, 'lockedFields:', Array.from(lockedFields));
       
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm">
-              <CollapsibleTrigger asChild>
-                <div 
-                  className="flex items-center gap-2 cursor-pointer flex-1"
-                  style={{ paddingLeft: `${level * 20 + 24}px` }}
-                >
-                  <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
-                  <span className="text-foreground font-medium">{key}</span>
-                  <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
-                    {typeInfo.icon} {typeInfo.count}
-                  </span>
-                </div>
-              </CollapsibleTrigger>
-              
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
               {/* Parent Lock Button */}
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                     <Button
-                       variant="ghost"
-                       size="sm"
-                       className={cn(
-                         "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                         parentLocked 
-                           ? "text-amber-600 hover:text-amber-600/80" 
-                           : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                       )}
-                       onClick={() => {
-                         console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
-                         handleParentLock(fieldPath, val, !parentLocked);
-                       }}
-                     >
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                        parentLocked 
+                          ? "text-amber-600 hover:text-amber-600/80" 
+                          : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                      )}
+                      onClick={() => {
+                        console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
+                        handleParentLock(fieldPath, val, !parentLocked);
+                      }}
+                    >
                       {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                     </Button>
                   </TooltipTrigger>
@@ -412,6 +398,16 @@ const ParameterEditor = ({
                 </Tooltip>
               </TooltipProvider>
 
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer flex-1">
+                  <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                  <span className="text-foreground font-medium">{key}</span>
+                  <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
+                    {typeInfo.icon} {typeInfo.count}
+                  </span>
+                </div>
+              </CollapsibleTrigger>
+              
               {/* Add Property Button */}
               <TooltipProvider>
                 <Tooltip>
@@ -472,26 +468,12 @@ const ParameterEditor = ({
     // Handle arrays
     if (Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
-      console.log('Rendering array lock button:', fieldPath, 'parentLocked:', parentLocked, 'lockedFields:', Array.from(lockedFields));
       
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm">
-              <CollapsibleTrigger asChild>
-                <div 
-                  className="flex items-center gap-2 cursor-pointer flex-1"
-                  style={{ paddingLeft: `${level * 20 + 24}px` }}
-                >
-                  <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
-                  <span className="text-foreground font-medium">{key}</span>
-                  <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
-                    {typeInfo.icon} {typeInfo.count}
-                  </span>
-                </div>
-              </CollapsibleTrigger>
-              
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${level * 20 + 24}px` }}>
               {/* Parent Lock Button */}
               <TooltipProvider>
                 <Tooltip>
@@ -519,6 +501,16 @@ const ParameterEditor = ({
                 </Tooltip>
               </TooltipProvider>
 
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center gap-2 cursor-pointer flex-1">
+                  <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                  <span className="text-foreground font-medium">{key}</span>
+                  <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
+                    {typeInfo.icon} {typeInfo.count}
+                  </span>
+                </div>
+              </CollapsibleTrigger>
+              
               {/* Add Item Button */}
               <TooltipProvider>
                 <Tooltip>
@@ -635,6 +627,30 @@ const ParameterEditor = ({
           )}
           style={{ paddingLeft: `${level * 20 + 24}px` }}
         >
+          {/* Lock Icon Button */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                    isLocked 
+                      ? "text-amber-600 hover:text-amber-600/80" 
+                      : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                  )}
+                  onClick={() => onFieldLock(fieldPath, !isLocked)}
+                >
+                  {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isLocked ? 'Unlock field' : 'Lock field'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           {/* Field Name */}
           <span className="text-foreground font-medium min-w-0 flex-shrink-0">
             {key}:
@@ -703,30 +719,6 @@ const ParameterEditor = ({
               {val === null ? 'null' : typeof val}
             </span>
           )}
-          
-          {/* Lock Icon Button */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
-                    isLocked 
-                      ? "text-amber-600 hover:text-amber-600/80" 
-                      : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
-                  )}
-                  onClick={() => onFieldLock(fieldPath, !isLocked)}
-                >
-                  {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{isLocked ? 'Unlock field' : 'Lock field'}</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
       </div>
     );
