@@ -374,6 +374,9 @@ const ConfigurationPanel = ({
     setTimeout(() => {
       setIsGenerating(false);
 
+      // Clear previous highlights on new generation
+      setUpdatedFields(new Set());
+      
       // Populate visual controls with mock data based on the prompt
       setJsonData(JSON.stringify(mockFilledJSON, null, 2));
 
@@ -514,15 +517,7 @@ const ConfigurationPanel = ({
     event.target.value = '';
   };
 
-  // Clear updated fields highlight after 3 seconds
-  useEffect(() => {
-    if (updatedFields.size > 0) {
-      const timer = setTimeout(() => {
-        setUpdatedFields(new Set());
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [updatedFields]);
+  // Clear updated fields highlight only on new generation (removed 3-second timeout)
   return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" style={{

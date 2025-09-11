@@ -909,11 +909,48 @@ const VisualControlsEditor = ({
             if (key === 'General') {
               // Render General as a virtual object with same hierarchy as others
               const isLast = index === arr.length - 1;
+              const generalFieldKeys = Object.keys(val);
+              const generalLocked = generalFieldKeys.some(fieldKey => isFieldLocked(fieldKey));
+              const allGeneralLocked = generalFieldKeys.length > 0 && generalFieldKeys.every(fieldKey => isFieldLocked(fieldKey));
+              
               return (
                 <Collapsible key="general" defaultOpen={false}>
                   <div className="relative">
                     {renderTreeLines(0, isLast, true)}
                     <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: '24px' }}>
+                      {/* General Lock Button */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className={cn(
+                                "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                                allGeneralLocked 
+                                  ? "text-amber-600 hover:text-amber-600/80" 
+                                  : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                              )}
+                              onClick={() => {
+                                const generalFieldsArray = Object.keys(val);
+                                if (onBatchFieldLock) {
+                                  onBatchFieldLock(generalFieldsArray, !allGeneralLocked);
+                                } else {
+                                  generalFieldsArray.forEach(fieldKey => {
+                                    onFieldLock(fieldKey, !allGeneralLocked);
+                                  });
+                                }
+                              }}
+                            >
+                              {allGeneralLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{allGeneralLocked ? 'Unlock all general fields' : 'Lock all general fields'}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      
                       <CollapsibleTrigger asChild>
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
                           <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
