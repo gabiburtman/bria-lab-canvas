@@ -179,11 +179,25 @@ response = requests.post(
     </div>;
 };
 const ResultsCanvas = ({
-  images = []
+  images = [],
+  isGenerating = false
 }: {
   images?: string[];
+  isGenerating?: boolean;
 }) => {
   const hasResults = images.length > 0;
+
+  // Show loading state when generating
+  if (isGenerating) {
+    return (
+      <div className="h-full bg-lab-surface border border-lab-border rounded-lg flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-lab-primary mx-auto mb-4"></div>
+          <p className="text-lab-text-secondary">Generating images...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Mock function to simulate image generation
   const mockImages = ["https://picsum.photos/512/512?random=1", "https://picsum.photos/512/512?random=2", "https://picsum.photos/512/512?random=3", "https://picsum.photos/512/512?random=4"];

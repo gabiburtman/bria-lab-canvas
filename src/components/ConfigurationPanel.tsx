@@ -342,11 +342,13 @@ const PromptComponent = ({
 const ConfigurationPanel = ({
   onImagesGenerated,
   onClearResults,
-  initialConfig
+  initialConfig,
+  onGeneratingChange
 }: {
   onImagesGenerated?: (images: string[], config: any) => void;
   onClearResults?: () => void;
   initialConfig?: any;
+  onGeneratingChange?: (isGenerating: boolean) => void;
 }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [originalPrompt, setOriginalPrompt] = useState(initialConfig?.mainPrompt || "");
@@ -509,10 +511,12 @@ const ConfigurationPanel = ({
       setHasGenerated(true);
     }
     setIsGenerating(true);
+    onGeneratingChange?.(true);
 
     // Simulate generation and populate experiment spec with mock data
     setTimeout(() => {
       setIsGenerating(false);
+      onGeneratingChange?.(false);
 
       // Clear previous highlights on new generation
       setUpdatedFields(new Set());

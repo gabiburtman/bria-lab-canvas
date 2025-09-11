@@ -18,6 +18,7 @@ const LabInterface = () => {
   const [activeHistoryId, setActiveHistoryId] = useState<string | null>(null);
   const [currentConfig, setCurrentConfig] = useState<any>(null);
   const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const clearResults = useCallback(() => {
     setImages([]);
@@ -208,12 +209,13 @@ const LabInterface = () => {
             onImagesGenerated={handleImagesGenerated}
             onClearResults={clearResults}
             initialConfig={currentConfig}
+            onGeneratingChange={setIsGenerating}
           />
           </div>
           
           {/* Results Canvas with History Panel */}
           <div className="w-[48.5%] min-w-0 relative">
-            <ResultsCanvas images={images} />
+            <ResultsCanvas images={images} isGenerating={isGenerating} />
           </div>
           
           {/* History Panel - Normal layout when collapsed, overlay when expanded */}
