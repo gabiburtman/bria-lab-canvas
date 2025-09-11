@@ -606,28 +606,6 @@ const ParameterEditor = ({
                   </Tooltip>
                 </TooltipProvider>
               )}
-              
-              {/* Delete Group Button - Only for objects and text_render */}
-              {(key === 'objects' || key === 'text_render') && val.length > 0 && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
-                        onClick={() => deleteEntireGroup(fieldPath)}
-                        disabled={parentLocked || isGenerating}
-                      >
-                        <Minus className="w-3 h-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Delete entire {key === 'objects' ? 'objects' : 'text_render'} group</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
             </div>
             
             <CollapsibleContent>
