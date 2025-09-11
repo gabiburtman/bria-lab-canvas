@@ -96,7 +96,7 @@ const VisualControlsEditor = ({
           key={`line-${i}`}
           className="absolute border-l border-border/30"
           style={{
-            left: `${i * 20 + 10}px`,
+            left: `${i * 16 + 8}px`,
             top: 0,
             bottom: 0,
             width: '1px'
@@ -112,7 +112,7 @@ const VisualControlsEditor = ({
           key="horizontal"
           className="absolute border-t border-border/30"
           style={{
-            left: `${(level - 1) * 20 + 10}px`,
+            left: `${(level - 1) * 16 + 8}px`,
             top: '12px',
             width: '12px',
             height: '1px'
@@ -464,7 +464,7 @@ const VisualControlsEditor = ({
             <div className={cn(
               "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
               isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
-            )} style={{ paddingLeft: `${level * 20 + 24}px` }}>
+             )} style={{ paddingLeft: `${level * 16 + 8}px` }}>
               {/* Parent Lock Button */}
               {!readOnly && (
                 <TooltipProvider>
@@ -575,7 +575,7 @@ const VisualControlsEditor = ({
             <div className={cn(
               "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
               isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
-            )} style={{ paddingLeft: `${level * 20 + 24}px` }}>
+            )} style={{ paddingLeft: `${level * 16 + 8}px` }}>
               {/* Parent Lock Button */}
               {!readOnly && (
                 <TooltipProvider>
@@ -650,7 +650,7 @@ const VisualControlsEditor = ({
         isUpdated && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
       )}>
                            {renderTreeLines(level + 1, isLastItem, true)}
-                           <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${(level + 1) * 20 + 24}px` }}>
+                           <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${(level + 1) * 16 + 8}px` }}>
                              {/* Individual Item Lock Button */}
                              {!readOnly && (
                                <TooltipProvider>
@@ -776,7 +776,7 @@ const VisualControlsEditor = ({
             "flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm",
             isUpdated && "bg-yellow-100/50",
           )}
-          style={{ paddingLeft: `${level * 20 + 24}px` }}
+          style={{ paddingLeft: `${level * 16 + 8}px` }}
         >
           {/* Lock Icon Button */}
           {!readOnly && (
@@ -979,7 +979,7 @@ const VisualControlsEditor = ({
                     <div className={cn(
                       "flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm",
                       isGeneralHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md"
-                     )} style={{ paddingLeft: '24px' }}>
+                     )} style={{ paddingLeft: '8px' }}>
                       {/* General Lock Button */}
                       {!readOnly && (
                         <TooltipProvider>
