@@ -214,11 +214,11 @@ const ResultsCanvas = ({
         </div>
       </div>;
   }
-  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 overflow-hidden">
-      <div className="grid grid-cols-2 gap-6 h-full">
+  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 overflow-auto">
+      <div className="grid grid-cols-2 gap-6 min-h-full">
         {Array.from({
         length: 4
-      }).map((_, index) => <div key={index} className="flex flex-col h-full max-h-full overflow-hidden">
+      }).map((_, index) => <div key={index} className="flex flex-col">
             <ImageCard src={images[index]} index={index} />
           </div>)}
       </div>
