@@ -184,7 +184,7 @@ const PromptComponent = ({
     <div className="border border-lab-border rounded-lg bg-background overflow-hidden relative">
       {hasGenerated ? (
         <Tabs defaultValue="refine" className="w-full">
-          <TabsList className="w-full justify-start rounded-none border-b border-lab-border bg-background h-10">
+          <TabsList className="w-full justify-start rounded-none border-b border-lab-border bg-lab-surface h-10">
             <TabsTrigger value="refine" className="text-sm">Refine</TabsTrigger>
             <TabsTrigger value="input" className="text-sm">View input</TabsTrigger>
           </TabsList>
