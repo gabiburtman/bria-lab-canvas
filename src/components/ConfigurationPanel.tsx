@@ -294,7 +294,7 @@ const PromptComponent = ({
                 </Popover>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Change aspect ratio</p>
+                <p>Aspect Ratio</p>
               </TooltipContent>
             </Tooltip>
 
