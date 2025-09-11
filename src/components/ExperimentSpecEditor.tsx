@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
+import { Copy, Upload, FileText, Lock, LockOpen, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface ExperimentSpecEditorProps {
   value: string;
@@ -779,7 +779,7 @@ const ExperimentSpecEditor = ({
         <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
           <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
-                  <Code2 className="w-5 h-5 text-lab-primary" />
+                  <Code className="w-5 h-5 text-lab-primary" />
                   Bria 4 Developer Reference
                 </DialogTitle>
             <DialogDescription className="text-lab-text-secondary">
@@ -1016,7 +1016,7 @@ const result = await generator(
             <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
-                  <Code2 className="w-5 h-5 text-lab-primary" />
+                  <Code className="w-5 h-5 text-lab-primary" />
                   Bria 4 Developer Reference
                 </DialogTitle>
                 <DialogDescription className="text-lab-text-secondary">
@@ -1139,7 +1139,7 @@ const result = await generator(
                         </span>
                          <div className="flex items-center gap-1">
                            <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                             <Code2 className="w-4 h-4" />
+                              <Code className="w-4 h-4" />
                            </Button>
                            <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
                              <Image className="w-4 h-4" />
@@ -1193,7 +1193,7 @@ const result = await generator(
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                  {viewState === 'structured' ? <Code2 className="w-4 h-4" /> : <Network className="w-4 h-4" />}
+                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Network className="w-4 h-4" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

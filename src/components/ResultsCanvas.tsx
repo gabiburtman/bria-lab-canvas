@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield, Code2 } from "lucide-react";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface ImageCardProps {
   src?: string;
@@ -221,7 +221,7 @@ const ResultsCanvas = ({
             <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
               <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
-                <Code2 className="w-5 h-5 text-lab-primary" />
+                <Code className="w-5 h-5 text-lab-primary" />
                 Bria 4 Developer Reference
               </DialogTitle>
                 <DialogDescription className="text-lab-text-secondary">
