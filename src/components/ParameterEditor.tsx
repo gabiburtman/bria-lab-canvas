@@ -168,6 +168,11 @@ const ParameterEditor = ({
     return false;
   };
 
+  // Helper function to check if THIS specific path is locked (for parent objects/arrays)
+  const isParentPathLocked = (path: string) => {
+    return lockedFields.has(path);
+  };
+
   // Helper function to get all child paths of a parent
   const getChildPaths = (obj: any, basePath: string = ''): string[] => {
     const paths: string[] = [];
@@ -350,7 +355,7 @@ const ParameterEditor = ({
 
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      const parentLocked = isFieldLocked(fieldPath);
+      const parentLocked = isParentPathLocked(fieldPath);
       console.log('Rendering object lock button:', fieldPath, 'parentLocked:', parentLocked, 'lockedFields:', Array.from(lockedFields));
       
       return (
@@ -457,7 +462,7 @@ const ParameterEditor = ({
 
     // Handle arrays
     if (Array.isArray(val)) {
-      const parentLocked = isFieldLocked(fieldPath);
+      const parentLocked = isParentPathLocked(fieldPath);
       console.log('Rendering array lock button:', fieldPath, 'parentLocked:', parentLocked, 'lockedFields:', Array.from(lockedFields));
       
       return (
