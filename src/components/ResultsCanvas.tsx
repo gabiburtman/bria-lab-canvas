@@ -215,6 +215,11 @@ const ResultsCanvas = ({
       </div>;
   }
   return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 overflow-auto">
+      <div className="mb-6">
+        <h2 className="text-lg font-medium text-lab-text-primary">
+          Generated Images
+        </h2>
+      </div>
       <div className="grid grid-cols-2 gap-6 min-h-full">
         {Array.from({
         length: 4
