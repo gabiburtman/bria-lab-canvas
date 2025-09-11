@@ -679,9 +679,9 @@ const ConfigurationPanel = ({
             Configuration
           </h2>
         </div>
-        {hasGenerated && <Button onClick={handleStartOver} variant="outline" size="sm" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover">
-            Start Over
-          </Button>}
+        <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" size="sm" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
+          Start Over
+        </Button>
       </div>
 
       {/* Content */}
