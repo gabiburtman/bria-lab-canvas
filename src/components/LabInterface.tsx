@@ -34,7 +34,7 @@ const LabInterface = () => {
       prompt: config.prompt || config.mainPrompt || "Untitled experiment",
       timestamp: new Date(),
       thumbnail: images[0], // Use first generated image as thumbnail
-      parameters: {
+      visualControls: {
         aspectRatio: config.aspectRatio || "1:1",
         steps: config.steps || 30,
         seed: config.seed
@@ -56,9 +56,9 @@ const LabInterface = () => {
     // For now, we'll just set the current config
     setCurrentConfig({
       mainPrompt: item.prompt,
-      aspectRatio: item.parameters.aspectRatio,
-      steps: item.parameters.steps,
-      seed: item.parameters.seed,
+      aspectRatio: item.visualControls.aspectRatio,
+      steps: item.visualControls.steps,
+      seed: item.visualControls.seed,
       jsonConfig: item.jsonConfig
     });
   }, []);

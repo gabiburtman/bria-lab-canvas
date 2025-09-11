@@ -7,7 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ParameterEditor from "./ParameterEditor";
+import VisualControlsEditor from "./VisualControlsEditor";
 import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
@@ -370,11 +370,11 @@ const ConfigurationPanel = ({
     }
     setIsGenerating(true);
 
-    // Simulate generation and populate parameters with mock data
+    // Simulate generation and populate visual controls with mock data
     setTimeout(() => {
       setIsGenerating(false);
 
-      // Populate parameters with mock data based on the prompt
+      // Populate visual controls with mock data based on the prompt
       setJsonData(JSON.stringify(mockFilledJSON, null, 2));
 
       // Mark some fields as updated, but exclude locked fields
@@ -462,13 +462,13 @@ const ConfigurationPanel = ({
         setHasGenerated(true);
       }
 
-      // Simulate processing the image and extracting parameters
+      // Simulate processing the image and extracting visual controls
       setIsGenerating(true);
       setTimeout(() => {
         const imageBasedJSON = {
           ...mockFilledJSON,
           short_description: `Analysis of uploaded image: ${file.name}`,
-          context: "Image analysis and parameter extraction",
+          context: "Image analysis and visual controls extraction",
           style_medium: "Based on uploaded reference image"
         };
         setJsonData(JSON.stringify(imageBasedJSON, null, 2));
@@ -492,13 +492,13 @@ const ConfigurationPanel = ({
         setHasGenerated(true);
       }
 
-      // Simulate processing the brief and extracting parameters
+      // Simulate processing the brief and extracting visual controls
       setIsGenerating(true);
       setTimeout(() => {
         const briefBasedJSON = {
           ...mockFilledJSON,
-          short_description: `Parameters extracted from brief: ${file.name}`,
-          context: "Brief-based parameter extraction",
+          short_description: `Visual controls extracted from brief: ${file.name}`,
+          context: "Brief-based visual controls extraction",
           artistic_style: "Style defined in uploaded brief document"
         };
         setJsonData(JSON.stringify(briefBasedJSON, null, 2));
@@ -545,10 +545,10 @@ const ConfigurationPanel = ({
           <PromptComponent value={hasGenerated ? refinementPrompt : mainPrompt} onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} seed={seed} setSeed={setSeed} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} isRefinementMode={hasGenerated} />
         </div>
 
-        {/* Parameter Editor - Fixed height container with internal scrolling */}
+        {/* Visual Controls Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <ParameterEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} />
+            <VisualControlsEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} />
           </div>
         </div>
       </div>

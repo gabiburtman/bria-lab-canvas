@@ -9,7 +9,7 @@ export interface HistoryItem {
   prompt: string;
   timestamp: Date;
   thumbnail?: string;
-  parameters: Record<string, any>;
+  visualControls: Record<string, any>;
   images?: string[];
   jsonConfig?: any;
 }

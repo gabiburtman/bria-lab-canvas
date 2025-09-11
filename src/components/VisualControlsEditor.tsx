@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface ParameterEditorProps {
+interface VisualControlsEditorProps {
   value: string;
   onChange: (value: string) => void;
   isGenerating: boolean;
@@ -21,7 +21,7 @@ interface ParameterEditorProps {
 
 type ViewState = 'empty' | 'structured' | 'source';
 
-const ParameterEditor = ({
+const VisualControlsEditor = ({
   value,
   onChange,
   isGenerating,
@@ -32,7 +32,7 @@ const ParameterEditor = ({
   onUploadDocument,
   updatedFields = new Set(),
   forceStructuredView = false
-}: ParameterEditorProps) => {
+}: VisualControlsEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
 
@@ -843,9 +843,9 @@ const ParameterEditor = ({
   const renderEmptyState = () => (
     <div className="flex flex-col items-center justify-center h-80 space-y-6 p-8">
       <div className="text-center space-y-3">
-        <h3 className="text-xl font-semibold text-foreground">Populate Parameters</h3>
+        <h3 className="text-xl font-semibold text-foreground">Populate Visual Controls</h3>
         <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-          Upload an image or brief to extract parameters, or describe the desired output in the prompt above.
+          Upload an image or brief to extract visual controls, or describe the desired output in the prompt above.
         </p>
       </div>
       
@@ -1114,4 +1114,4 @@ const ParameterEditor = ({
   );
 };
 
-export default ParameterEditor;
+export default VisualControlsEditor;

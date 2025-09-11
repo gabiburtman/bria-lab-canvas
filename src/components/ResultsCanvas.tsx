@@ -196,7 +196,7 @@ const ResultsCanvas = ({ images = [] }: { images?: string[] }) => {
             System Ready for Generation
           </h3>
           <p className="text-sm text-lab-text-secondary mb-4">
-            Define parameters and prompt in the left panel to run an experiment.
+            Define visual controls and prompt in the left panel to run an experiment.
           </p>
         </div>
       </div>
