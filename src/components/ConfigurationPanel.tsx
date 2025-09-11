@@ -145,7 +145,8 @@ const PromptComponent = ({
   handleGenerate,
   hasGenerated,
   isGenerating,
-  onSurpriseMe
+  onSurpriseMe,
+  isRefinementMode = false
 }: { 
   value: string; 
   onChange: (value: string) => void; 
@@ -161,14 +162,18 @@ const PromptComponent = ({
   hasGenerated: boolean;
   isGenerating: boolean;
   onSurpriseMe: () => void;
+  isRefinementMode?: boolean;
 }) => {
+  // Adjust height based on mode - smaller for refinement to maintain total space
+  const textareaHeight = isRefinementMode ? "min-h-[80px]" : "min-h-[120px]";
+  
   return (
     <div className="border border-lab-border rounded-lg bg-lab-surface overflow-hidden">
       <Textarea
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[120px] resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4"
+        className={`${textareaHeight} resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4`}
       />
       
       {/* Controls Bar */}
@@ -617,9 +622,9 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
         {/* Prompt Area */}
         <div className="space-y-4 mb-4">
           {hasGenerated && (
-            <div>
+            <div className="mb-3">
               <h3 className="text-sm font-medium text-lab-text-secondary mb-2">Original Prompt</h3>
-              <div className="p-3 bg-lab-interactive-hover border border-lab-border rounded-lg text-sm text-lab-text-primary">
+              <div className="p-2 bg-lab-interactive-hover border border-lab-border rounded-lg text-sm text-lab-text-primary leading-relaxed">
                 {originalPrompt}
               </div>
             </div>
@@ -640,6 +645,7 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
             hasGenerated={hasGenerated}
             isGenerating={isGenerating}
             onSurpriseMe={handleSurpriseMe}
+            isRefinementMode={hasGenerated}
           />
         </div>
 
