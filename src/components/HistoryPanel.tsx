@@ -79,74 +79,6 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
     onItemClick(item);
   };
 
-  if (isCollapsed) {
-    return (
-      <div 
-        className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col relative z-10"
-        onMouseEnter={handleMouseEnter}
-      >
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            handleCollapse(false, true);
-          }}
-          className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex-shrink-0"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
-        
-          <div className="flex-1 flex flex-col items-center min-h-0 relative">
-            {history.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
-                  EXPERIMENTS
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Positioned title to avoid overlap */}
-                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 -rotate-90 text-xs font-medium text-lab-text-muted tracking-widest whitespace-nowrap z-10">
-                  EXPERIMENTS
-                </div>
-                
-                {/* Thumbnails with top padding to avoid title */}
-                <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto pt-16">
-                  {history.slice(0, 8).map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => {
-                        onItemClick(item);
-                        handleCollapse(false, true);
-                      }}
-                      className={cn(
-                        "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2 flex-shrink-0",
-                        activeId === item.id 
-                          ? "border-lab-border-focus shadow-lab-glow-focus" 
-                          : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
-                      )}
-                    >
-                      {item.thumbnail ? (
-                        <img
-                          src={item.thumbnail}
-                          alt="Experiment"
-                          className="w-full h-full rounded object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
-                          <History className="w-4 h-4 text-lab-text-muted" />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-      </div>
-    );
-  }
-
   return (
     <>
       {/* Collapsed state - Part of normal layout */}
@@ -166,7 +98,7 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
             <ChevronLeft className="w-4 h-4" />
           </Button>
           
-          <div className="flex-1 flex flex-col items-center min-h-0">
+          <div className="flex-1 flex flex-col min-h-0">
             {history.length === 0 ? (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
@@ -175,13 +107,16 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
               </div>
             ) : (
               <>
-                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-2 flex-shrink-0">
-                  EXPERIMENTS
+                {/* Title positioned at top with proper spacing */}
+                <div className="flex items-center justify-center py-4 flex-shrink-0">
+                  <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
+                    EXPERIMENTS
+                  </div>
                 </div>
                 
-                {/* Thumbnails */}
-                <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto">
-                  {history.slice(0, 8).map((item) => (
+                {/* Thumbnails container */}
+                <div className="flex flex-col gap-3 px-2 flex-1 overflow-y-auto items-center">
+                  {history.slice(0, 6).map((item) => (
                     <div
                       key={item.id}
                       onClick={() => {

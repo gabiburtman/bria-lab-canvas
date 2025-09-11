@@ -202,8 +202,8 @@ const LabInterface = () => {
       {/* Main Content Area - Floating Panels */}
       <div className="flex-1 min-h-0 p-4">
         <div className="flex gap-4 h-full min-h-0">
-          {/* Configuration Panel - Dynamic width based on history collapse */}
-          <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
+          {/* Configuration Panel - Fixed width since overlay doesn't affect layout */}
+          <div className="w-[48.5%] min-w-0">
           <ConfigurationPanel 
             onImagesGenerated={handleImagesGenerated}
             onClearResults={clearResults}
