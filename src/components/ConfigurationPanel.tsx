@@ -360,15 +360,37 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
     "A mysterious cave entrance with glowing crystals inside"
   ];
 
+  // Refinement suggestions for when in refinement mode
+  const refinementSuggestions = [
+    "Add more dramatic lighting with stronger shadows",
+    "Make the colors more vibrant and saturated",
+    "Add atmospheric fog or mist for depth",
+    "Include more detailed textures on surfaces",
+    "Enhance the contrast between light and dark areas",
+    "Add subtle motion blur to suggest movement",
+    "Increase the depth of field for better focus",
+    "Add warm golden hour lighting",
+    "Include more intricate details in the foreground",
+    "Make the composition more dynamic with diagonal lines",
+    "Add reflections for more visual interest",
+    "Enhance the mood with cooler or warmer tones",
+    "Add subtle lens flare effects",
+    "Include more environmental storytelling elements",
+    "Make the scene more cinematic with wider framing"
+  ];
+
   // Handle surprise me functionality
   const handleSurpriseMe = useCallback(() => {
-    const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
     if (hasGenerated) {
-      setRefinementPrompt(randomPrompt);
+      // In refinement mode - use refinement suggestions
+      const randomRefinement = refinementSuggestions[Math.floor(Math.random() * refinementSuggestions.length)];
+      setRefinementPrompt(randomRefinement);
     } else {
+      // In initial mode - use full scene prompts
+      const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
       setMainPrompt(randomPrompt);
     }
-  }, [hasGenerated, randomPrompts]);
+  }, [hasGenerated]);
 
   // Helper function to get image dimensions based on aspect ratio
   const getImageDimensions = (aspectRatio: string) => {
