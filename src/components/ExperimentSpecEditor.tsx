@@ -746,12 +746,12 @@ const ExperimentSpecEditor = ({
       </div>
       
       <div className="flex items-center gap-3">
-        <Button variant="outline" onClick={onUploadImage} className="flex items-center gap-2 px-4 py-2 text-xs" disabled={isGenerating}>
+        <Button variant="ghost" onClick={onUploadImage} className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-foreground" disabled={isGenerating}>
           <Image className="w-3 h-3" />
           Upload Image
         </Button>
         
-        <Button variant="outline" onClick={onUploadDocument} className="flex items-center gap-2 px-4 py-2 text-xs" disabled={isGenerating}>
+        <Button variant="ghost" onClick={onUploadDocument} className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground hover:text-foreground" disabled={isGenerating}>
           <FileText className="w-3 h-3" />
           Upload Brief
         </Button>
