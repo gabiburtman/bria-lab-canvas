@@ -692,7 +692,8 @@ const ConfigurationPanel = ({
       setUpdatedFields(updatedFieldsSet);
     }, 2000);
   };
-  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
+  return (
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
       <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt" onChange={handleDocumentUpload} className="hidden" />
@@ -747,8 +748,6 @@ const ConfigurationPanel = ({
             <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasExperimentSpecContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : "Generate"}
             </Button>
-            
-            
           </div>
         </div>
       </div>
