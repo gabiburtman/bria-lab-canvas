@@ -1090,12 +1090,12 @@ const ParameterEditor = ({
 
   return (
     <div className={cn(
-      "relative bg-background rounded-lg border border-border overflow-hidden",
+      "relative bg-background rounded-lg border border-border overflow-hidden h-full flex flex-col",
       isGenerating && "opacity-50 pointer-events-none"
     )}>
       {renderHeader()}
       
-      <div className="relative">
+      <div className="relative flex-1 min-h-0">
         {viewState === 'empty' && renderEmptyState()}
         {viewState === 'structured' && renderStructuredView()}
         {viewState === 'source' && renderSourceView()}

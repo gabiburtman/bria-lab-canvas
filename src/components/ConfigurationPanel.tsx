@@ -532,9 +532,9 @@ const ConfigurationPanel = ({
       display: 'none'
     }} onChange={handleBriefFileChange} />
       
-      <div className="flex-1 p-6 overflow-y-auto">
+      <div className="flex-1 p-6 flex flex-col">
         {/* Prompt Area */}
-        <div className="space-y-4 mb-4">
+        <div className="space-y-4 mb-4 flex-shrink-0">
           {hasGenerated && <div className="mb-2">
               <h3 className="text-xs font-medium text-lab-text-secondary mb-1">Original Input</h3>
               <div className="p-2 bg-lab-interactive-hover border border-lab-border rounded-lg text-xs text-lab-text-primary leading-tight max-h-[52px] overflow-y-auto">
@@ -545,8 +545,10 @@ const ConfigurationPanel = ({
           <PromptComponent value={hasGenerated ? refinementPrompt : mainPrompt} onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} seed={seed} setSeed={setSeed} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} isRefinementMode={hasGenerated} />
         </div>
 
-        {/* Parameter Editor */}
-        <ParameterEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} />
+        {/* Parameter Editor - Flex-1 to fill remaining space */}
+        <div className="flex-1 min-h-0">
+          <ParameterEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} />
+        </div>
       </div>
 
       {/* Action Buttons - Sticky Bottom */}
