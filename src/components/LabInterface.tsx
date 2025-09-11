@@ -196,19 +196,19 @@ const LabInterface = () => {
           />
           </div>
           
-          {/* Results Canvas - Full width with history overlay */}
+          {/* Results Canvas with History Panel */}
           <div className="w-[48.5%] min-w-0 relative">
             <ResultsCanvas images={images} />
-            
-            {/* History Panel Overlay */}
-            <div className="absolute top-0 right-0 h-full z-20">
-              <HistoryPanel 
-                history={history}
-                activeId={activeHistoryId}
-                onItemClick={handleHistoryItemClick}
-                onCollapseChange={setIsHistoryCollapsed}
-              />
-            </div>
+          </div>
+          
+          {/* History Panel - Normal layout when collapsed, overlay when expanded */}
+          <div className="flex-shrink-0 w-16 relative">
+            <HistoryPanel 
+              history={history}
+              activeId={activeHistoryId}
+              onItemClick={handleHistoryItemClick}
+              onCollapseChange={setIsHistoryCollapsed}
+            />
           </div>
         </div>
       </div>

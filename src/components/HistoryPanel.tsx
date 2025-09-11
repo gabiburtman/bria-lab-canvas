@@ -148,10 +148,10 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
 
   return (
     <>
-      {/* Collapsed state */}
+      {/* Collapsed state - Part of normal layout */}
       {isCollapsed && (
         <div 
-          className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col relative z-10"
+          className="w-16 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col relative"
           onMouseEnter={handleMouseEnter}
         >
           <Button
@@ -214,9 +214,9 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
         </div>
       )}
 
-      {/* Expanded overlay */}
+      {/* Expanded overlay - Positioned over the middle panel */}
       {!isCollapsed && (
-        <div className="absolute top-0 right-0 h-full w-80 bg-lab-surface rounded-lg shadow-2xl flex flex-col z-50 border border-lab-border"
+        <div className="absolute top-0 right-16 h-full w-80 bg-lab-surface rounded-lg shadow-2xl flex flex-col z-50 border border-lab-border"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
