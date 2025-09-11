@@ -172,7 +172,7 @@ const PromptComponent = ({
     
     return (
       <div 
-        className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm"
+        className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60"
         style={contentStyle}
       >
         {initialInput.data as string}
