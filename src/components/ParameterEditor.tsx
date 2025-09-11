@@ -562,10 +562,9 @@ const ParameterEditor = ({
                           ? "text-amber-600 hover:text-amber-600/80" 
                           : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
                       )}
-                       onClick={() => {
-                         console.log('Lock button clicked for array:', fieldPath, 'current lock state:', parentLocked);
-                         handleParentLock(fieldPath, val, !parentLocked);
-                       }}
+                      onClick={() => {
+                        handleParentLock(fieldPath, val, !parentLocked);
+                      }}
                     >
                       {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                     </Button>
@@ -637,43 +636,82 @@ const ParameterEditor = ({
                   const isLastItem = index === val.length - 1;
                   if (typeof item === 'object' && item !== null) {
                     return (
-                      <div key={`${fieldPath}[${index}]`} className="relative group/item">
-                        {renderTreeLines(level + 1, isLastItem, true)}
-                        <div 
-                          className="flex items-center gap-2 py-1 px-2 font-mono text-sm text-muted-foreground"
-                          style={{ paddingLeft: `${(level + 1) * 20 + 24}px` }}
-                        >
-                          <span>[{index}]</span>
-                          <span className="px-1.5 py-0.5 text-xs bg-purple-500/10 text-purple-600 rounded border border-purple-200/20">
-                            {'{}'} {Object.keys(item).length}
-                          </span>
+                      <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={false}>
+                        <div className="relative group/item">
+                          {renderTreeLines(level + 1, isLastItem, true)}
+                          <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: `${(level + 1) * 20 + 24}px` }}>
+                            {/* Individual Item Lock Button */}
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className={cn(
+                                      "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                                      isFieldLocked(`${fieldPath}[${index}]`) 
+                                        ? "text-amber-600 hover:text-amber-600/80" 
+                                        : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                                    )}
+                                    onClick={() => {
+                                      const itemPath = `${fieldPath}[${index}]`;
+                                      const itemLocked = isFieldLocked(itemPath);
+                                      handleParentLock(itemPath, item, !itemLocked);
+                                    }}
+                                  >
+                                    {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{isFieldLocked(`${fieldPath}[${index}]`) ? `Unlock ${key === 'objects' ? 'object' : 'text element'} and all properties` : `Lock ${key === 'objects' ? 'object' : 'text element'} and all properties`}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            <CollapsibleTrigger asChild>
+                              <div className="flex items-center gap-2 cursor-pointer flex-1">
+                                <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                                <span className="text-foreground font-medium">
+                                  {key === 'objects' ? `Object [${index}]` : `Text Element [${index}]`}
+                                </span>
+                                <span className="px-1.5 py-0.5 text-xs bg-purple-500/10 text-purple-600 rounded border border-purple-200/20">
+                                  {'{}'} {Object.keys(item).length}
+                                </span>
+                              </div>
+                            </CollapsibleTrigger>
+                            
+                            {/* Delete Array Item Button - Only for objects and text_render */}
+                            {val.length > 1 && (key === 'objects' || key === 'text_render') && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                                      onClick={() => deleteArrayItem(fieldPath, index)}
+                                      disabled={parentLocked || isGenerating}
+                                    >
+                                      <Minus className="w-3 h-3" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                          </div>
+                          
+                          <CollapsibleContent>
+                            <div>
+                              {Object.entries(item).map(([subKey, subVal], subIndex, subArr) => 
+                                renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 2, subIndex === subArr.length - 1)
+                              )}
+                            </div>
+                          </CollapsibleContent>
                         </div>
-                        {Object.entries(item).map(([subKey, subVal], subIndex, subArr) => 
-                          renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 2, subIndex === subArr.length - 1)
-                        )}
-                        
-                        {/* Delete Array Item Button - Only for objects and text_render */}
-                        {val.length > 1 && (key === 'objects' || key === 'text_render') && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
-                                  onClick={() => deleteArrayItem(fieldPath, index)}
-                                  disabled={parentLocked || isGenerating}
-                                >
-                                  <Minus className="w-3 h-3" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-                      </div>
+                      </Collapsible>
                     );
                   }
                   
