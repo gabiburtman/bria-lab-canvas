@@ -891,40 +891,55 @@ const VisualControlsEditor = ({
         });
       }
       
+      const allEntries: Array<[string, any]> = [];
+      
+      // Add General group if it has content
+      if (Object.keys(generalData).length > 0) {
+        allEntries.push(['General', generalData]);
+      }
+      
+      // Add other fields
+      Object.entries(otherData).forEach(([key, val]) => {
+        allEntries.push([key, val]);
+      });
+      
       return (
         <div className="space-y-1">
-          {/* General Group */}
-          {Object.keys(generalData).length > 0 && (
-            <Collapsible key="general" defaultOpen={false}>
-              <div className="relative">
-                {renderTreeLines(0, false, true)}
-                <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: '24px' }}>
-                  <CollapsibleTrigger asChild>
-                    <div className="flex items-center gap-2 cursor-pointer flex-1">
-                      <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
-                      <span className="text-foreground font-medium">General</span>
-                      <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
-                        {} {Object.keys(generalData).length}
-                      </span>
+          {allEntries.map(([key, val], index, arr) => {
+            if (key === 'General') {
+              // Render General as a virtual object with same hierarchy as others
+              const isLast = index === arr.length - 1;
+              return (
+                <Collapsible key="general" defaultOpen={false}>
+                  <div className="relative">
+                    {renderTreeLines(0, isLast, true)}
+                    <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: '24px' }}>
+                      <CollapsibleTrigger asChild>
+                        <div className="flex items-center gap-2 cursor-pointer flex-1">
+                          <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                          <span className="text-foreground font-medium">General</span>
+                          <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
+                            {} {Object.keys(val).length}
+                          </span>
+                        </div>
+                      </CollapsibleTrigger>
                     </div>
-                  </CollapsibleTrigger>
-                </div>
-                
-                <CollapsibleContent>
-                  <div>
-                    {Object.entries(generalData).map(([key, val], index, arr) => 
-                      renderFieldValue(key, val, '', 1, index === arr.length - 1)
-                    )}
+                    
+                    <CollapsibleContent>
+                      <div>
+                        {Object.entries(val).map(([fieldKey, fieldVal], fieldIndex, fieldArr) => 
+                          renderFieldValue(fieldKey, fieldVal, '', 1, fieldIndex === fieldArr.length - 1)
+                        )}
+                      </div>
+                    </CollapsibleContent>
                   </div>
-                </CollapsibleContent>
-              </div>
-            </Collapsible>
-          )}
-          
-          {/* Other Fields */}
-          {Object.entries(otherData).map(([key, val], index, arr) => 
-            renderFieldValue(key, val, '', 0, index === arr.length - 1 && Object.keys(generalData).length === 0)
-          )}
+                </Collapsible>
+              );
+            } else {
+              // Render other fields normally
+              return renderFieldValue(key, val, '', 0, index === arr.length - 1);
+            }
+          })}
         </div>
       );
     };
