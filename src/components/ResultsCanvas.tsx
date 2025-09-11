@@ -214,13 +214,13 @@ const ResultsCanvas = ({
         </div>
       </div>;
   }
-  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 overflow-auto">
-      <div className="mb-6">
+  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 flex flex-col">
+      <div className="mb-4 flex-shrink-0">
         <h2 className="text-lg font-medium text-lab-text-primary">
           Generated Images
         </h2>
       </div>
-      <div className="grid grid-cols-2 gap-6 min-h-full">
+      <div className="grid grid-cols-2 gap-4 flex-1">
         {Array.from({
         length: 4
       }).map((_, index) => <div key={index} className="flex flex-col">
