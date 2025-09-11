@@ -262,6 +262,15 @@ const PromptComponent = ({
           </div>
 
           <div className="flex items-center gap-1">
+            {/* Generate Button */}
+            <Button 
+              onClick={handleGenerate}
+              disabled={isGenerating || (!hasGenerated && !value.trim())}
+              className="bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-4 py-2 rounded-md font-medium transition-colors"
+            >
+              {isGenerating ? "Generating..." : hasGenerated ? "Refine" : "Generate"}
+            </Button>
+            
             {/* Translate Prompt Button */}
             <Button 
               onClick={onTranslatePrompt} 
