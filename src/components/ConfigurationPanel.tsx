@@ -236,9 +236,11 @@ const PromptComponent = ({
 };
 const ConfigurationPanel = ({
   onImagesGenerated,
+  onClearResults,
   initialConfig
 }: {
   onImagesGenerated?: (images: string[], config: any) => void;
+  onClearResults?: () => void;
   initialConfig?: any;
 }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
@@ -416,9 +418,9 @@ const ConfigurationPanel = ({
     setUpdatedFields(new Set());
     setIsGenerating(false);
 
-    // Clear the results panel
-    if (onImagesGenerated) {
-      onImagesGenerated([], {});
+    // Clear the results panel without adding to history
+    if (onClearResults) {
+      onClearResults();
     }
   };
   const handleFieldLock = (field: string, locked: boolean) => {

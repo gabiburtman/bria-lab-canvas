@@ -19,6 +19,12 @@ const LabInterface = () => {
   const [currentConfig, setCurrentConfig] = useState<any>(null);
   const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(false);
 
+  const clearResults = useCallback(() => {
+    setImages([]);
+    setActiveHistoryId(null);
+    setCurrentConfig(null);
+  }, []);
+
   const handleImagesGenerated = useCallback((images: string[], config: any) => {
     setImages(images);
     
@@ -184,6 +190,7 @@ const LabInterface = () => {
         <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
           <ConfigurationPanel 
             onImagesGenerated={handleImagesGenerated}
+            onClearResults={clearResults}
             initialConfig={currentConfig}
           />
         </div>
