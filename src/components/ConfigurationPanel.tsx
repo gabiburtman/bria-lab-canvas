@@ -280,7 +280,7 @@ const PromptComponent = ({
               <TooltipTrigger asChild>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary gap-2">
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
                       {aspectRatio}
                     </Button>
                   </PopoverTrigger>
@@ -303,14 +303,14 @@ const PromptComponent = ({
               <TooltipTrigger asChild>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
-                      <Hash className="w-4 h-4" />
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
+                      {steps[0]} Steps
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
                     <div>
                       <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
-                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]}</div>
+                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]} steps</div>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -325,14 +325,14 @@ const PromptComponent = ({
               <TooltipTrigger asChild>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
-                      <Target className="w-4 h-4" />
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
+                      CFG {guidanceScale[0]}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
                     <div>
                       <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
-                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{guidanceScale[0]}</div>
+                      <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance: {guidanceScale[0]}</div>
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -347,8 +347,8 @@ const PromptComponent = ({
               <TooltipTrigger asChild>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
-                      <Shuffle className="w-4 h-4" />
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
+                      {seed || "Random"}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
