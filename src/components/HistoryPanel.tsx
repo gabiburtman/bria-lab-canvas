@@ -108,7 +108,7 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
             ) : (
               <>
                 {/* Fixed height container for title to prevent overlap */}
-                <div className="h-20 flex items-center justify-center flex-shrink-0">
+                <div className="h-36 flex items-center justify-center flex-shrink-0 overflow-hidden">
                   <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
                     EXPERIMENTS
                   </div>
