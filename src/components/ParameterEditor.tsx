@@ -918,7 +918,7 @@ const ParameterEditor = ({
     return (
       <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
         <span className="text-sm font-medium text-foreground">
-          {viewState === 'structured' ? 'Parameters' : 'Source View'}
+          Visual Controls
         </span>
         
         <TooltipProvider>
