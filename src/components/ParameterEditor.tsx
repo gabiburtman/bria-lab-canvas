@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight } from "lucide-react";
+import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ParameterEditorProps {
@@ -132,6 +132,178 @@ const ParameterEditor = ({
     return { type: typeof val, icon: null };
   };
 
+  // Helper function to check if a parent path is locked
+  const isParentLocked = (path: string) => {
+    return lockedFields.has(path);
+  };
+
+  // Helper function to get all child paths of a parent
+  const getChildPaths = (obj: any, basePath: string = ''): string[] => {
+    const paths: string[] = [];
+    
+    const traverse = (current: any, currentPath: string) => {
+      if (typeof current === 'object' && current !== null) {
+        if (Array.isArray(current)) {
+          current.forEach((item, index) => {
+            const itemPath = currentPath ? `${currentPath}[${index}]` : `[${index}]`;
+            paths.push(itemPath);
+            traverse(item, itemPath);
+          });
+        } else {
+          Object.entries(current).forEach(([key, value]) => {
+            const keyPath = currentPath ? `${currentPath}.${key}` : key;
+            paths.push(keyPath);
+            traverse(value, keyPath);
+          });
+        }
+      }
+    };
+    
+    traverse(obj, basePath);
+    return paths;
+  };
+
+  // Helper function to handle parent locking/unlocking
+  const handleParentLock = (path: string, obj: any, shouldLock: boolean) => {
+    // Lock/unlock the parent itself
+    onFieldLock(path, shouldLock);
+    
+    // Lock/unlock all children
+    const childPaths = getChildPaths(obj, path);
+    childPaths.forEach(childPath => {
+      onFieldLock(childPath, shouldLock);
+    });
+  };
+
+  // Helper function to add a new property to an object
+  const addObjectProperty = (path: string) => {
+    try {
+      const updated = { ...parsedJSON };
+      const keys = path.split('.');
+      let current = updated;
+      
+      // Navigate to the target object
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (key.includes('[') && key.includes(']')) {
+          const [arrayKey, indexStr] = key.split('[');
+          const index = parseInt(indexStr.replace(']', ''));
+          current = current[arrayKey][index];
+        } else if (i < keys.length - 1) {
+          current = current[key];
+        } else {
+          // This is the target object
+          current = current[key];
+        }
+      }
+      
+      // Add new property with a default name and value
+      let newKey = 'newProperty';
+      let counter = 1;
+      while (current.hasOwnProperty(newKey)) {
+        newKey = `newProperty${counter}`;
+        counter++;
+      }
+      
+      current[newKey] = '';
+      onChange(JSON.stringify(updated, null, 2));
+    } catch (error) {
+      console.error('Error adding object property:', error);
+    }
+  };
+
+  // Helper function to delete an object property
+  const deleteObjectProperty = (path: string) => {
+    try {
+      const updated = { ...parsedJSON };
+      const keys = path.split('.');
+      let current = updated;
+      
+      // Navigate to the parent object
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (key.includes('[') && key.includes(']')) {
+          const [arrayKey, indexStr] = key.split('[');
+          const index = parseInt(indexStr.replace(']', ''));
+          current = current[arrayKey][index];
+        } else {
+          current = current[key];
+        }
+      }
+      
+      // Delete the property
+      const finalKey = keys[keys.length - 1];
+      delete current[finalKey];
+      
+      onChange(JSON.stringify(updated, null, 2));
+    } catch (error) {
+      console.error('Error deleting object property:', error);
+    }
+  };
+
+  // Helper function to add a new array item
+  const addArrayItem = (path: string) => {
+    try {
+      const updated = { ...parsedJSON };
+      const keys = path.split('.');
+      let current = updated;
+      
+      // Navigate to the target array
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (key.includes('[') && key.includes(']')) {
+          const [arrayKey, indexStr] = key.split('[');
+          const index = parseInt(indexStr.replace(']', ''));
+          current = current[arrayKey][index];
+        } else if (i < keys.length - 1) {
+          current = current[key];
+        } else {
+          // This is the target array
+          current = current[key];
+        }
+      }
+      
+      // Add new item (empty string for primitives, empty object for objects)
+      const existingItem = current.length > 0 ? current[0] : '';
+      const newItem = typeof existingItem === 'object' && existingItem !== null ? {} : '';
+      
+      current.push(newItem);
+      onChange(JSON.stringify(updated, null, 2));
+    } catch (error) {
+      console.error('Error adding array item:', error);
+    }
+  };
+
+  // Helper function to delete an array item
+  const deleteArrayItem = (path: string, index: number) => {
+    try {
+      const updated = { ...parsedJSON };
+      const keys = path.split('.');
+      let current = updated;
+      
+      // Navigate to the target array
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        if (key.includes('[') && key.includes(']')) {
+          const [arrayKey, indexStr] = key.split('[');
+          const arrayIndex = parseInt(indexStr.replace(']', ''));
+          current = current[arrayKey][arrayIndex];
+        } else if (i < keys.length - 1) {
+          current = current[key];
+        } else {
+          // This is the target array
+          current = current[key];
+        }
+      }
+      
+      // Remove the item at the specified index
+      current.splice(index, 1);
+      onChange(JSON.stringify(updated, null, 2));
+    } catch (error) {
+      console.error('Error deleting array item:', error);
+    }
+  };
+
   const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false) => {
     const fieldPath = path ? `${path}.${key}` : key;
     const isLocked = lockedFields.has(fieldPath);
@@ -141,27 +313,100 @@ const ParameterEditor = ({
 
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      const parentLocked = isParentLocked(fieldPath);
+      
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <CollapsibleTrigger asChild>
-              <div 
-                className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded cursor-pointer group font-mono text-sm"
-                style={{ paddingLeft: `${level * 20 + 24}px` }}
-              >
-                <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
-                <span className="text-foreground font-medium">{key}</span>
-                <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
-                  {typeInfo.icon} {typeInfo.count}
-                </span>
-              </div>
-            </CollapsibleTrigger>
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm">
+              <CollapsibleTrigger asChild>
+                <div 
+                  className="flex items-center gap-2 cursor-pointer flex-1"
+                  style={{ paddingLeft: `${level * 20 + 24}px` }}
+                >
+                  <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                  <span className="text-foreground font-medium">{key}</span>
+                  <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
+                    {typeInfo.icon} {typeInfo.count}
+                  </span>
+                </div>
+              </CollapsibleTrigger>
+              
+              {/* Parent Lock Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                        parentLocked 
+                          ? "text-amber-600 hover:text-amber-600/80" 
+                          : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                      )}
+                      onClick={() => handleParentLock(fieldPath, val, !parentLocked)}
+                    >
+                      {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{parentLocked ? 'Unlock object and all properties' : 'Lock object and all properties'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* Add Property Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0"
+                      onClick={() => addObjectProperty(fieldPath)}
+                      disabled={parentLocked || isGenerating}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add new property</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            
             <CollapsibleContent>
               <div>
-                {Object.entries(val).map(([subKey, subVal], index, arr) => 
-                  renderFieldValue(subKey, subVal, fieldPath, level + 1, index === arr.length - 1)
-                )}
+                {Object.entries(val).map(([subKey, subVal], index, arr) => (
+                  <div key={`${fieldPath}.${subKey}`} className="relative">
+                    {renderFieldValue(subKey, subVal, fieldPath, level + 1, index === arr.length - 1)}
+                    
+                    {/* Delete Property Button */}
+                    {Object.keys(val).length > 1 && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                              onClick={() => deleteObjectProperty(`${fieldPath}.${subKey}`)}
+                              disabled={parentLocked || isGenerating}
+                            >
+                              <Minus className="w-3 h-3" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Delete property</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
+                ))}
               </div>
             </CollapsibleContent>
           </div>
@@ -171,29 +416,78 @@ const ParameterEditor = ({
 
     // Handle arrays
     if (Array.isArray(val)) {
+      const parentLocked = isParentLocked(fieldPath);
+      
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <CollapsibleTrigger asChild>
-              <div 
-                className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded cursor-pointer group font-mono text-sm"
-                style={{ paddingLeft: `${level * 20 + 24}px` }}
-              >
-                <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
-                <span className="text-foreground font-medium">{key}</span>
-                <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
-                  {typeInfo.icon} {typeInfo.count}
-                </span>
-              </div>
-            </CollapsibleTrigger>
+            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm">
+              <CollapsibleTrigger asChild>
+                <div 
+                  className="flex items-center gap-2 cursor-pointer flex-1"
+                  style={{ paddingLeft: `${level * 20 + 24}px` }}
+                >
+                  <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                  <span className="text-foreground font-medium">{key}</span>
+                  <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
+                    {typeInfo.icon} {typeInfo.count}
+                  </span>
+                </div>
+              </CollapsibleTrigger>
+              
+              {/* Parent Lock Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn(
+                        "w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0",
+                        parentLocked 
+                          ? "text-amber-600 hover:text-amber-600/80" 
+                          : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100"
+                      )}
+                      onClick={() => handleParentLock(fieldPath, val, !parentLocked)}
+                    >
+                      {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{parentLocked ? 'Unlock array and all items' : 'Lock array and all items'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              {/* Add Item Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0"
+                      onClick={() => addArrayItem(fieldPath)}
+                      disabled={parentLocked || isGenerating}
+                    >
+                      <Plus className="w-3 h-3" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add new item</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            
             <CollapsibleContent>
               <div>
                 {val.map((item, index) => {
                   const isLastItem = index === val.length - 1;
                   if (typeof item === 'object' && item !== null) {
                     return (
-                      <div key={`${fieldPath}[${index}]`} className="relative">
+                      <div key={`${fieldPath}[${index}]`} className="relative group/item">
                         {renderTreeLines(level + 1, isLastItem, true)}
                         <div 
                           className="flex items-center gap-2 py-1 px-2 font-mono text-sm text-muted-foreground"
@@ -207,10 +501,59 @@ const ParameterEditor = ({
                         {Object.entries(item).map(([subKey, subVal], subIndex, subArr) => 
                           renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 2, subIndex === subArr.length - 1)
                         )}
+                        
+                        {/* Delete Array Item Button */}
+                        {val.length > 1 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                                  onClick={() => deleteArrayItem(fieldPath, index)}
+                                  disabled={parentLocked || isGenerating}
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Delete item</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
                       </div>
                     );
                   }
-                  return renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem);
+                  
+                  return (
+                    <div key={`${fieldPath}[${index}]`} className="relative group/item">
+                      {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem)}
+                      
+                      {/* Delete Array Item Button for primitives */}
+                      {val.length > 1 && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0"
+                                onClick={() => deleteArrayItem(fieldPath, index)}
+                                disabled={parentLocked || isGenerating}
+                              >
+                                <Minus className="w-3 h-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete item</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    </div>
+                  );
                 })}
               </div>
             </CollapsibleContent>
