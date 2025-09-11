@@ -96,7 +96,7 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
           <ChevronLeft className="w-4 h-4" />
         </Button>
         
-          <div className="flex-1 flex flex-col items-center min-h-0">
+          <div className="flex-1 flex flex-col items-center min-h-0 relative">
             {history.length === 0 ? (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
@@ -105,12 +105,13 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
               </div>
             ) : (
               <>
-                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-6 mt-4 flex-shrink-0">
+                {/* Positioned title to avoid overlap */}
+                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 -rotate-90 text-xs font-medium text-lab-text-muted tracking-widest whitespace-nowrap z-10">
                   EXPERIMENTS
                 </div>
                 
-                {/* Thumbnails */}
-                <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto">
+                {/* Thumbnails with top padding to avoid title */}
+                <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto pt-16">
                   {history.slice(0, 8).map((item) => (
                     <div
                       key={item.id}
