@@ -873,17 +873,70 @@ const VisualControlsEditor = ({
     </div>
   );
 
-  const renderStructuredView = () => (
-    <div className="relative h-full overflow-hidden flex flex-col">
-      <div className="flex-1 overflow-y-auto overscroll-contain p-4">
+  const renderStructuredView = () => {
+    const generalFields = ['short_description', 'background_setting', 'style_medium', 'context', 'artistic_style'];
+    
+    const renderGeneralGroup = () => {
+      const generalData: Record<string, any> = {};
+      const otherData: Record<string, any> = {};
+      
+      // Split fields into general and other categories
+      if (parsedJSON) {
+        Object.entries(parsedJSON).forEach(([key, val]) => {
+          if (generalFields.includes(key)) {
+            generalData[key] = val;
+          } else {
+            otherData[key] = val;
+          }
+        });
+      }
+      
+      return (
         <div className="space-y-1">
-          {parsedJSON && Object.entries(parsedJSON).map(([key, val], index, arr) => 
-            renderFieldValue(key, val, '', 0, index === arr.length - 1)
+          {/* General Group */}
+          {Object.keys(generalData).length > 0 && (
+            <Collapsible key="general" defaultOpen={false}>
+              <div className="relative">
+                {renderTreeLines(0, false, true)}
+                <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{ paddingLeft: '24px' }}>
+                  <CollapsibleTrigger asChild>
+                    <div className="flex items-center gap-2 cursor-pointer flex-1">
+                      <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
+                      <span className="text-foreground font-medium">General</span>
+                      <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
+                        {} {Object.keys(generalData).length}
+                      </span>
+                    </div>
+                  </CollapsibleTrigger>
+                </div>
+                
+                <CollapsibleContent>
+                  <div>
+                    {Object.entries(generalData).map(([key, val], index, arr) => 
+                      renderFieldValue(key, val, '', 1, index === arr.length - 1)
+                    )}
+                  </div>
+                </CollapsibleContent>
+              </div>
+            </Collapsible>
+          )}
+          
+          {/* Other Fields */}
+          {Object.entries(otherData).map(([key, val], index, arr) => 
+            renderFieldValue(key, val, '', 0, index === arr.length - 1 && Object.keys(generalData).length === 0)
           )}
         </div>
+      );
+    };
+    
+    return (
+      <div className="relative h-full overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4">
+          {renderGeneralGroup()}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderSourceView = () => {
     const lines = value.split('\n');
