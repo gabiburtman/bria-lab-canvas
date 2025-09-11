@@ -96,52 +96,52 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
           <ChevronLeft className="w-4 h-4" />
         </Button>
         
-        <div className="flex-1 flex flex-col items-center min-h-0">
-          {history.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
-                EXPERIMENTS
+          <div className="flex-1 flex flex-col items-center min-h-0">
+            {history.length === 0 ? (
+              <div className="flex-1 flex items-center justify-center">
+                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
+                  EXPERIMENTS
+                </div>
               </div>
-            </div>
-          ) : (
-            <>
-              <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-2 flex-shrink-0">
-                EXPERIMENTS
-              </div>
-              
-              {/* Thumbnails */}
-              <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto">
-                {history.slice(0, 8).map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => {
-                      onItemClick(item);
-                      handleCollapse(false, true);
-                    }}
-                    className={cn(
-                      "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2 flex-shrink-0",
-                      activeId === item.id 
-                        ? "border-lab-border-focus shadow-lab-glow-focus" 
-                        : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
-                    )}
-                  >
-                    {item.thumbnail ? (
-                      <img
-                        src={item.thumbnail}
-                        alt="Experiment"
-                        className="w-full h-full rounded object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
-                        <History className="w-4 h-4 text-lab-text-muted" />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+            ) : (
+              <>
+                <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap mb-6 mt-4 flex-shrink-0">
+                  EXPERIMENTS
+                </div>
+                
+                {/* Thumbnails */}
+                <div className="flex flex-col gap-2 px-2 flex-1 overflow-y-auto">
+                  {history.slice(0, 8).map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        onItemClick(item);
+                        handleCollapse(false, true);
+                      }}
+                      className={cn(
+                        "w-12 h-12 rounded cursor-pointer transition-all duration-200 border-2 flex-shrink-0",
+                        activeId === item.id 
+                          ? "border-lab-border-focus shadow-lab-glow-focus" 
+                          : "border-lab-border hover:border-lab-border-focus hover:shadow-lab-glow-subtle"
+                      )}
+                    >
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt="Experiment"
+                          className="w-full h-full rounded object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full rounded bg-lab-border flex items-center justify-center">
+                          <History className="w-4 h-4 text-lab-text-muted" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
       </div>
     );
   }
@@ -214,9 +214,9 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
         </div>
       )}
 
-      {/* Expanded overlay - Positioned over the middle panel */}
+      {/* Expanded overlay - Expands leftward over middle panel */}
       {!isCollapsed && (
-        <div className="absolute top-0 right-16 h-full w-80 bg-lab-surface rounded-lg shadow-2xl flex flex-col z-50 border border-lab-border"
+        <div className="absolute top-0 right-0 h-full w-80 bg-lab-surface rounded-lg shadow-2xl flex flex-col z-50 border border-lab-border"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
