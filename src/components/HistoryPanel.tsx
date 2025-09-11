@@ -18,10 +18,16 @@ interface HistoryPanelProps {
   history: HistoryItem[];
   activeId: string | null;
   onItemClick: (item: HistoryItem) => void;
+  onCollapseChange?: (collapsed: boolean) => void;
 }
 
-const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => {
+const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: HistoryPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleCollapse = (collapsed: boolean) => {
+    setIsCollapsed(collapsed);
+    onCollapseChange?.(collapsed);
+  };
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date();
@@ -51,7 +57,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setIsCollapsed(false)}
+          onClick={() => handleCollapse(false)}
           className="m-2 p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -78,7 +84,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setIsCollapsed(true)}
+          onClick={() => handleCollapse(true)}
           className="p-2 hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
         >
           <ChevronRight className="w-4 h-4" />

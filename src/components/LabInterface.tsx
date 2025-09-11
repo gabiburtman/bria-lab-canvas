@@ -17,6 +17,7 @@ const LabInterface = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [activeHistoryId, setActiveHistoryId] = useState<string | null>(null);
   const [currentConfig, setCurrentConfig] = useState<any>(null);
+  const [isHistoryCollapsed, setIsHistoryCollapsed] = useState(false);
 
   const handleImagesGenerated = useCallback((images: string[], config: any) => {
     setImages(images);
@@ -179,25 +180,26 @@ const LabInterface = () => {
       
       {/* Main Content Area - Floating Panels */}
       <div className="flex gap-4 h-[calc(100vh-8rem)]">
-        {/* Configuration Panel - 45% width */}
-        <div className="w-[45%] min-w-0">
+        {/* Configuration Panel - Dynamic width based on history collapse */}
+        <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
           <ConfigurationPanel 
             onImagesGenerated={handleImagesGenerated}
             initialConfig={currentConfig}
           />
         </div>
         
-        {/* Results Canvas - 45% width */}
-        <div className="w-[45%] min-w-0">
+        {/* Results Canvas - Dynamic width based on history collapse */}
+        <div className={`min-w-0 ${isHistoryCollapsed ? 'w-[48.5%]' : 'w-[45%]'}`}>
           <ResultsCanvas images={images} />
         </div>
         
-        {/* History Panel - 10% width when open, collapsible */}
-        <div className="w-[10%] min-w-12 flex-shrink-0">
+        {/* History Panel - 10% when open, narrow when collapsed */}
+        <div className={`flex-shrink-0 ${isHistoryCollapsed ? 'w-12' : 'w-[10%]'}`}>
           <HistoryPanel 
             history={history}
             activeId={activeHistoryId}
             onItemClick={handleHistoryItemClick}
+            onCollapseChange={setIsHistoryCollapsed}
           />
         </div>
       </div>
