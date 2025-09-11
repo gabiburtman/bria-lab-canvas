@@ -149,7 +149,20 @@ const PromptComponent = ({
   // Adjust heights to ensure both states take exactly same total height
   const textareaHeight = isRefinementMode ? "min-h-[60px]" : "min-h-[120px]";
   return <div className="border border-lab-border rounded-lg bg-background overflow-hidden">
-      <Textarea placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)} className={`${textareaHeight} resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4`} />
+      <Textarea 
+        placeholder={placeholder} 
+        value={value} 
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (value.trim() || hasGenerated) {
+              handleGenerate();
+            }
+          }
+        }}
+        className={`${textareaHeight} resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4`} 
+      />
       
       {/* Controls Bar */}
       <TooltipProvider>
@@ -212,7 +225,7 @@ const PromptComponent = ({
             </Tooltip>
           </div>
 
-          {/* Generate Button */}
+          {/* Generate Button - Removed */}
           <div className="flex items-center gap-1">
             {/* Surprise Me Button */}
             <Tooltip>
@@ -225,10 +238,6 @@ const PromptComponent = ({
                 <p>Surprise me with a random prompt</p>
               </TooltipContent>
             </Tooltip>
-
-            <Button onClick={handleGenerate} disabled={!value.trim() && !hasGenerated || isGenerating} size="sm" className="bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground disabled:opacity-50">
-              {isGenerating ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> : <ArrowRight className="w-4 h-4" />}
-            </Button>
           </div>
         </div>
       </TooltipProvider>
