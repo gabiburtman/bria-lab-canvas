@@ -263,6 +263,7 @@ const ConfigurationPanel = ({
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -477,9 +478,9 @@ const ConfigurationPanel = ({
     if (!file) return;
 
     // Simulate processing the image and extracting experiment spec
-    setIsGenerating(true);
+    setIsProcessingFile(true);
     setTimeout(() => {
-      setIsGenerating(false);
+      setIsProcessingFile(false);
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
         short_description: `Analysis of uploaded image: ${file.name}`,
@@ -497,9 +498,9 @@ const ConfigurationPanel = ({
     if (!file) return;
 
     // Simulate processing the brief and extracting experiment spec
-    setIsGenerating(true);
+    setIsProcessingFile(true);
     setTimeout(() => {
-      setIsGenerating(false);
+      setIsProcessingFile(false);
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
         short_description: `Experiment spec extracted from brief: ${file.name}`,
@@ -539,7 +540,7 @@ const ConfigurationPanel = ({
         {/* Experiment Spec Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
+            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
         </div>
 
