@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge } from "lucide-react";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface ImageCardProps {
   src?: string;
@@ -210,7 +210,63 @@ const ResultsCanvas = ({
           <h3 className="text-lg font-medium text-lab-text-primary mb-2">
             System Ready for Generation
           </h3>
-           <p className="text-sm text-lab-text-secondary mb-4">Input experiment specification or prompt in the left panel to run an experiment.</p>
+          <p className="text-sm text-lab-text-secondary mb-4">Input experiment specification or prompt in the left panel to run an experiment.</p>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="text-sm text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200">
+                <HelpCircle className="w-4 h-4 mr-2" />
+                Learn about Bria 4
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl bg-lab-surface border-lab-border">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
+                  <Sparkles className="w-5 h-5 text-lab-primary" />
+                  About Bria 4
+                </DialogTitle>
+                <DialogDescription className="text-lab-text-secondary">
+                  Next-generation AI image generation model
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-6 text-lab-text-primary">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Zap className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium mb-1">Advanced Generation Capabilities</h4>
+                      <p className="text-sm text-lab-text-secondary">Bria 4 delivers state-of-the-art image generation with superior prompt understanding, realistic textures, and precise detail control for professional-grade outputs.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium mb-1">Commercial-Safe Training</h4>
+                      <p className="text-sm text-lab-text-secondary">Trained exclusively on licensed content, ensuring all generated images are safe for commercial use without copyright concerns or legal risks.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Grid3X3 className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium mb-1">Fine-Grained Control</h4>
+                      <p className="text-sm text-lab-text-secondary">Experiment with detailed specifications including lighting, composition, style, objects, and artistic direction for precise creative control.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-lab-interactive-hover rounded-lg p-4 border border-lab-border">
+                  <h4 className="font-medium mb-2 text-lab-text-primary">Perfect For:</h4>
+                  <ul className="text-sm text-lab-text-secondary space-y-1">
+                    <li>• Marketing and advertising content</li>
+                    <li>• Product photography and mockups</li>
+                    <li>• Creative campaigns and brand assets</li>
+                    <li>• Concept art and design exploration</li>
+                  </ul>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>;
   }

@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network } from "lucide-react";
+import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface ExperimentSpecEditorProps {
   value: string;
@@ -768,6 +768,63 @@ const ExperimentSpecEditor = ({
           Upload Brief
         </Button>
       </div>
+      
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="sm" className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 flex items-center gap-1">
+            <HelpCircle className="w-3 h-3" />
+            Learn about Bria 4
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl bg-lab-surface border-lab-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
+              <Sparkles className="w-5 h-5 text-lab-primary" />
+              About Bria 4
+            </DialogTitle>
+            <DialogDescription className="text-lab-text-secondary">
+              Next-generation AI image generation model
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-6 text-lab-text-primary">
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <Zap className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium mb-1">Advanced Generation Capabilities</h4>
+                  <p className="text-sm text-lab-text-secondary">Bria 4 delivers state-of-the-art image generation with superior prompt understanding, realistic textures, and precise detail control for professional-grade outputs.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <Shield className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium mb-1">Commercial-Safe Training</h4>
+                  <p className="text-sm text-lab-text-secondary">Trained exclusively on licensed content, ensuring all generated images are safe for commercial use without copyright concerns or legal risks.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <Grid3X3 className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium mb-1">Fine-Grained Control</h4>
+                  <p className="text-sm text-lab-text-secondary">Experiment with detailed specifications including lighting, composition, style, objects, and artistic direction for precise creative control.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-lab-interactive-hover rounded-lg p-4 border border-lab-border">
+              <h4 className="font-medium mb-2 text-lab-text-primary">Perfect For:</h4>
+              <ul className="text-sm text-lab-text-secondary space-y-1">
+                <li>• Marketing and advertising content</li>
+                <li>• Product photography and mockups</li>
+                <li>• Creative campaigns and brand assets</li>
+                <li>• Concept art and design exploration</li>
+              </ul>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>;
   const renderStructuredView = () => {
     const generalFields = ['short_description', 'background_setting', 'style_medium', 'context', 'artistic_style'];
@@ -891,6 +948,61 @@ const ExperimentSpecEditor = ({
           <span className="text-sm font-medium text-foreground">
             Experiment Spec
           </span>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full p-0 text-muted-foreground hover:text-foreground">
+                <HelpCircle className="w-3 h-3" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl bg-lab-surface border-lab-border">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
+                  <Sparkles className="w-5 h-5 text-lab-primary" />
+                  About Bria 4
+                </DialogTitle>
+                <DialogDescription className="text-lab-text-secondary">
+                  Next-generation AI image generation model
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-6 text-lab-text-primary">
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <Zap className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium mb-1">Advanced Generation Capabilities</h4>
+                      <p className="text-sm text-lab-text-secondary">Bria 4 delivers state-of-the-art image generation with superior prompt understanding, realistic textures, and precise detail control for professional-grade outputs.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium mb-1">Commercial-Safe Training</h4>
+                      <p className="text-sm text-lab-text-secondary">Trained exclusively on licensed content, ensuring all generated images are safe for commercial use without copyright concerns or legal risks.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-3">
+                    <Grid3X3 className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h4 className="font-medium mb-1">Fine-Grained Control</h4>
+                      <p className="text-sm text-lab-text-secondary">Experiment with detailed specifications including lighting, composition, style, objects, and artistic direction for precise creative control.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-lab-interactive-hover rounded-lg p-4 border border-lab-border">
+                  <h4 className="font-medium mb-2 text-lab-text-primary">Perfect For:</h4>
+                  <ul className="text-sm text-lab-text-secondary space-y-1">
+                    <li>• Marketing and advertising content</li>
+                    <li>• Product photography and mockups</li>
+                    <li>• Creative campaigns and brand assets</li>
+                    <li>• Concept art and design exploration</li>
+                  </ul>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
           <Tooltip>
             <TooltipTrigger asChild>
               <Dialog>
