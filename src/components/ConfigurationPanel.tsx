@@ -8,8 +8,9 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import VisualControlsEditor from "./VisualControlsEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2 } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+
 const defaultJSON = {
   "short_description": "",
   "objects": [{
@@ -60,6 +61,7 @@ const defaultJSON = {
   "context": "",
   "artistic_style": ""
 };
+
 const mockFilledJSON = {
   "short_description": "A serene mountain landscape at sunrise with vibrant colors",
   "objects": [{
@@ -110,6 +112,7 @@ const mockFilledJSON = {
   "context": "Nature photography showcasing the beauty of mountain landscapes",
   "artistic_style": "Contemporary landscape photography with emphasis on natural lighting"
 };
+
 const PromptComponent = ({
   value,
   onChange,
@@ -125,6 +128,7 @@ const PromptComponent = ({
   hasGenerated,
   isGenerating,
   onSurpriseMe,
+  onTranslatePrompt,
   isRefinementMode = false
 }: {
   value: string;
@@ -144,11 +148,14 @@ const PromptComponent = ({
   hasGenerated: boolean;
   isGenerating: boolean;
   onSurpriseMe: () => void;
+  onTranslatePrompt: () => void;
   isRefinementMode?: boolean;
 }) => {
   // Adjust heights to ensure both states take exactly same total height
   const textareaHeight = isRefinementMode ? "min-h-[60px]" : "min-h-[120px]";
-  return <div className="border border-lab-border rounded-lg bg-background overflow-hidden">
+  
+  return (
+    <div className="border border-lab-border rounded-lg bg-background overflow-hidden">
       <Textarea 
         placeholder={placeholder} 
         value={value} 
@@ -180,9 +187,20 @@ const PromptComponent = ({
                   </PopoverTrigger>
                   <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
                     <div className="space-y-1">
-                      {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
+                      {aspectRatios.map(ratio => (
+                        <button 
+                          key={ratio.value} 
+                          onClick={() => setAspectRatio(ratio.value)} 
+                          className={cn(
+                            "w-full text-left px-3 py-2 text-sm rounded-md transition-colors", 
+                            aspectRatio === ratio.value 
+                              ? "bg-lab-primary text-lab-primary-foreground" 
+                              : "hover:bg-lab-interactive-hover text-lab-text-secondary"
+                          )}
+                        >
                           {ratio.label}
-                        </button>)}
+                        </button>
+                      ))}
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -225,7 +243,6 @@ const PromptComponent = ({
             </Tooltip>
           </div>
 
-          {/* Generate Button - Removed */}
           <div className="flex items-center gap-1">
             {/* Surprise Me Button */}
             <Tooltip>
@@ -238,11 +255,31 @@ const PromptComponent = ({
                 <p>Surprise me with a random prompt</p>
               </TooltipContent>
             </Tooltip>
+
+            {/* Translate Prompt Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={onTranslatePrompt} 
+                  disabled={isGenerating || (!hasGenerated && !value.trim()) || (hasGenerated && !value.trim())} 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <Sparkles className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Translate prompt to visual controls</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </TooltipProvider>
-    </div>;
+    </div>
+  );
 };
+
 const ConfigurationPanel = ({
   onImagesGenerated,
   onClearResults,
@@ -281,34 +318,66 @@ const ConfigurationPanel = ({
       }
     }
   }, [initialConfig]);
-  const aspectRatios = [{
-    value: "9:16",
-    label: "9:16"
-  }, {
-    value: "2:3",
-    label: "2:3"
-  }, {
-    value: "3:4",
-    label: "3:4"
-  }, {
-    value: "1:1",
-    label: "1:1"
-  }, {
-    value: "4:3",
-    label: "4:3"
-  }, {
-    value: "3:2",
-    label: "3:2"
-  }, {
-    value: "16:9",
-    label: "16:9"
-  }];
+
+  const aspectRatios = [
+    { value: "9:16", label: "9:16" },
+    { value: "2:3", label: "2:3" },
+    { value: "3:4", label: "3:4" },
+    { value: "1:1", label: "1:1" },
+    { value: "4:3", label: "4:3" },
+    { value: "3:2", label: "3:2" },
+    { value: "16:9", label: "16:9" }
+  ];
 
   // Random prompts for the "Surprise Me" feature
-  const randomPrompts = ["A majestic mountain landscape at sunrise with golden light", "A cozy coffee shop in a bustling city street during autumn", "A futuristic cityscape with flying cars and neon lights", "A peaceful forest clearing with sunbeams filtering through trees", "A vintage bookstore filled with antique books and warm lighting", "A modern architectural marvel reflecting in still water", "A vibrant market scene with colorful fruits and busy vendors", "A serene beach at sunset with gentle waves and palm trees", "A snow-covered village with twinkling lights and smoke from chimneys", "A mysterious cave entrance with glowing crystals inside"];
+  const randomPrompts = [
+    "A majestic mountain landscape at sunrise with golden light",
+    "A cozy coffee shop in a bustling city street during autumn",
+    "A futuristic cityscape with flying cars and neon lights",
+    "A peaceful forest clearing with sunbeams filtering through trees",
+    "A vintage bookstore filled with antique books and warm lighting",
+    "A modern architectural marvel reflecting in still water",
+    "A vibrant market scene with colorful fruits and busy vendors",
+    "A serene beach at sunset with gentle waves and palm trees",
+    "A snow-covered village with twinkling lights and smoke from chimneys",
+    "A mysterious cave entrance with glowing crystals inside"
+  ];
 
   // Refinement suggestions for when in refinement mode
-  const refinementSuggestions = ["Add more dramatic lighting with stronger shadows", "Make the colors more vibrant and saturated", "Add atmospheric fog or mist for depth", "Include more detailed textures on surfaces", "Enhance the contrast between light and dark areas", "Add subtle motion blur to suggest movement", "Increase the depth of field for better focus", "Add warm golden hour lighting", "Include more intricate details in the foreground", "Make the composition more dynamic with diagonal lines", "Add reflections for more visual interest", "Enhance the mood with cooler or warmer tones", "Add subtle lens flare effects", "Include more environmental storytelling elements", "Make the scene more cinematic with wider framing"];
+  const refinementSuggestions = [
+    "Add more dramatic lighting with stronger shadows",
+    "Make the colors more vibrant and saturated",
+    "Add atmospheric fog or mist for depth",
+    "Include more detailed textures on surfaces",
+    "Enhance the contrast between light and dark areas",
+    "Add subtle motion blur to suggest movement",
+    "Increase the depth of field for better focus",
+    "Add warm golden hour lighting",
+    "Include more intricate details in the foreground",
+    "Make the composition more dynamic with diagonal lines",
+    "Add reflections for more visual interest",
+    "Enhance the mood with cooler or warmer tones",
+    "Add subtle lens flare effects",
+    "Include more environmental storytelling elements",
+    "Make the scene more cinematic with wider framing"
+  ];
+
+  // Handle translate prompt to visual controls
+  const handleTranslatePrompt = useCallback(() => {
+    const currentPrompt = hasGenerated ? refinementPrompt : mainPrompt;
+    if (!currentPrompt.trim()) return;
+
+    // Clear previous highlights
+    setUpdatedFields(new Set());
+    
+    // Populate visual controls with mock data based on the prompt
+    setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+
+    // Mark some fields as updated, but exclude locked fields
+    const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
+    const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
+    setUpdatedFields(fieldsToUpdate);
+  }, [hasGenerated, refinementPrompt, mainPrompt, lockedFields]);
 
   // Handle surprise me functionality
   const handleSurpriseMe = useCallback(() => {
@@ -328,50 +397,22 @@ const ConfigurationPanel = ({
     const baseSize = 512;
     switch (aspectRatio) {
       case "9:16":
-        return {
-          width: Math.round(baseSize * 9 / 16),
-          height: baseSize
-        };
-      // 288x512
+        return { width: Math.round(baseSize * 9 / 16), height: baseSize };
       case "2:3":
-        return {
-          width: Math.round(baseSize * 2 / 3),
-          height: baseSize
-        };
-      // 341x512
+        return { width: Math.round(baseSize * 2 / 3), height: baseSize };
       case "3:4":
-        return {
-          width: Math.round(baseSize * 3 / 4),
-          height: baseSize
-        };
-      // 384x512
+        return { width: Math.round(baseSize * 3 / 4), height: baseSize };
       case "4:3":
-        return {
-          width: baseSize,
-          height: Math.round(baseSize * 3 / 4)
-        };
-      // 512x384
+        return { width: baseSize, height: Math.round(baseSize * 3 / 4) };
       case "3:2":
-        return {
-          width: baseSize,
-          height: Math.round(baseSize * 2 / 3)
-        };
-      // 512x341
+        return { width: baseSize, height: Math.round(baseSize * 2 / 3) };
       case "16:9":
-        return {
-          width: baseSize,
-          height: Math.round(baseSize * 9 / 16)
-        };
-      // 512x288
+        return { width: baseSize, height: Math.round(baseSize * 9 / 16) };
       default:
-        // 1:1
-        return {
-          width: baseSize,
-          height: baseSize
-        };
-      // 512x512
+        return { width: baseSize, height: baseSize };
     }
   };
+
   const handleGenerate = () => {
     if (!hasGenerated && mainPrompt.trim()) {
       setOriginalPrompt(mainPrompt);
@@ -397,7 +438,12 @@ const ConfigurationPanel = ({
       // Generate new mock images with correct aspect ratio
       const timestamp = Date.now();
       const dimensions = getImageDimensions(aspectRatio);
-      const mockImages = [`https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 1}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 2}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 3}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 4}`];
+      const mockImages = [
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 1}`,
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 2}`,
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 3}`,
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 4}`
+      ];
 
       // Notify parent component about generated images
       const config = {
@@ -417,6 +463,7 @@ const ConfigurationPanel = ({
       }
     }, 3000);
   };
+
   const handleStartOver = () => {
     setHasGenerated(false);
     setOriginalPrompt("");
@@ -435,6 +482,7 @@ const ConfigurationPanel = ({
       onClearResults();
     }
   };
+
   const handleFieldLock = (field: string, locked: boolean) => {
     const newLockedFields = new Set(lockedFields);
     if (locked) {
@@ -457,120 +505,142 @@ const ConfigurationPanel = ({
     });
     setLockedFields(newLockedFields);
   };
+
   const handleUploadImage = () => {
-    // Trigger file input for images
     imageInputRef.current?.click();
   };
+
   const handleUploadDocument = () => {
-    // Trigger file input for documents
     briefInputRef.current?.click();
   };
-  const handleImageFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      // Move to refine state if we're in initial state
-      if (!hasGenerated) {
-        setOriginalPrompt(`Uploaded image: ${file.name}`);
-        setHasGenerated(true);
-      }
+    if (!file) return;
 
-      // Simulate processing the image and extracting visual controls
-      setIsGenerating(true);
-      setTimeout(() => {
-        const imageBasedJSON = {
-          ...mockFilledJSON,
-          short_description: `Analysis of uploaded image: ${file.name}`,
-          context: "Image analysis and visual controls extraction",
-          style_medium: "Based on uploaded reference image"
-        };
-        setJsonData(JSON.stringify(imageBasedJSON, null, 2));
-
-        // Mark fields as updated, but exclude locked fields
-        const potentialUpdatedFields = new Set(['short_description', 'context', 'style_medium']);
-        const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
-        setUpdatedFields(fieldsToUpdate);
-        setIsGenerating(false);
-      }, 2000);
-    }
-    // Reset the input
-    event.target.value = '';
-  };
-  const handleBriefFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Move to refine state if we're in initial state
-      if (!hasGenerated) {
-        setOriginalPrompt(`Uploaded brief: ${file.name}`);
-        setHasGenerated(true);
-      }
-
-      // Simulate processing the brief and extracting visual controls
-      setIsGenerating(true);
-      setTimeout(() => {
-        const briefBasedJSON = {
-          ...mockFilledJSON,
-          short_description: `Visual controls extracted from brief: ${file.name}`,
-          context: "Brief-based visual controls extraction",
-          artistic_style: "Style defined in uploaded brief document"
-        };
-        setJsonData(JSON.stringify(briefBasedJSON, null, 2));
-
-        // Mark fields as updated, but exclude locked fields
-        const potentialUpdatedFields = new Set(['short_description', 'context', 'artistic_style']);
-        const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
-        setUpdatedFields(fieldsToUpdate);
-        setIsGenerating(false);
-      }, 2000);
-    }
-    // Reset the input
-    event.target.value = '';
-  };
-
-  // Clear updated fields highlight only on new generation (removed 3-second timeout)
-  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
-      {/* Hidden file inputs */}
-      <input ref={imageInputRef} type="file" accept="image/*" style={{
-      display: 'none'
-    }} onChange={handleImageFileChange} />
-      <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt" style={{
-      display: 'none'
-    }} onChange={handleBriefFileChange} />
+    // Simulate processing the image and extracting visual controls
+    setIsGenerating(true);
+    setTimeout(() => {
+      setIsGenerating(false);
+      setJsonData(JSON.stringify({
+        ...mockFilledJSON,
+        short_description: `Analysis of uploaded image: ${file.name}`,
+        context: "Image analysis and visual controls extraction",
+        style_medium: "Based on uploaded reference image"
+      }, null, 2));
       
-      <div className="flex-1 min-h-0 p-6 flex flex-col overflow-hidden">
-        {/* Prompt Area */}
-        <div className="space-y-4 mb-4 flex-shrink-0">
-          {hasGenerated && <div className="mb-2">
-              <h3 className="text-xs font-medium text-lab-text-secondary mb-1">Original Input</h3>
-              <div className="text-xs text-lab-text-primary leading-tight">
-                {originalPrompt}
-              </div>
-            </div>}
-          
-          <PromptComponent value={hasGenerated ? refinementPrompt : mainPrompt} onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} seed={seed} setSeed={setSeed} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} isRefinementMode={hasGenerated} />
+      // Mark fields as updated
+      const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
+      setUpdatedFields(updatedFieldsSet);
+    }, 2000);
+  };
+
+  const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Simulate processing the brief and extracting visual controls
+    setIsGenerating(true);
+    setTimeout(() => {
+      setIsGenerating(false);
+      setJsonData(JSON.stringify({
+        ...mockFilledJSON,
+        short_description: `Visual controls extracted from brief: ${file.name}`,
+        context: "Brief-based visual controls extraction",
+        artistic_style: "Style defined in uploaded brief document"
+      }, null, 2));
+      
+      // Mark fields as updated
+      const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
+      setUpdatedFields(updatedFieldsSet);
+    }, 2000);
+  };
+
+  return (
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
+      {/* Hidden file inputs */}
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleImageUpload}
+        className="hidden"
+      />
+      <input
+        ref={briefInputRef}
+        type="file"
+        accept=".pdf,.doc,.docx,.txt"
+        onChange={handleDocumentUpload}
+        className="hidden"
+      />
+
+      {/* Header */}
+      <div className="flex items-center justify-between p-6 pb-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-medium text-lab-text-primary">
+            Configuration
+          </h2>
+        </div>
+        {hasGenerated && (
+          <Button
+            onClick={handleStartOver}
+            variant="outline"
+            size="sm"
+            className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover"
+          >
+            Start Over
+          </Button>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
+        {/* Prompt Section - Fixed height */}
+        <div className="flex-shrink-0">
+          <PromptComponent
+            value={hasGenerated ? refinementPrompt : mainPrompt}
+            onChange={hasGenerated ? setRefinementPrompt : setMainPrompt}
+            placeholder={
+              hasGenerated
+                ? `Refine with new instructions...\n\nOriginal: ${originalPrompt}`
+                : "A futuristic cityscape with flying cars and neon lights."
+            }
+            aspectRatio={aspectRatio}
+            aspectRatios={aspectRatios}
+            setAspectRatio={setAspectRatio}
+            steps={steps}
+            setSteps={setSteps}
+            seed={seed}
+            setSeed={setSeed}
+            handleGenerate={handleGenerate}
+            hasGenerated={hasGenerated}
+            isGenerating={isGenerating}
+            onSurpriseMe={handleSurpriseMe}
+            onTranslatePrompt={handleTranslatePrompt}
+            isRefinementMode={hasGenerated}
+          />
         </div>
 
         {/* Visual Controls Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <VisualControlsEditor value={jsonData} onChange={setJsonData} isGenerating={isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} />
+            <VisualControlsEditor 
+              value={jsonData} 
+              onChange={setJsonData} 
+              isGenerating={isGenerating} 
+              lockedFields={lockedFields} 
+              onFieldLock={handleFieldLock} 
+              onBatchFieldLock={handleBatchFieldLock} 
+              onUploadImage={handleUploadImage} 
+              onUploadDocument={handleUploadDocument} 
+              updatedFields={updatedFields} 
+              forceStructuredView={hasGenerated || isGenerating} 
+            />
           </div>
         </div>
       </div>
-
-      {/* Action Buttons - Sticky Bottom */}
-      <div className="sticky bottom-0 p-6 pt-3 bg-lab-surface border-t border-lab-border rounded-b-lg">
-        <div className="flex gap-3">
-          <Button onClick={handleGenerate} disabled={!mainPrompt.trim() && !hasGenerated && !refinementPrompt.trim() || isGenerating} className="flex-1 bg-lab-primary hover:bg-lab-primary-hover text-lab-primary-foreground font-medium hover:shadow-lab-glow-primary transition-all disabled:opacity-50">
-            {isGenerating ? <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Generating...
-              </> : 'Generate'}
-          </Button>
-          <Button variant="outline" onClick={handleStartOver} className="flex-1 border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
-            Start Over
-          </Button>
-        </div>
-      </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ConfigurationPanel;
