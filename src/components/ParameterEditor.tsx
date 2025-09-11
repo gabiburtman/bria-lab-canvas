@@ -137,6 +137,37 @@ const ParameterEditor = ({
     return lockedFields.has(path);
   };
 
+  // Helper function to check if a field is locked (either directly or through parent)
+  const isFieldLocked = (fieldPath: string) => {
+    // Check if this specific field is locked
+    if (lockedFields.has(fieldPath)) {
+      return true;
+    }
+    
+    // Check if any parent path is locked
+    const pathParts = fieldPath.split('.');
+    for (let i = 1; i <= pathParts.length; i++) {
+      const parentPath = pathParts.slice(0, i).join('.');
+      if (lockedFields.has(parentPath)) {
+        return true;
+      }
+    }
+    
+    // Also check for array parent paths
+    if (fieldPath.includes('[')) {
+      // For array items like "lighting[0].intensity", also check "lighting" 
+      const arrayMatch = fieldPath.match(/^([^[]+)(\[.+)/);
+      if (arrayMatch) {
+        const arrayBasePath = arrayMatch[1];
+        if (lockedFields.has(arrayBasePath)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  };
+
   // Helper function to get all child paths of a parent
   const getChildPaths = (obj: any, basePath: string = ''): string[] => {
     const paths: string[] = [];
@@ -306,14 +337,14 @@ const ParameterEditor = ({
 
   const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false) => {
     const fieldPath = path ? `${path}.${key}` : key;
-    const isLocked = lockedFields.has(fieldPath);
+    const isLocked = isFieldLocked(fieldPath);
     const isUpdated = updatedFields.has(fieldPath);
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
 
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      const parentLocked = isParentLocked(fieldPath);
+      const parentLocked = isFieldLocked(fieldPath);
       
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
@@ -416,7 +447,7 @@ const ParameterEditor = ({
 
     // Handle arrays
     if (Array.isArray(val)) {
-      const parentLocked = isParentLocked(fieldPath);
+      const parentLocked = isFieldLocked(fieldPath);
       
       return (
         <Collapsible key={fieldPath} defaultOpen={true}>
