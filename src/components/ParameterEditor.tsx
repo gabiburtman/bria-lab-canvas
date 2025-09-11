@@ -874,7 +874,7 @@ const ParameterEditor = ({
   );
 
   const renderStructuredView = () => (
-    <div className="relative p-4 max-h-80 overflow-y-auto">
+    <div className="relative p-4 h-full overflow-y-auto">
       <div className="space-y-1">
         {parsedJSON && Object.entries(parsedJSON).map(([key, val], index, arr) => 
           renderFieldValue(key, val, '', 0, index === arr.length - 1)
@@ -897,7 +897,7 @@ const ParameterEditor = ({
     };
 
     return (
-      <div className="p-4 max-h-80 overflow-y-auto font-mono text-sm">
+      <div className="p-4 h-full overflow-y-auto font-mono text-sm">
         {lines.map((line, index) => (
           <div key={index} className="flex items-center min-h-[24px]">
             <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
