@@ -431,6 +431,11 @@ const ConfigurationPanel = ({
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
 
+      // Clear the refinement prompt if in refine mode
+      if (hasGenerated) {
+        setRefinementPrompt("");
+      }
+
       // Hide loading state
       setIsProcessingFile(false);
     }, 1500); // 1.5 second delay to simulate processing
