@@ -155,7 +155,7 @@ const PromptComponent = ({
   const textareaHeight = isRefinementMode ? "min-h-[60px]" : "min-h-[120px]";
   
   return (
-    <div className="border border-lab-border rounded-lg bg-background overflow-hidden">
+    <div className="border border-lab-border rounded-lg bg-background overflow-hidden relative">
       <Textarea 
         placeholder={placeholder} 
         value={value} 
@@ -168,8 +168,26 @@ const PromptComponent = ({
             }
           }
         }}
-        className={`${textareaHeight} resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4`} 
+        className={`${textareaHeight} resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12`} 
       />
+      
+      {/* Surprise Me Button - positioned inside textarea */}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button 
+            onClick={onSurpriseMe} 
+            disabled={isGenerating} 
+            variant="ghost" 
+            size="sm" 
+            className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+          >
+            <Wand2 className="w-4 h-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Surprise me with a random prompt</p>
+        </TooltipContent>
+      </Tooltip>
       
       {/* Controls Bar */}
       <TooltipProvider>
@@ -244,35 +262,16 @@ const PromptComponent = ({
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Surprise Me Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button onClick={onSurpriseMe} disabled={isGenerating} variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
-                  <Wand2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Surprise me with a random prompt</p>
-              </TooltipContent>
-            </Tooltip>
-
             {/* Translate Prompt Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={onTranslatePrompt} 
-                  disabled={isGenerating || (!hasGenerated && !value.trim()) || (hasGenerated && !value.trim())} 
-                  variant="ghost" 
-                  size="sm" 
-                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-                >
-                  <Languages className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Translate prompt to visual controls</p>
-              </TooltipContent>
-            </Tooltip>
+            <Button 
+              onClick={onTranslatePrompt} 
+              disabled={isGenerating || (!hasGenerated && !value.trim()) || (hasGenerated && !value.trim())} 
+              variant="link" 
+              size="sm" 
+              className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4"
+            >
+              Translate to JSON
+            </Button>
           </div>
         </div>
       </TooltipProvider>
