@@ -185,11 +185,11 @@ response = requests.post(
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-full">
       <Dialog>
         <DialogTrigger asChild>
           <div 
-            className="group aspect-square bg-lab-surface border border-lab-border rounded-lab overflow-hidden cursor-pointer hover:border-lab-border-hover hover:shadow-lab-glow-subtle transition-all duration-200 relative"
+            className="group aspect-square bg-lab-surface border border-lab-border rounded-lab overflow-hidden cursor-pointer hover:border-lab-border-hover hover:shadow-lab-glow-subtle transition-all duration-200 relative flex-shrink-0"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -264,7 +264,7 @@ response = requests.post(
       </Dialog>
       
       {/* Prominent Share Button */}
-      <div className="mt-2">
+      <div className="mt-2 flex-shrink-0">
         <SharePopover />
       </div>
     </div>
@@ -301,14 +301,15 @@ const ResultsCanvas = ({ images = [] }: { images?: string[] }) => {
   }
 
   return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6">
-      <div className="grid grid-cols-2 gap-6 h-full items-start">
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 overflow-hidden">
+      <div className="grid grid-cols-2 gap-6 h-full">
         {Array.from({ length: 4 }).map((_, index) => (
-          <ImageCard 
-            key={index}
-            src={images[index]}
-            index={index}
-          />
+          <div key={index} className="flex flex-col h-full max-h-full overflow-hidden">
+            <ImageCard 
+              src={images[index]}
+              index={index}
+            />
+          </div>
         ))}
       </div>
     </div>
