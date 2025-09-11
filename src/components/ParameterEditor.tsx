@@ -979,7 +979,7 @@ const ParameterEditor = ({
                           </Button>
                         </div>
                       </div>
-                      <div className="flex-1 overflow-auto">
+                      <div className="flex-1 overflow-auto h-full">
                         {viewState === 'structured' ? renderStructuredView() : renderSourceView()}
                       </div>
                     </div>
