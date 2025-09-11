@@ -181,7 +181,7 @@ const PromptComponent = ({
   };
 
   return (
-    <div className="border border-lab-border rounded-lg bg-background overflow-hidden relative">
+    <div className="rounded-lg bg-background overflow-hidden relative">
       {hasGenerated ? (
         <Tabs defaultValue="refine" className="w-full">
           <TabsList className="w-full justify-start rounded-none border-b border-lab-border bg-lab-surface h-10">
