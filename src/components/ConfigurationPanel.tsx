@@ -537,7 +537,7 @@ const ConfigurationPanel = ({
         <div className="space-y-4 mb-4 flex-shrink-0">
           {hasGenerated && <div className="mb-2">
               <h3 className="text-xs font-medium text-lab-text-secondary mb-1">Original Input</h3>
-              <div className="p-2 bg-lab-interactive-hover border border-lab-border rounded-lg text-xs text-lab-text-primary leading-tight max-h-[52px] overflow-y-auto">
+              <div className="text-xs text-lab-text-primary leading-tight">
                 {originalPrompt}
               </div>
             </div>}
