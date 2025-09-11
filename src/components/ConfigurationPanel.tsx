@@ -493,6 +493,32 @@ const ConfigurationPanel = ({
       setUpdatedFields(updatedFieldsSet);
     }, 2000);
   };
+  // Helper function to check if experiment spec has meaningful content
+  const hasExperimentSpecContent = useCallback(() => {
+    try {
+      const parsed = JSON.parse(jsonData);
+      // Check if any field has non-empty content
+      return Object.values(parsed).some(val => {
+        if (typeof val === 'string') return val.trim() !== '';
+        if (Array.isArray(val)) {
+          return val.some(item => {
+            if (typeof item === 'string') return item.trim() !== '';
+            if (typeof item === 'object' && item !== null) {
+              return Object.values(item).some(subVal => typeof subVal === 'string' ? subVal.trim() !== '' : subVal !== null && subVal !== undefined && subVal !== '');
+            }
+            return item !== null && item !== undefined && item !== '';
+          });
+        }
+        if (typeof val === 'object' && val !== null) {
+          return Object.values(val).some(subVal => typeof subVal === 'string' ? subVal.trim() !== '' : subVal !== null && subVal !== undefined && subVal !== '');
+        }
+        return val !== null && val !== undefined && val !== '';
+      });
+    } catch {
+      return false;
+    }
+  }, [jsonData]);
+
   const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -547,7 +573,7 @@ const ConfigurationPanel = ({
         {/* Action Buttons */}
         <div className="p-4 border-t border-lab-border bg-background">
           <div className="flex gap-3">
-            <Button onClick={handleGenerate} disabled={isGenerating || !hasGenerated && !mainPrompt.trim()} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
+            <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasExperimentSpecContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : "Generate"}
             </Button>
             
