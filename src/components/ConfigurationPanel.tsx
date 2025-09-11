@@ -418,13 +418,22 @@ const ConfigurationPanel = ({
     // Clear previous highlights
     setUpdatedFields(new Set());
 
-    // Populate experiment spec with mock data based on the prompt
-    setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+    // Show loading state in experiment spec area
+    setIsProcessingFile(true);
 
-    // Mark some fields as updated, but exclude locked fields
-    const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
-    const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
-    setUpdatedFields(fieldsToUpdate);
+    // Simulate translation processing
+    setTimeout(() => {
+      // Populate experiment spec with mock data based on the prompt
+      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+
+      // Mark some fields as updated, but exclude locked fields
+      const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
+      const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
+      setUpdatedFields(fieldsToUpdate);
+
+      // Hide loading state
+      setIsProcessingFile(false);
+    }, 1500); // 1.5 second delay to simulate processing
   }, [hasGenerated, refinementPrompt, mainPrompt, lockedFields]);
 
   // Handle surprise me functionality
