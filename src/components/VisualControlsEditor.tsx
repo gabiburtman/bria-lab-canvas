@@ -1160,77 +1160,55 @@ const VisualControlsEditor = ({
         
         <TooltipProvider>
           <div className="flex items-center gap-1">
-            {viewState === 'source' && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setViewState('structured')}
-                    className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                  >
-                    <ArrowLeft className="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Back to Structured View</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onUploadImage}
+                  className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                  disabled={isGenerating}
+                >
+                  <Upload className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Upload Image</p>
+              </TooltipContent>
+            </Tooltip>
             
-            {viewState === 'structured' && (
-              <>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onUploadImage}
-                      className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                      disabled={isGenerating}
-                    >
-                      <Upload className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Upload Image</p>
-                  </TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={onUploadDocument}
-                      className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                      disabled={isGenerating}
-                    >
-                      <FileText className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Upload Brief</p>
-                  </TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setViewState('source')}
-                      className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
-                    >
-                      <Code2 className="w-4 h-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>View Source</p>
-                  </TooltipContent>
-                </Tooltip>
-              </>
-            )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onUploadDocument}
+                  className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                  disabled={isGenerating}
+                >
+                  <FileText className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Upload Brief</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
+                  className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                >
+                  {viewState === 'structured' ? <Code2 className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{viewState === 'structured' ? 'View Source' : 'View Tree'}</p>
+              </TooltipContent>
+            </Tooltip>
             
             <Tooltip>
               <TooltipTrigger asChild>
