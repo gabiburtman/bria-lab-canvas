@@ -929,7 +929,7 @@ const ExperimentSpecEditor = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
-                  <Upload className="w-4 h-4" />
+                  <Image className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
