@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface ImageCardProps {
   src?: string;
@@ -218,51 +218,110 @@ const ResultsCanvas = ({
                 Learn about Bria 4
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl bg-lab-surface border-lab-border">
+            <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
               <DialogHeader>
-                <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
-                  <Sparkles className="w-5 h-5 text-lab-primary" />
-                  About Bria 4
-                </DialogTitle>
+              <DialogTitle className="flex items-center gap-2 text-lab-text-primary">
+                <Code2 className="w-5 h-5 text-lab-primary" />
+                Bria 4 Developer Reference
+              </DialogTitle>
                 <DialogDescription className="text-lab-text-secondary">
-                  Next-generation AI image generation model
+                  Technical specifications and integration guide
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-6 text-lab-text-primary">
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <Zap className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+              <div className="space-y-6 text-lab-text-primary max-h-[70vh] overflow-y-auto">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
                     <div>
-                      <h4 className="font-medium mb-1">Advanced Generation Capabilities</h4>
-                      <p className="text-sm text-lab-text-secondary">Bria 4 delivers state-of-the-art image generation with superior prompt understanding, realistic textures, and precise detail control for professional-grade outputs.</p>
+                      <h4 className="font-medium mb-2 flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-lab-primary" />
+                        Model Architecture
+                      </h4>
+                      <div className="text-sm text-lab-text-secondary space-y-1">
+                        <p>• Diffusion-based architecture (UNet backbone)</p>
+                        <p>• 1.2B parameters optimized for generation</p>
+                        <p>• CLIP text encoder with 77 token limit</p>
+                        <p>• VAE latent space: 512x512 → 64x64</p>
+                        <p>• Inference steps: 20-50 (recommended: 28)</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-medium mb-2 flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-lab-primary" />
+                        Training Data
+                      </h4>
+                      <div className="text-sm text-lab-text-secondary space-y-1">
+                        <p>• Licensed stock imagery dataset</p>
+                        <p>• 45M curated image-text pairs</p>
+                        <p>• Commercial-safe, copyright cleared</p>
+                        <p>• Filtered for quality and diversity</p>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                  <div className="space-y-4">
                     <div>
-                      <h4 className="font-medium mb-1">Commercial-Safe Training</h4>
-                      <p className="text-sm text-lab-text-secondary">Trained exclusively on licensed content, ensuring all generated images are safe for commercial use without copyright concerns or legal risks.</p>
+                      <h4 className="font-medium mb-2">API Integration Example</h4>
+                      <div className="bg-lab-interactive-active rounded p-3 text-xs font-mono text-lab-text-secondary">
+                        <pre>{`import { pipeline } from '@huggingface/transformers';
+
+// Load model
+const generator = await pipeline(
+  'text-to-image',
+  'bria-ai/bria-4-base',
+  { device: 'webgpu' }
+);
+
+// Generate image
+const result = await generator(
+  "portrait of a developer coding",
+  {
+    num_inference_steps: 28,
+    guidance_scale: 7.5,
+    width: 512,
+    height: 512
+  }
+);`}</pre>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-start gap-3">
-                    <Grid3X3 className="w-5 h-5 text-lab-primary mt-0.5 flex-shrink-0" />
+                    
                     <div>
-                      <h4 className="font-medium mb-1">Fine-Grained Control</h4>
-                      <p className="text-sm text-lab-text-secondary">Experiment with detailed specifications including lighting, composition, style, objects, and artistic direction for precise creative control.</p>
+                      <h4 className="font-medium mb-2">Experiment Spec Schema</h4>
+                      <div className="bg-lab-interactive-active rounded p-3 text-xs font-mono text-lab-text-secondary">
+                        <pre>{`{
+  "prompt": "string",
+  "negative_prompt": "string?",
+  "width": 512 | 768 | 1024,
+  "height": 512 | 768 | 1024,
+  "guidance_scale": 1.0-20.0,
+  "num_inference_steps": 20-50,
+  "seed": "number?",
+  "style": "photographic" | "digital_art"
+}`}</pre>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-lab-interactive-hover rounded-lg p-4 border border-lab-border">
-                  <h4 className="font-medium mb-2 text-lab-text-primary">Perfect For:</h4>
-                  <ul className="text-sm text-lab-text-secondary space-y-1">
-                    <li>• Marketing and advertising content</li>
-                    <li>• Product photography and mockups</li>
-                    <li>• Creative campaigns and brand assets</li>
-                    <li>• Concept art and design exploration</li>
-                  </ul>
+                <div className="border-t border-lab-border pt-4">
+                  <h4 className="font-medium mb-3">Resources & Documentation</h4>
+                  <div className="flex flex-wrap gap-3">
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary" asChild>
+                      <a href="https://huggingface.co/bria-ai" target="_blank" rel="noopener noreferrer">
+                        🤗 Hugging Face Model Hub
+                      </a>
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary" asChild>
+                      <a href="#" target="_blank" rel="noopener noreferrer">
+                        📄 Research Paper (arXiv:2024.xxxxx)
+                      </a>
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary" asChild>
+                      <a href="https://docs.bria.ai/api" target="_blank" rel="noopener noreferrer">
+                        📚 API Documentation
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </DialogContent>
