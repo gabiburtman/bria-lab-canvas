@@ -65,7 +65,7 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
         
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
-            HISTORY
+            EXPERIMENTS
           </div>
         </div>
       </div>
@@ -76,9 +76,8 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
       <div className="flex items-center justify-between p-6 pb-4">
         <div className="flex items-center gap-2">
-          <History className="w-4 h-4 text-lab-text-secondary" />
           <h3 className="font-medium text-lab-text-primary text-base">
-            History
+            Experiments
           </h3>
         </div>
         <Button
