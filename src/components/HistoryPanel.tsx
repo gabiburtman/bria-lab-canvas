@@ -67,7 +67,7 @@ const HistoryPanel = ({ history, activeId, onItemClick }: HistoryPanelProps) => 
   }
 
   return (
-    <div className="w-80 h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
+    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col">
       <div className="flex items-center justify-between p-6 pb-4">
         <div className="flex items-center gap-2">
           <History className="w-4 h-4 text-lab-text-secondary" />

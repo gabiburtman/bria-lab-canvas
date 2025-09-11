@@ -187,13 +187,13 @@ const LabInterface = () => {
           />
         </div>
         
-        {/* Results Canvas - Takes remaining space */}
-        <div className="flex-1 min-w-0">
+        {/* Results Canvas - 45% width */}
+        <div className="w-[45%] min-w-0">
           <ResultsCanvas images={images} />
         </div>
         
-        {/* History Panel - Collapsible from right */}
-        <div className="flex-shrink-0">
+        {/* History Panel - 10% width when open, collapsible */}
+        <div className="w-[10%] min-w-12 flex-shrink-0">
           <HistoryPanel 
             history={history}
             activeId={activeHistoryId}
