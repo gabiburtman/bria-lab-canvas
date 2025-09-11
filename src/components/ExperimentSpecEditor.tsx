@@ -737,22 +737,22 @@ const ExperimentSpecEditor = ({
         </div>
       </div>;
   };
-  const renderEmptyState = () => <div className="flex flex-col items-center justify-center h-80 space-y-6 p-8">
-      <div className="text-center space-y-3">
-        <h3 className="text-xl font-semibold text-foreground">Populate Experiment Spec</h3>
-        <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
+  const renderEmptyState = () => <div className="flex flex-col items-center justify-center h-80 space-y-4 p-8">
+      <div className="text-center space-y-2">
+        <h3 className="text-lg font-medium text-muted-foreground">Populate Experiment Spec</h3>
+        <p className="text-xs text-muted-foreground/70 max-w-md leading-relaxed">
           Upload an image or brief to extract experiment specification, or describe the desired output in the prompt above.
         </p>
       </div>
       
-      <div className="flex items-center gap-4">
-        <Button variant="secondary" onClick={onUploadImage} className="flex items-center gap-2 px-6 py-3" disabled={isGenerating}>
-          <Image className="w-4 h-4" />
+      <div className="flex items-center gap-3">
+        <Button variant="outline" onClick={onUploadImage} className="flex items-center gap-2 px-4 py-2 text-xs" disabled={isGenerating}>
+          <Image className="w-3 h-3" />
           Upload Image
         </Button>
         
-        <Button variant="secondary" onClick={onUploadDocument} className="flex items-center gap-2 px-6 py-3" disabled={isGenerating}>
-          <FileText className="w-4 h-4" />
+        <Button variant="outline" onClick={onUploadDocument} className="flex items-center gap-2 px-4 py-2 text-xs" disabled={isGenerating}>
+          <FileText className="w-3 h-3" />
           Upload Brief
         </Button>
       </div>
@@ -973,7 +973,7 @@ const ExperimentSpecEditor = ({
         </TooltipProvider>
       </div>;
   };
-  return <div className={cn("relative bg-background rounded-lg border border-border overflow-hidden h-full flex flex-col", isGenerating && "opacity-50 pointer-events-none")}>
+  return <div className={cn("relative rounded-lg border border-border overflow-hidden h-full flex flex-col", isGenerating && "opacity-50 pointer-events-none")}>
       {renderHeader()}
       
       <div className="relative flex-1 min-h-0">

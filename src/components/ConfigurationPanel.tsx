@@ -752,7 +752,7 @@ const ConfigurationPanel = ({
           <PromptComponent 
             value={hasGenerated ? refinementPrompt : mainPrompt} 
             onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
-            placeholder={hasGenerated ? "Refine with new instructions..." : "A futuristic cityscape with flying cars and neon lights."} 
+            placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} 
             aspectRatio={aspectRatio} 
             aspectRatios={aspectRatios} 
             setAspectRatio={setAspectRatio} 
