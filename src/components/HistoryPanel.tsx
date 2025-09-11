@@ -107,16 +107,16 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
               </div>
             ) : (
               <>
-                {/* Title positioned at top with proper spacing */}
-                <div className="flex items-center justify-center py-4 flex-shrink-0">
+                {/* Title positioned at top with more spacing */}
+                <div className="flex items-center justify-center py-6 flex-shrink-0">
                   <div className="text-xs font-medium text-lab-text-muted tracking-widest transform -rotate-90 whitespace-nowrap">
                     EXPERIMENTS
                   </div>
                 </div>
                 
-                {/* Thumbnails container */}
-                <div className="flex flex-col gap-3 px-2 flex-1 overflow-y-auto items-center">
-                  {history.slice(0, 6).map((item) => (
+                {/* Thumbnails container with proper spacing */}
+                <div className="flex flex-col gap-4 px-2 flex-1 overflow-y-auto items-center pb-4">
+                  {history.slice(0, 5).map((item) => (
                     <div
                       key={item.id}
                       onClick={() => {
