@@ -164,8 +164,8 @@ const PromptComponent = ({
   onSurpriseMe: () => void;
   isRefinementMode?: boolean;
 }) => {
-  // Adjust height based on mode - smaller for refinement to maintain total space
-  const textareaHeight = isRefinementMode ? "min-h-[80px]" : "min-h-[120px]";
+  // Adjust heights to ensure both states take exactly same total height
+  const textareaHeight = isRefinementMode ? "min-h-[60px]" : "min-h-[120px]";
   
   return (
     <div className="border border-lab-border rounded-lg bg-lab-surface overflow-hidden">
@@ -622,9 +622,9 @@ const ConfigurationPanel = ({ onImagesGenerated, initialConfig }: {
         {/* Prompt Area */}
         <div className="space-y-4 mb-4">
           {hasGenerated && (
-            <div className="mb-3">
-              <h3 className="text-sm font-medium text-lab-text-secondary mb-2">Original Prompt</h3>
-              <div className="p-2 bg-lab-interactive-hover border border-lab-border rounded-lg text-sm text-lab-text-primary leading-relaxed">
+            <div className="mb-2">
+              <h3 className="text-xs font-medium text-lab-text-secondary mb-1">Original Prompt</h3>
+              <div className="p-2 bg-lab-interactive-hover border border-lab-border rounded-lg text-xs text-lab-text-primary leading-tight max-h-[52px] overflow-y-auto">
                 {originalPrompt}
               </div>
             </div>
