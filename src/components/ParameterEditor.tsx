@@ -226,41 +226,10 @@ const ParameterEditor = ({
     }
   };
 
-  // Helper function to add a new property to an object
+  // Helper function to add a new property to an object (disabled - not supported)
   const addObjectProperty = (path: string) => {
-    try {
-      const updated = { ...parsedJSON };
-      const keys = path.split('.');
-      let current = updated;
-      
-      // Navigate to the target object
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        if (key.includes('[') && key.includes(']')) {
-          const [arrayKey, indexStr] = key.split('[');
-          const index = parseInt(indexStr.replace(']', ''));
-          current = current[arrayKey][index];
-        } else if (i < keys.length - 1) {
-          current = current[key];
-        } else {
-          // This is the target object
-          current = current[key];
-        }
-      }
-      
-      // Add new property with a default name and value
-      let newKey = 'newProperty';
-      let counter = 1;
-      while (current.hasOwnProperty(newKey)) {
-        newKey = `newProperty${counter}`;
-        counter++;
-      }
-      
-      current[newKey] = '';
-      onChange(JSON.stringify(updated, null, 2));
-    } catch (error) {
-      console.error('Error adding object property:', error);
-    }
+    // Adding properties to objects is not supported
+    return;
   };
 
   // Helper function to delete an object property
@@ -294,6 +263,14 @@ const ParameterEditor = ({
 
   // Helper function to add a new array item
   const addArrayItem = (path: string) => {
+    // Only allow adding to specific arrays
+    const allowedArrays = ['objects', 'text_render'];
+    const arrayName = path.split('.').pop() || path;
+    
+    if (!allowedArrays.includes(arrayName)) {
+      return;
+    }
+
     try {
       const updated = { ...parsedJSON };
       const keys = path.split('.');
@@ -314,9 +291,60 @@ const ParameterEditor = ({
         }
       }
       
-      // Add new item (empty string for primitives, empty object for objects)
-      const existingItem = current.length > 0 ? current[0] : '';
-      const newItem = typeof existingItem === 'object' && existingItem !== null ? {} : '';
+      // Create new item based on existing structure
+      let newItem;
+      if (current.length > 0) {
+        // Clone the structure of the first item
+        const template = current[0];
+        if (typeof template === 'object' && template !== null) {
+          newItem = {};
+          // Copy all keys from template with empty string values
+          Object.keys(template).forEach(key => {
+            if (typeof template[key] === 'string') {
+              newItem[key] = '';
+            } else if (typeof template[key] === 'number') {
+              newItem[key] = 0;
+            } else if (typeof template[key] === 'boolean') {
+              newItem[key] = false;
+            } else {
+              newItem[key] = '';
+            }
+          });
+        } else {
+          newItem = '';
+        }
+      } else {
+        // Default structure for empty arrays
+        if (arrayName === 'objects') {
+          newItem = {
+            description: '',
+            location: '',
+            relationship: '',
+            relative_size: '',
+            shape_and_color: '',
+            texture: '',
+            appearance_details: '',
+            pose: '',
+            expression: '',
+            clothing: '',
+            action: '',
+            gender: '',
+            skin_tone_and_texture: '',
+            orientation: '',
+            number_of_objects: ''
+          };
+        } else if (arrayName === 'text_render') {
+          newItem = {
+            text_content: '',
+            font_style: '',
+            color: '',
+            placement: '',
+            size_and_formatting: ''
+          };
+        } else {
+          newItem = '';
+        }
+      }
       
       current.push(newItem);
       onChange(JSON.stringify(updated, null, 2));
@@ -327,6 +355,14 @@ const ParameterEditor = ({
 
   // Helper function to delete an array item
   const deleteArrayItem = (path: string, index: number) => {
+    // Only allow deleting from specific arrays
+    const allowedArrays = ['objects', 'text_render'];
+    const arrayName = path.split('.').pop() || path;
+    
+    if (!allowedArrays.includes(arrayName)) {
+      return;
+    }
+
     try {
       const updated = { ...parsedJSON };
       const keys = path.split('.');
@@ -408,25 +444,27 @@ const ParameterEditor = ({
                 </div>
               </CollapsibleTrigger>
               
-              {/* Add Property Button */}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0"
-                      onClick={() => addObjectProperty(fieldPath)}
-                      disabled={parentLocked || isGenerating}
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Add new property</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {/* Add Property Button - Disabled for objects */}
+              {false && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0"
+                        onClick={() => addObjectProperty(fieldPath)}
+                        disabled={parentLocked || isGenerating}
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Add new property</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </div>
             
             <CollapsibleContent>
@@ -435,8 +473,8 @@ const ParameterEditor = ({
                   <div key={`${fieldPath}.${subKey}`} className="relative">
                     {renderFieldValue(subKey, subVal, fieldPath, level + 1, index === arr.length - 1)}
                     
-                    {/* Delete Property Button */}
-                    {Object.keys(val).length > 1 && (
+                    {/* Delete Property Button - Disabled */}
+                    {false && Object.keys(val).length > 1 && (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -511,25 +549,27 @@ const ParameterEditor = ({
                 </div>
               </CollapsibleTrigger>
               
-              {/* Add Item Button */}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0"
-                      onClick={() => addArrayItem(fieldPath)}
-                      disabled={parentLocked || isGenerating}
-                    >
-                      <Plus className="w-3 h-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Add new item</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              {/* Add Item Button - Only for objects and text_render */}
+              {(key === 'objects' || key === 'text_render') && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0"
+                        onClick={() => addArrayItem(fieldPath)}
+                        disabled={parentLocked || isGenerating}
+                      >
+                        <Plus className="w-3 h-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Add new {key === 'objects' ? 'object' : 'text element'}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </div>
             
             <CollapsibleContent>
@@ -553,8 +593,8 @@ const ParameterEditor = ({
                           renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 2, subIndex === subArr.length - 1)
                         )}
                         
-                        {/* Delete Array Item Button */}
-                        {val.length > 1 && (
+                        {/* Delete Array Item Button - Only for objects and text_render */}
+                        {val.length > 1 && (key === 'objects' || key === 'text_render') && (
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
@@ -569,7 +609,7 @@ const ParameterEditor = ({
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>Delete item</p>
+                                <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -582,8 +622,8 @@ const ParameterEditor = ({
                     <div key={`${fieldPath}[${index}]`} className="relative group/item">
                       {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem)}
                       
-                      {/* Delete Array Item Button for primitives */}
-                      {val.length > 1 && (
+                      {/* Delete Array Item Button for primitives - Only for objects and text_render */}
+                      {val.length > 1 && (key === 'objects' || key === 'text_render') && (
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -598,7 +638,7 @@ const ParameterEditor = ({
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Delete item</p>
+                              <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
