@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ExperimentSpecEditor from "./ExperimentSpecEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Languages } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, RectangleHorizontal, Wand2, Languages, Hash, Target, Shuffle } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
   "short_description": "",
@@ -298,41 +298,68 @@ const PromptComponent = ({
               </TooltipContent>
             </Tooltip>
 
-            {/* Advanced Settings Button */}
+            {/* Steps Button */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
-                      <Sliders className="w-4 h-4" />
+                      <Hash className="w-4 h-4" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lg">
-                     <div className="space-y-4">
-                       <div>
-                         <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                           Steps: {steps[0]}
-                         </Label>
-                         <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
-                       </div>
-                       <div>
-                         <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                           Guidance Scale: {guidanceScale[0]}
-                         </Label>
-                         <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
-                       </div>
-                       <div>
-                         <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                           Seed
-                         </Label>
-                         <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
-                       </div>
-                     </div>
+                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                    <div>
+                      <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
+                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]}</div>
+                    </div>
                   </PopoverContent>
                 </Popover>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Advanced settings</p>
+                <p>Steps</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Guidance Scale Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
+                      <Target className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                    <div>
+                      <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
+                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{guidanceScale[0]}</div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Guidance Scale</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Seed Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
+                      <Shuffle className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                    <div>
+                      <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Seed</p>
               </TooltipContent>
             </Tooltip>
           </div>
