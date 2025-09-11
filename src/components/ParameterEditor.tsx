@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus } from "lucide-react";
+import { Copy, Upload, FileText, Lock, LockOpen, Code2, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ParameterEditorProps {
@@ -917,9 +918,80 @@ const ParameterEditor = ({
 
     return (
       <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
-        <span className="text-sm font-medium text-foreground">
-          Visual Controls
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-foreground">
+            Visual Controls
+          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                  >
+                    <Expand className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-6xl w-full h-[90vh] flex flex-col">
+                  <DialogHeader>
+                    <DialogTitle>Visual Controls - Expanded View</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex-1 overflow-hidden">
+                    <div className="h-full border border-border rounded-lg bg-background overflow-hidden flex flex-col">
+                      <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
+                        <span className="text-sm font-medium text-foreground">
+                          Visual Controls
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
+                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                          >
+                            <Code2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onUploadImage}
+                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                          >
+                            <Image className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onUploadDocument}
+                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                          >
+                            <FileText className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={copyToClipboard}
+                            className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex-1 overflow-auto">
+                        {viewState === 'structured' ? renderStructuredView() : renderSourceView()}
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Expand to fullscreen view</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
         
         <TooltipProvider>
           <div className="flex items-center gap-1">
