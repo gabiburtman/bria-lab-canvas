@@ -104,46 +104,29 @@ const HistoryPanel = ({ history, activeId, onItemClick, onCollapseChange }: Hist
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {history.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => handleItemClick(item)}
                   className={cn(
-                    "p-4 border border-lab-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
+                    "p-2 border border-lab-border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lab-glow-subtle",
                     activeId === item.id 
                       ? "bg-lab-primary/10 border-lab-border-focus shadow-lab-glow-focus" 
                       : "bg-lab-surface hover:bg-lab-interactive-hover"
                   )}
                 >
-                  <div className="flex gap-3">
-                    {item.thumbnail && (
-                      <div className="flex-shrink-0">
-                        <img
-                          src={item.thumbnail}
-                          alt="Experiment thumbnail"
-                          className="w-12 h-12 rounded-lg object-cover border border-lab-border"
-                        />
-                      </div>
-                    )}
-                    
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-lab-text-primary font-medium leading-tight mb-2">
-                        {truncatePrompt(item.prompt, 50)}
-                      </p>
-                      
-                      <div className="flex items-center gap-2 text-xs text-lab-text-muted mb-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{formatTimeAgo(item.timestamp)}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 text-xs text-lab-text-secondary">
-                        <span>{item.parameters.aspectRatio}</span>
-                        <span>•</span>
-                        <span>{item.parameters.steps} steps</span>
-                      </div>
+                  {item.thumbnail ? (
+                    <img
+                      src={item.thumbnail}
+                      alt="Experiment"
+                      className="w-full aspect-square rounded-md object-cover"
+                    />
+                  ) : (
+                    <div className="w-full aspect-square rounded-md bg-lab-border flex items-center justify-center">
+                      <History className="w-6 h-6 text-lab-text-muted" />
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
