@@ -120,6 +120,8 @@ const PromptComponent = ({
   setAspectRatio,
   steps,
   setSteps,
+  guidanceScale,
+  setGuidanceScale,
   seed,
   setSeed,
   handleGenerate,
@@ -141,6 +143,8 @@ const PromptComponent = ({
   setAspectRatio: (ratio: string) => void;
   steps: number[];
   setSteps: (steps: number[]) => void;
+  guidanceScale: number[];
+  setGuidanceScale: (guidanceScale: number[]) => void;
   seed: string;
   setSeed: (seed: string) => void;
   handleGenerate: () => void;
@@ -305,20 +309,26 @@ const PromptComponent = ({
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80 bg-lab-surface border-lab-border shadow-lg">
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                          Steps: {steps[0]}
-                        </Label>
-                        <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
-                      </div>
-                      <div>
-                        <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
-                          Seed
-                        </Label>
-                        <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
-                      </div>
-                    </div>
+                     <div className="space-y-4">
+                       <div>
+                         <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+                           Steps: {steps[0]}
+                         </Label>
+                         <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
+                       </div>
+                       <div>
+                         <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+                           Guidance Scale: {guidanceScale[0]}
+                         </Label>
+                         <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
+                       </div>
+                       <div>
+                         <Label className="text-sm font-medium text-lab-text-primary mb-2 block">
+                           Seed
+                         </Label>
+                         <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
+                       </div>
+                     </div>
                   </PopoverContent>
                 </Popover>
               </TooltipTrigger>
@@ -356,6 +366,7 @@ const ConfigurationPanel = ({
   const [refinementPrompt, setRefinementPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState(initialConfig?.aspectRatio || "1:1");
   const [steps, setSteps] = useState([initialConfig?.steps || 30]);
+  const [guidanceScale, setGuidanceScale] = useState([initialConfig?.guidanceScale || 5]);
   const [seed, setSeed] = useState(initialConfig?.seed || "");
   const [jsonData, setJsonData] = useState(initialConfig?.jsonConfig || JSON.stringify(defaultJSON, null, 2));
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
@@ -717,7 +728,9 @@ const ConfigurationPanel = ({
             setAspectRatio={setAspectRatio} 
             steps={steps} 
             setSteps={setSteps} 
-            seed={seed} 
+            guidanceScale={guidanceScale}
+            setGuidanceScale={setGuidanceScale}
+            seed={seed}
             setSeed={setSeed} 
             handleGenerate={handleGenerate} 
             hasGenerated={hasGenerated} 
