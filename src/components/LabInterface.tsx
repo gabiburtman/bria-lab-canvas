@@ -74,9 +74,13 @@ const LabInterface = () => {
               <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">GAIA Lab</h1>
               <Dialog>
                 <DialogTrigger asChild>
-                  <button className="text-lab-text-muted hover:text-lab-primary transition-colors duration-200">
-                    <HelpCircle className="w-4 h-4" />
-                  </button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="ml-3 h-7 px-3 text-xs bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary hover:text-lab-primary hover:border-lab-primary transition-all duration-200"
+                  >
+                    Learn more
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
                   <DialogHeader>
