@@ -347,6 +347,7 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
   };
 
   const currentLanguage = languages[selectedLanguage];
+  const IconComp = currentLanguage.icon;
 
   return (
     <Dialog>
@@ -412,7 +413,7 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
             <div className="bg-gray-950 rounded-lg border border-gray-700 overflow-hidden">
               <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700">
                 <div className="flex items-center gap-2">
-                  <currentLanguage.icon className="w-4 h-4" />
+                  <IconComp className="w-4 h-4" />
                   <span className="text-sm font-medium">{currentLanguage.name}</span>
                 </div>
                 <div className="flex space-x-2">
@@ -422,7 +423,7 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
                 </div>
               </div>
               <pre className="p-4 text-sm text-gray-100 overflow-auto leading-relaxed">
-                <code className="language-{selectedLanguage}">
+                <code className={`language-${selectedLanguage}`}>
                   {currentLanguage.code}
                 </code>
               </pre>
