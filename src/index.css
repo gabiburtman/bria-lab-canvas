@@ -60,6 +60,13 @@
     --lab-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --lab-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     
+    /* Updated Field Indicators - High Contrast */
+    --lab-updated: 142 76% 56%; /* Bright green for updated fields */
+    --lab-updated-bg: 142 76% 56%; /* Updated background with opacity */
+    --lab-updated-border: 142 76% 66%; /* Brighter border for updated fields */
+    --lab-updated-glow: 142 76% 56%; /* Green glow for updated field animation */
+    --lab-updated-pulse: 142 86% 66%; /* Brighter green for pulse animation */
+    
     /* Apply Dark Mode theme to shadcn variables */
     --background: var(--lab-background);
     --foreground: var(--lab-text-primary);
@@ -135,4 +142,41 @@
 
 .scrollbar-thumb-lab-text-muted\/20::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--lab-text-muted) / 0.3);
+}
+
+/* Enhanced Updated Field Styling */
+.field-updated {
+  @apply bg-emerald-500/20 border border-emerald-400/50 rounded-md relative;
+  box-shadow: 0 0 0 1px hsl(var(--lab-updated-border) / 0.3), 
+              0 0 8px hsl(var(--lab-updated-glow) / 0.1);
+}
+
+.field-updated-primitive {
+  @apply bg-emerald-500/15 border-l-2 border-l-emerald-400 relative;
+}
+
+/* Pulse animation for updated fields */
+@keyframes updated-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.field-updated-animate {
+  animation: updated-pulse 2s ease-in-out infinite;
+}
+
+/* Updated field dot indicator */
+.updated-dot {
+  @apply w-2 h-2 bg-emerald-400 rounded-full;
+  box-shadow: 0 0 4px hsl(var(--lab-updated-pulse) / 0.6);
+}
+
+.updated-dot-animate {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

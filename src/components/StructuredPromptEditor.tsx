@@ -529,7 +529,7 @@ const StructuredPromptEditor = ({
       return <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")} style={{
+            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
               {/* Parent Lock Button */}
@@ -606,7 +606,7 @@ const StructuredPromptEditor = ({
       return <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")} style={{
+            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
               {/* Parent Lock Button */}
@@ -657,7 +657,7 @@ const StructuredPromptEditor = ({
                 const isLastItem = index === val.length - 1;
                 if (typeof item === 'object' && item !== null) {
                   return <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={false}>
-      <div className={cn("relative group/item", isUpdated && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")}>
+      <div className={cn("relative group/item", isUpdated && "field-updated")}>
                            {renderTreeLines(level + 1, isLastItem, true)}
                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
                         paddingLeft: `${(level + 1) * 12 + 4}px`
@@ -743,9 +743,14 @@ const StructuredPromptEditor = ({
     // Handle primitive values
     return <div key={fieldPath} className="relative">
         {renderTreeLines(level, isLast, false)}
-        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", isUpdated && "bg-yellow-100/50")} style={{
+        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", isUpdated && "field-updated-primitive")} style={{
         paddingLeft: `${level * 12 + 4}px`
       }}>
+          {/* Update Indicator */}
+          {isUpdated && (
+            <div className="updated-dot updated-dot-animate" title="Recently updated field" />
+          )}
+          
           {/* Lock Icon Button */}
           {!readOnly && <TooltipProvider>
               <Tooltip>
