@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, Unlock, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X, Code2 } from "lucide-react";
+import { Copy, Upload, FileText, Lock, Unlock, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X, Code2, Dot } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FieldDelta } from './FieldDelta';
 interface StructuredPromptEditorProps {
@@ -658,22 +658,21 @@ const StructuredPromptEditor = ({
                     <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
                       {typeInfo.icon} {typeInfo.count}
                     </span>
-                     {isUpdated && (
-                       <TooltipProvider>
-                         <Tooltip>
-                           <TooltipTrigger asChild>
-                             <div className="update-badge">
-                               <div className="w-1.5 h-1.5 rounded-full bg-current" />
-                               Updated
-                             </div>
-                           </TooltipTrigger>
-                           <TooltipContent className="update-tooltip">
-                             <p className="font-medium mb-1">Updated Fields</p>
-                             <p className="text-xs opacity-75">This {Array.isArray(val) ? 'array' : 'object'} contains fields that were recently updated</p>
-                           </TooltipContent>
-                         </Tooltip>
-                       </TooltipProvider>
-                     )}
+                      {isUpdated && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="ml-2 text-lab-success">
+                                <Dot size={20} />
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="update-tooltip">
+                              <p className="font-medium mb-1">Updated Fields</p>
+                              <p className="text-xs opacity-75">This {Array.isArray(val) ? 'array' : 'object'} contains fields that were recently updated</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
                   </div>
                 </div>
               </CollapsibleTrigger>
@@ -756,9 +755,8 @@ const StructuredPromptEditor = ({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <div className="update-badge">
-                              <div className="w-1.5 h-1.5 rounded-full bg-current" />
-                              Updated
+                            <div className="ml-2 text-lab-success">
+                              <Dot size={20} />
                             </div>
                           </TooltipTrigger>
                           <TooltipContent className="update-tooltip">
@@ -906,9 +904,8 @@ const StructuredPromptEditor = ({
                <TooltipProvider>
                  <Tooltip>
                    <TooltipTrigger asChild>
-                     <div className="update-badge">
-                       <div className="w-1.5 h-1.5 rounded-full bg-current" />
-                       New
+                     <div className="ml-2 text-lab-success">
+                       <Dot size={16} />
                      </div>
                    </TooltipTrigger>
                    <TooltipContent className="update-tooltip">

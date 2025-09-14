@@ -97,7 +97,6 @@
   .field-updated {
     @apply relative border-l-2 pl-3;
     border-left-color: hsl(var(--lab-success));
-    background: linear-gradient(90deg, hsl(var(--lab-success) / 0.08) 0%, transparent 100%);
   }
 
   /* Updated badge for groups/arrays */
