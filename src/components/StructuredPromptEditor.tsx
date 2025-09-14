@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, Unlock, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X, Code } from "lucide-react";
+import { Copy, Upload, FileText, Lock, Unlock, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X, Code2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FieldDelta } from './FieldDelta';
 interface StructuredPromptEditorProps {
@@ -1458,7 +1458,7 @@ const StructuredPromptEditor = ({
                         </span>
                          <div className="flex items-center gap-1">
                            <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                              <Code className="w-4 h-4" />
+                               <Code2 className="w-4 h-4" />
                            </Button>
                            <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
                              <Image className="w-4 h-4" />
@@ -1491,7 +1491,7 @@ const StructuredPromptEditor = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Network className="w-4 h-4" />}
+                  {viewState === 'structured' ? <Code2 className="w-4 h-4" /> : <Network className="w-4 h-4" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
