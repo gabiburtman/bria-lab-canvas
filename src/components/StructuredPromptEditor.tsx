@@ -745,21 +745,6 @@ const StructuredPromptEditor = ({
         </p>
       </div>
       
-      <div className="flex items-center gap-3">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
-                <FileText className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Upload Brief</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-      
       <Dialog>
         <DialogTrigger asChild>
           <Button variant="ghost" size="sm" className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 flex items-center gap-1">

@@ -126,6 +126,7 @@ const PromptComponent = ({
   setSeed,
   handleGenerate,
   hasGenerated,
+  onUploadDocument,
   isGenerating,
   onSurpriseMe,
   onTranslatePrompt,
@@ -154,6 +155,7 @@ const PromptComponent = ({
   onSurpriseMe: () => void;
   onTranslatePrompt: () => void;
   onUploadImage: () => void;
+  onUploadDocument: () => void;
   isRefinementMode?: boolean;
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
 }) => {
@@ -253,7 +255,7 @@ const PromptComponent = ({
             style={{ minHeight: `${baseEditorHeight}px` }}
           />
           
-          {/* Upload Image and Surprise Me Buttons - positioned inside textarea */}
+          {/* Upload Image, Upload Document, and Surprise Me Buttons - positioned inside textarea */}
           <div className="absolute top-2 right-2 flex items-center gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -263,6 +265,17 @@ const PromptComponent = ({
               </TooltipTrigger>
               <TooltipContent>
                 <p>Upload Image</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
+                  <FileText className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Upload Brief</p>
               </TooltipContent>
             </Tooltip>
             
@@ -399,13 +412,15 @@ const ConfigurationPanel = ({
   onClearResults,
   initialConfig,
   onGeneratingChange,
-  onUploadImage
+  onUploadImage,
+  onUploadDocument
 }: {
   onImagesGenerated?: (images: string[], config: any) => void;
   onClearResults?: () => void;
   initialConfig?: any;
   onGeneratingChange?: (isGenerating: boolean) => void;
   onUploadImage?: () => void;
+  onUploadDocument?: () => void;
 }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [originalPrompt, setOriginalPrompt] = useState(initialConfig?.mainPrompt || "");
@@ -678,7 +693,11 @@ const ConfigurationPanel = ({
     }
   };
   const handleUploadDocument = () => {
-    briefInputRef.current?.click();
+    if (onUploadDocument) {
+      onUploadDocument();
+    } else {
+      briefInputRef.current?.click();
+    }
   };
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -799,6 +818,7 @@ const ConfigurationPanel = ({
             onSurpriseMe={handleSurpriseMe} 
             onTranslatePrompt={handleTranslatePrompt} 
             onUploadImage={handleUploadImage}
+            onUploadDocument={handleUploadDocument}
             isRefinementMode={hasGenerated}
             initialInput={initialInput}
           />
