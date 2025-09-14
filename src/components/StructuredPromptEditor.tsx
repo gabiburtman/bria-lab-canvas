@@ -971,55 +971,7 @@ const StructuredPromptEditor = ({
           {typeof val !== 'string' && <span className={cn("px-1.5 py-0.5 text-xs rounded font-mono flex-shrink-0", typeof val === 'number' && "bg-blue-500/10 text-blue-600 border border-blue-200/20", typeof val === 'boolean' && "bg-purple-500/10 text-purple-600 border border-purple-200/20", val === null && "bg-gray-500/10 text-gray-600 border border-gray-200/20", typeof val !== 'number' && typeof val !== 'boolean' && val !== null && "bg-muted text-muted-foreground")}>
               {val === null ? 'null' : typeof val}
             </span>}
-
-          {/* Update indicators and timestamp */}
-          {updateStatus.isUpdated && (
-            <div className="flex items-center gap-1 ml-2">
-              {updateStatus.isRecent ? (
-                <div className="update-badge">
-                  <Sparkles className="w-3 h-3" />
-                  <span>New</span>
-                </div>
-              ) : (
-                <div className="update-badge">
-                  <Clock className="w-3 h-3" />
-                  <span>Updated</span>
-                </div>
-              )}
-              {fieldUpdateTimestamps[fieldPath] && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button 
-                        className="text-xs opacity-60 hover:opacity-100 transition-opacity"
-                        onClick={() => toggleDeltaExpansion(fieldPath)}
-                      >
-                        {new Date(fieldUpdateTimestamps[fieldPath]).toLocaleTimeString()}
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Last updated: {new Date(fieldUpdateTimestamps[fieldPath]).toLocaleString()}</p>
-                      <p className="text-xs opacity-75">Click to see changes</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-            </div>
-          )}
         </div>
-
-        {/* Show delta information if available and field is updated */}
-        {updateStatus.isUpdated && fieldHistory[fieldPath] && (
-          <div style={{ paddingLeft: `${level * 12 + 36}px` }}>
-            <FieldDelta
-              oldValue={fieldHistory[fieldPath].oldValue}
-              newValue={fieldHistory[fieldPath].newValue}
-              timestamp={fieldHistory[fieldPath].timestamp}
-              isExpanded={expandedDeltas.has(fieldPath)}
-              onToggle={() => toggleDeltaExpansion(fieldPath)}
-            />
-          </div>
-        )}
       </div>;
   };
   const renderEmptyState = () => (
