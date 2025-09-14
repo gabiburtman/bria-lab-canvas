@@ -182,10 +182,12 @@ const ResultsCanvas = ({
           <div className="w-16 h-16 mx-auto mb-4 bg-lab-interactive-hover rounded-lg flex items-center justify-center">
             <Grid3X3 className="w-8 h-8 text-lab-text-muted" />
           </div>
-          <h3 className="text-lg font-medium text-lab-text-primary mb-2">
-            System Ready for Generation
-          </h3>
-          <p className="text-sm text-lab-text-secondary">Input experiment specification or prompt in the left panel to run an experiment.</p>
+          <h3 className="text-lg font-medium text-lab-text-primary mb-2">From Artistry to Craftsmanship</h3>
+          <p className="text-sm text-lab-text-secondary">Ready to generate visuals with the precision of a craftsperson?
+Use the control panel on the left to define your experiment.
+GAIA's deterministic results will appear right here.
+
+        </p>
         </div>
       </div>;
   }
