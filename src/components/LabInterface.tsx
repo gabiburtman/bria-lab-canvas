@@ -165,7 +165,7 @@ const LabInterface = () => {
       <div className="px-4 pb-2 flex-none">
         <div className="flex items-center gap-2">
           <p className="text-lab-text-secondary text-sm font-medium">
-            Check out under the hood of our ultra controlled text to image model
+            This is the interactive lab for   GAIA, the first open-source model that uses long, structured prompts for developer-native precision and professional control.
           </p>
           <Dialog>
             <DialogTrigger asChild>
