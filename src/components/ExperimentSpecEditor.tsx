@@ -785,128 +785,78 @@ const ExperimentSpecEditor = ({
               Reframing text-to-image from "pretty images" to professional control and automation
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-5 text-lab-text-primary max-h-[70vh] overflow-hidden">
-            <div>
-              <h3 className="text-lg font-semibold mb-3 text-lab-primary">What Makes Bria 4 Different</h3>
-              <p className="text-sm text-lab-text-secondary leading-relaxed mb-3">
-                Bria 4 bridges the gap between professional control and automation, offering two key storylines:
-              </p>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="bg-lab-surface-elevated rounded-lg p-3">
-                  <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
-                  <div className="text-lab-text-secondary text-xs">Structured workflows with LLM interpretation layer for consistent, scalable results</div>
-                </div>
-                <div className="bg-lab-surface-elevated rounded-lg p-3">
-                  <div className="font-semibold text-lab-primary mb-2">Professional Control</div>
-                  <div className="text-lab-text-secondary text-xs">Granular control over aesthetics, composition, lighting, and object placement</div>
-                </div>
+          <div className="space-y-4 text-lab-text-primary">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-lab-surface-elevated rounded-lg p-3">
+                <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
+                <div className="text-lab-text-secondary text-xs">LLM interpretation layer for structured, scalable workflows</div>
+              </div>
+              <div className="bg-lab-surface-elevated rounded-lg p-3">
+                <div className="font-semibold text-lab-primary mb-2">Professional Control</div>
+                <div className="text-lab-text-secondary text-xs">Granular control over aesthetics, composition, and positioning</div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-lab-primary">How It Works</h3>
-              <div className="bg-lab-surface-elevated rounded-lg p-4">
-                <div className="flex items-center justify-between text-xs text-lab-text-secondary mb-2">
-                  <span>User Prompt</span>
-                  <span>→</span>
-                  <span>LLM Interpreter</span>
-                  <span>→</span>
-                  <span>Detailed Prompt</span>
-                  <span>→</span>
-                  <span>Bria 4.0</span>
-                </div>
-                <p className="text-sm text-lab-text-secondary">
-                  The LLM interpretation layer transforms natural language into structured, detailed prompts that enable precise control over every aspect of image generation.
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-3 text-lab-primary">Advanced Control Capabilities</h3>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="space-y-2">
-                  <div className="bg-lab-surface-elevated rounded p-2">
-                    <div className="font-medium text-lab-text-primary mb-1">Aesthetics</div>
-                    <div className="text-lab-text-secondary">Composition, color schemes, mood & atmosphere, preference scoring</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded p-2">
-                    <div className="font-medium text-lab-text-primary mb-1">Photo Characteristics</div>
-                    <div className="text-lab-text-secondary">Field of depth, focus, camera angles, lens focal length</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded p-2">
-                    <div className="font-medium text-lab-text-primary mb-1">Text Integration</div>
-                    <div className="text-lab-text-secondary">Location, size, color, font selection, text appearance</div>
+              <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
+                  <div className="font-medium text-lab-text-primary mb-2">Technical Foundation</div>
+                  <div className="space-y-1 text-xs text-lab-text-secondary">
+                    <div>• 8B Parameters optimized</div>
+                    <div>• SmolLM Text Encoder</div>
+                    <div>• WAN 2.2 VAE for quality</div>
+                    <div>• LLM-to-pixel connection</div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="bg-lab-surface-elevated rounded p-2">
-                    <div className="font-medium text-lab-text-primary mb-1">Object Positioning</div>
-                    <div className="text-lab-text-secondary">Precise location, relative sizing, shapes, colors, textures, orientation</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded p-2">
-                    <div className="font-medium text-lab-text-primary mb-1">Lighting Control</div>
-                    <div className="text-lab-text-secondary">Lighting conditions, direction, shadow placement and intensity</div>
+                <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
+                  <div className="font-medium text-lab-text-primary mb-2">Workflow</div>
+                  <div className="text-xs text-lab-text-secondary">
+                    <div className="flex items-center justify-between mb-2">
+                      <span>Prompt</span><span>→</span><span>LLM</span><span>→</span><span>Image</span>
+                    </div>
+                    <div>• Generate from natural language</div>
+                    <div>• Refine with instructions</div>
+                    <div>• Inspire from existing images</div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-3 text-lab-primary">Technical Foundation</h3>
-              <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-lab-text-secondary">Architecture:</span>
-                  <span>8B Parameters (optimized for power vs size)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-lab-text-secondary">Text Encoder:</span>
-                  <span>SmolLM (Hugging Face integration)</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-lab-text-secondary">VAE:</span>
-                  <span>WAN 2.2 for enhanced image quality</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-lab-text-secondary">Novel Feature:</span>
-                  <span>LLM-to-pixel connection layer</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-3 text-lab-primary">Model Capabilities</h3>
+              <h3 className="text-base font-semibold mb-2 text-lab-primary">Advanced Control</h3>
               <div className="grid grid-cols-3 gap-2 text-xs">
-                <div className="bg-lab-surface-elevated rounded p-2 text-center">
-                  <div className="font-medium text-lab-primary mb-1">Generate</div>
-                  <div className="text-lab-text-secondary">Prompt → LLM → Detailed Prompt → Image</div>
+                <div className="bg-lab-surface-elevated rounded p-2">
+                  <div className="font-medium text-lab-text-primary mb-1">Aesthetics</div>
+                  <div className="text-lab-text-secondary">Composition, color, mood</div>
                 </div>
-                <div className="bg-lab-surface-elevated rounded p-2 text-center">
-                  <div className="font-medium text-lab-primary mb-1">Refine</div>
-                  <div className="text-lab-text-secondary">Detailed prompt + instruction → refined output</div>
+                <div className="bg-lab-surface-elevated rounded p-2">
+                  <div className="font-medium text-lab-text-primary mb-1">Photography</div>
+                  <div className="text-lab-text-secondary">Focus, angles, lighting</div>
                 </div>
-                <div className="bg-lab-surface-elevated rounded p-2 text-center">
-                  <div className="font-medium text-lab-primary mb-1">Inspire</div>
-                  <div className="text-lab-text-secondary">Image → VLM → detailed image prompt</div>
+                <div className="bg-lab-surface-elevated rounded p-2">
+                  <div className="font-medium text-lab-text-primary mb-1">Objects</div>
+                  <div className="text-lab-text-secondary">Position, size, texture</div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-2 text-lab-primary">Resources & Research</h3>
+              <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
               <div className="flex flex-wrap gap-2 text-sm">
-                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary" asChild>
+                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                   <a href="https://huggingface.co/microsoft/SmolLM2-1.7B" target="_blank" rel="noopener noreferrer">
-                    🤗 SmolLM3-1.7B
+                    🤗 SmolLM
                   </a>
                 </Button>
-                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary" asChild>
+                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                   <a href="https://huggingface.co/wangfuyun/WAN2.2-T12V-5B" target="_blank" rel="noopener noreferrer">
-                    🤗 WAN2.2-T12V-5B
+                    🤗 WAN2.2
                   </a>
                 </Button>
-                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary" asChild>
+                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                   <a href="#research-paper" rel="noopener noreferrer">
-                    📄 Research Paper
+                    📄 Paper
                   </a>
                 </Button>
               </div>
