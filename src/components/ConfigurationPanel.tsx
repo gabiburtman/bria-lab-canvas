@@ -822,7 +822,7 @@ const ConfigurationPanel = ({
         {/* Action Buttons - Fixed at bottom */}
         <div className="flex-shrink-0 pt-4 border-t border-lab-border">
           <div className="flex gap-3">
-            <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" size="sm" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
+            <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
               Start Over
             </Button>
             <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
