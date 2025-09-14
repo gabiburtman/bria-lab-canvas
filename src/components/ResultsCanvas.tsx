@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield, Linkedin, X, MessageCircle } from "lucide-react";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield, Linkedin, X } from "lucide-react";
+import { FaReddit } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 interface ImageCardProps {
   src?: string;
@@ -193,7 +194,7 @@ response = requests.post(
             className="w-8 h-8 p-0 text-[#FF4500] hover:text-[#CC3700] hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleRedditShare}
           >
-            <MessageCircle className="w-4 h-4" />
+            <FaReddit className="w-4 h-4" />
           </Button>
         </div>
       </PopoverContent>
