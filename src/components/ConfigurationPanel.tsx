@@ -258,7 +258,7 @@ const PromptComponent = ({
                 onClick={onSurpriseMe} 
                 disabled={isGenerating} 
                 variant="ghost" 
-                size="sm" 
+                size="sm"
                 className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
               >
                 <Wand2 className="w-4 h-4" />

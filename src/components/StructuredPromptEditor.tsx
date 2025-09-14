@@ -746,9 +746,29 @@ const StructuredPromptEditor = ({
       </div>
       
       <div className="flex items-center gap-3">
-        
-        
-        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
+                <Image className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Upload Image</p>
+            </TooltipContent>
+          </Tooltip>
+          
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
+                <FileText className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Upload Brief</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
       <Dialog>
@@ -1112,27 +1132,6 @@ const StructuredPromptEditor = ({
         
         <TooltipProvider>
           <div className="flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
-                  <Image className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Image</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
-                  <FileText className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Brief</p>
-              </TooltipContent>
-            </Tooltip>
             
             <Tooltip>
               <TooltipTrigger asChild>
