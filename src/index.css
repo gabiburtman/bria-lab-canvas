@@ -93,37 +93,21 @@
     @apply bg-background text-foreground font-roboto;
   }
 
-  /* Subtle update indicators */
-  .field-updated-recent {
-    @apply border-l-2 rounded-md transition-all duration-500;
-    border-left-color: hsl(var(--lab-accent) / 0.7);
-    background-color: hsl(var(--lab-accent) / 0.05);
-    animation: subtle-highlight 2s ease-out forwards;
+  /* Simple update indicator */
+  .field-updated {
+    @apply relative;
   }
 
-  .field-updated-previous {
-    @apply border-l-2 rounded-md;
-    border-left-color: hsl(var(--lab-text-muted) / 0.3);
-    background-color: hsl(var(--lab-text-muted) / 0.02);
+  .field-updated::after {
+    content: '';
+    @apply absolute -top-1 -right-1 w-2 h-2 rounded-full;
+    background-color: hsl(var(--lab-accent));
+    animation: gentle-pulse 2s ease-out;
   }
 
-  .field-updated-child {
-    @apply border-l-2 rounded-md;
-    border-left-color: hsl(var(--lab-success) / 0.4);
-    background-color: hsl(var(--lab-success) / 0.03);
-  }
-
-  .update-badge {
-    @apply inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full opacity-80 hover:opacity-100 transition-opacity;
-    background-color: hsl(var(--lab-accent) / 0.10);
-    color: hsl(var(--lab-accent));
-    border: 1px solid hsl(var(--lab-accent) / 0.20);
-  }
-
-  .update-count {
-    @apply inline-flex items-center justify-center w-4 h-4 text-xs font-bold rounded-full opacity-75;
-    background-color: hsl(var(--lab-accent) / 0.8);
-    color: hsl(var(--lab-background));
+  .update-indicator {
+    @apply inline-flex items-center justify-center w-2 h-2 rounded-full flex-shrink-0;
+    background-color: hsl(var(--lab-accent));
   }
 
   .field-delta {
@@ -146,26 +130,19 @@
     @apply opacity-50;
   }
 
-  @keyframes subtle-highlight {
+  @keyframes gentle-pulse {
     0% {
-      background-color: hsl(var(--lab-accent) / 0.15);
-      border-left-color: hsl(var(--lab-accent));
-      box-shadow: 0 0 0 1px hsl(var(--lab-accent) / 0.2);
+      opacity: 1;
+      transform: scale(1);
     }
     50% {
-      background-color: hsl(var(--lab-accent) / 0.08);
-      border-left-color: hsl(var(--lab-accent) / 0.8);
+      opacity: 0.7;
+      transform: scale(1.2);
     }
     100% {
-      background-color: hsl(var(--lab-accent) / 0.03);
-      border-left-color: hsl(var(--lab-accent) / 0.4);
-      box-shadow: none;
+      opacity: 1;
+      transform: scale(1);
     }
-  }
-
-  @keyframes fade-out-gently {
-    0% { opacity: 1; }
-    100% { opacity: 0.6; }
   }
 
   .clear-updates-btn {

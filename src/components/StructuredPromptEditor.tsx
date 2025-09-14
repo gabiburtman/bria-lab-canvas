@@ -620,15 +620,8 @@ const StructuredPromptEditor = ({
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
 
-    // Determine highlight class based on update status
-    const getHighlightClass = () => {
-      if (updateStatus.isRecent) return "field-updated-recent";
-      if (updateStatus.isUpdated) return "field-updated-previous";
-      if (updateStatus.hasUpdatedChild) return "field-updated-child";
-      return "";
-    };
-
-    const highlightClass = getHighlightClass();
+    // Determine simple update indicator
+    const isUpdated = updateStatus.isUpdated || updateStatus.hasUpdatedChild;
 
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
@@ -636,7 +629,7 @@ const StructuredPromptEditor = ({
       return <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm transition-all duration-200", highlightClass)} style={{
+            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm transition-all duration-200")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
               {/* Parent Lock Button */}
@@ -665,46 +658,14 @@ const StructuredPromptEditor = ({
                     <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
                       {typeInfo.icon} {typeInfo.count}
                     </span>
-                    {updateStatus.isRecent && (
+                    {isUpdated && (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <span className="update-badge">
-                              <Sparkles className="w-3 h-3" />
-                              New
-                            </span>
+                            <div className="update-indicator" />
                           </TooltipTrigger>
-                          <TooltipContent className="update-tooltip">
-                            <p>Recently updated • {Math.round(updateStatus.updateAge / 1000)}s ago</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                    {updateStatus.isUpdated && !updateStatus.isRecent && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="update-badge">
-                              <Clock className="w-3 h-3" />
-                              Updated
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent className="update-tooltip">
-                            <p>Previously updated</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                    {updateStatus.hasUpdatedChild && !updateStatus.isUpdated && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="px-1 py-0.5 text-xs bg-green-500/20 text-green-300 rounded border border-green-500/30">
-                              <ChevronDown className="w-3 h-3" />
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent className="update-tooltip">
-                            <p>Contains updated fields</p>
+                          <TooltipContent>
+                            <p>This {Array.isArray(val) ? 'array' : 'object'} contains updated fields</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -759,7 +720,7 @@ const StructuredPromptEditor = ({
       return <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-        <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm transition-all duration-200", highlightClass)} style={{
+        <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm transition-all duration-200")} style={{
         paddingLeft: `${level * 12 + 4}px`
       }}>
               {/* Parent Lock Button */}
@@ -783,9 +744,23 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
-                    {typeInfo.icon} {typeInfo.count}
-                  </span>
+                  <div className="flex items-center gap-1">
+                    <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
+                      {typeInfo.icon} {typeInfo.count}
+                    </span>
+                    {isUpdated && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="update-indicator" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>This array contains updated items</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
                 </div>
               </CollapsibleTrigger>
               
@@ -896,7 +871,7 @@ const StructuredPromptEditor = ({
     // Handle primitive values
     return <div key={fieldPath} className="relative">
         {renderTreeLines(level, isLast, false)}
-        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", highlightClass)} style={{
+        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm")} style={{
         paddingLeft: `${level * 12 + 4}px`
       }}>
           {/* Lock Icon Button */}
@@ -914,10 +889,32 @@ const StructuredPromptEditor = ({
             </TooltipProvider>}
           {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
 
-          {/* Field Name */}
-          <span className="text-foreground font-medium min-w-0 flex-shrink-0">
-            {key}:
-          </span>
+          {/* Field Name and Update Indicator */}
+          <div className="flex items-center gap-2">
+            <span className="text-foreground font-medium min-w-0 flex-shrink-0">
+              {key}:
+            </span>
+            {updateStatus.isUpdated && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="update-indicator" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="space-y-1">
+                      <p>Field was updated</p>
+                      {fieldHistory[fieldPath] && fieldHistory[fieldPath].oldValue !== null && (
+                        <div className="text-xs">
+                          <div className="opacity-60">Previous: {String(fieldHistory[fieldPath].oldValue)}</div>
+                          <div>Current: {String(val)}</div>
+                        </div>
+                      )}
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
           
           {/* Value Display (read-only) or Input (editable) */}
           <TooltipProvider>
