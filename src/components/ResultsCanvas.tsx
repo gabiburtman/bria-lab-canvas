@@ -43,12 +43,40 @@ response = requests.post(
         <div className="w-8 h-8 bg-lab-interactive-active rounded-lab animate-pulse"></div>
       </div>;
   }
+  const handleDefineAction = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Define action logic here
+    console.log('Define action triggered for image', index + 1);
+  };
+
+  const handleDownload = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (src) {
+      const link = document.createElement('a');
+      link.href = src;
+      link.download = `generated-image-${index + 1}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   const ActionButtons = () => <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lab flex items-start justify-between p-3">
       <div className="flex gap-2">
-        <Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+        <Button 
+          size="sm" 
+          variant="ghost" 
+          onClick={handleDefineAction}
+          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
+        >
           <Badge className="w-4 h-4" />
         </Button>
-        <Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+        <Button 
+          size="sm" 
+          variant="ghost" 
+          onClick={handleDownload}
+          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
+        >
           <Download className="w-4 h-4" />
         </Button>
       </div>
@@ -56,7 +84,12 @@ response = requests.post(
       <div className="flex gap-2">
         <Popover>
           <PopoverTrigger asChild>
-            <Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={(e) => e.stopPropagation()}
+              className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
+            >
               <Code className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
@@ -78,10 +111,26 @@ response = requests.post(
     </div>;
   const FeedbackButtons = () => <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
       <div className="flex gap-2">
-        <Button size="sm" variant="ghost" onClick={() => setLiked(true)} className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === true && "bg-green-500 text-white border-green-500 hover:bg-green-600")}>
+        <Button 
+          size="sm" 
+          variant="ghost" 
+          onClick={(e) => {
+            e.stopPropagation();
+            setLiked(true);
+          }} 
+          className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === true && "bg-green-500 text-white border-green-500 hover:bg-green-600")}
+        >
           <ThumbsUp className="w-4 h-4" />
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => setLiked(false)} className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === false && "bg-red-500 text-white border-red-500 hover:bg-red-600")}>
+        <Button 
+          size="sm" 
+          variant="ghost" 
+          onClick={(e) => {
+            e.stopPropagation();
+            setLiked(false);
+          }} 
+          className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === false && "bg-red-500 text-white border-red-500 hover:bg-red-600")}
+        >
           <ThumbsDown className="w-4 h-4" />
         </Button>
       </div>
