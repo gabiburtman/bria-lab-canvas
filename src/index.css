@@ -93,87 +93,93 @@
     @apply bg-background text-foreground font-roboto;
   }
 
-  /* Enhanced update indicators */
+  /* Subtle update indicators */
   .field-updated-recent {
-    @apply relative bg-blue-500/15 border border-blue-500/40 rounded-md;
-    animation: field-pulse 2s ease-in-out;
-    box-shadow: 0 0 0 1px hsl(var(--lab-primary) / 0.3), 0 0 8px hsl(var(--lab-primary) / 0.2);
-  }
-
-  .field-updated-recent::before {
-    content: '';
-    @apply absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-md -z-10;
-    animation: glow-pulse 2s ease-in-out infinite;
+    @apply border-l-2 rounded-md transition-all duration-500;
+    border-left-color: hsl(var(--lab-accent) / 0.7);
+    background-color: hsl(var(--lab-accent) / 0.05);
+    animation: subtle-highlight 2s ease-out forwards;
   }
 
   .field-updated-previous {
-    @apply bg-amber-500/10 border border-amber-500/25 rounded-md;
-    transition: all 0.3s ease-out;
+    @apply border-l-2 rounded-md;
+    border-left-color: hsl(var(--lab-text-muted) / 0.3);
+    background-color: hsl(var(--lab-text-muted) / 0.02);
   }
 
   .field-updated-child {
-    @apply border-l-2 border-green-500/30 rounded-md;
-    background-color: hsl(var(--lab-success) / 0.10);
+    @apply border-l-2 rounded-md;
+    border-left-color: hsl(var(--lab-success) / 0.4);
+    background-color: hsl(var(--lab-success) / 0.03);
   }
 
   .update-badge {
-    @apply inline-flex items-center gap-1 px-1.5 py-0.5 text-xs bg-blue-500/20 text-blue-300 rounded border border-blue-500/30 font-mono;
-    animation: badge-appear 0.3s ease-out;
+    @apply inline-flex items-center gap-1 px-1.5 py-0.5 text-xs font-medium rounded-full opacity-80 hover:opacity-100 transition-opacity;
+    background-color: hsl(var(--lab-accent) / 0.10);
+    color: hsl(var(--lab-accent));
+    border: 1px solid hsl(var(--lab-accent) / 0.20);
   }
 
   .update-count {
-    @apply inline-flex items-center justify-center w-5 h-5 text-xs bg-blue-500/30 text-blue-200 rounded-full border border-blue-500/40;
-    animation: count-bounce 0.4s ease-out;
+    @apply inline-flex items-center justify-center w-4 h-4 text-xs font-bold rounded-full opacity-75;
+    background-color: hsl(var(--lab-accent) / 0.8);
+    color: hsl(var(--lab-background));
   }
 
-  @keyframes field-pulse {
-    0% { 
-      box-shadow: 0 0 0 0 hsl(var(--lab-primary) / 0.4);
-      transform: scale(1);
+  .field-delta {
+    @apply text-xs mt-1 p-2 rounded border;
+    background-color: hsl(var(--lab-surface-elevated) / 0.5);
+    border-color: hsl(var(--lab-border) / 0.5);
+  }
+
+  .delta-old {
+    @apply line-through opacity-60;
+    color: hsl(var(--lab-error) / 0.8);
+  }
+
+  .delta-new {
+    @apply font-medium;
+    color: hsl(var(--lab-success));
+  }
+
+  .delta-unchanged {
+    @apply opacity-50;
+  }
+
+  @keyframes subtle-highlight {
+    0% {
+      background-color: hsl(var(--lab-accent) / 0.15);
+      border-left-color: hsl(var(--lab-accent));
+      box-shadow: 0 0 0 1px hsl(var(--lab-accent) / 0.2);
     }
-    50% { 
-      box-shadow: 0 0 0 4px hsl(var(--lab-primary) / 0.2);
-      transform: scale(1.002);
+    50% {
+      background-color: hsl(var(--lab-accent) / 0.08);
+      border-left-color: hsl(var(--lab-accent) / 0.8);
     }
-    100% { 
-      box-shadow: 0 0 0 0 hsl(var(--lab-primary) / 0);
-      transform: scale(1);
+    100% {
+      background-color: hsl(var(--lab-accent) / 0.03);
+      border-left-color: hsl(var(--lab-accent) / 0.4);
+      box-shadow: none;
     }
   }
 
-  @keyframes glow-pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.8; }
-  }
-
-  @keyframes badge-appear {
-    0% { 
-      opacity: 0; 
-      transform: translateY(-4px) scale(0.9); 
-    }
-    100% { 
-      opacity: 1; 
-      transform: translateY(0) scale(1); 
-    }
-  }
-
-  @keyframes count-bounce {
-    0% { 
-      transform: scale(0.8); 
-      opacity: 0; 
-    }
-    50% { 
-      transform: scale(1.1); 
-      opacity: 1; 
-    }
-    100% { 
-      transform: scale(1); 
-      opacity: 1; 
-    }
+  @keyframes fade-out-gently {
+    0% { opacity: 1; }
+    100% { opacity: 0.6; }
   }
 
   .clear-updates-btn {
-    @apply inline-flex items-center gap-2 px-3 py-1.5 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 hover:text-amber-200 rounded-md border border-amber-500/30 hover:border-amber-500/40 transition-all duration-200;
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-xs transition-all duration-200;
+    background-color: hsl(var(--lab-surface-elevated) / 0.8);
+    color: hsl(var(--lab-text-secondary));
+    border: 1px solid hsl(var(--lab-border) / 0.5);
+    border-radius: var(--lab-radius);
+  }
+
+  .clear-updates-btn:hover {
+    background-color: hsl(var(--lab-surface-elevated));
+    color: hsl(var(--lab-text-primary));
+    border-color: hsl(var(--lab-border) / 0.8);
   }
 
   .update-tooltip {

@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, LockOpen, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X } from "lucide-react";
+import { Copy, Upload, FileText, Lock, Unlock, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X, Code } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { FieldDelta } from './FieldDelta';
 interface StructuredPromptEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -37,8 +38,11 @@ const StructuredPromptEditor = ({
   const [progressiveJSON, setProgressiveJSON] = useState<string>('');
   const [isWritingJSON, setIsWritingJSON] = useState(false);
   const progressiveContainerRef = useRef<HTMLDivElement>(null);
+  // Enhanced state for tracking field changes with delta information
   const [recentlyUpdatedFields, setRecentlyUpdatedFields] = useState<Set<string>>(new Set());
-  const [updateTimestamps, setUpdateTimestamps] = useState<Map<string, number>>(new Map());
+  const [fieldUpdateTimestamps, setFieldUpdateTimestamps] = useState<Record<string, number>>({});
+  const [fieldHistory, setFieldHistory] = useState<Record<string, { oldValue: any; newValue: any; timestamp: number }>>({});
+  const [expandedDeltas, setExpandedDeltas] = useState<Set<string>>(new Set());
 
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
@@ -517,37 +521,52 @@ const StructuredPromptEditor = ({
     return Object.keys(generalData).some(key => updatedFields.has(key));
   };
 
-  // Track recently updated fields with auto-fade
+  // Enhanced tracking with delta information
   useEffect(() => {
-    const newlyUpdated = new Set([...updatedFields].filter(field => !recentlyUpdatedFields.has(field)));
-    
-    if (newlyUpdated.size > 0) {
-      setRecentlyUpdatedFields(new Set([...recentlyUpdatedFields, ...newlyUpdated]));
-      const now = Date.now();
-      
-      // Set timestamps for new fields
-      const newTimestamps = new Map(updateTimestamps);
-      newlyUpdated.forEach(field => {
-        newTimestamps.set(field, now);
-      });
-      setUpdateTimestamps(newTimestamps);
-      
-      // Auto-fade after 3 seconds
-      setTimeout(() => {
-        setRecentlyUpdatedFields(prev => {
-          const filtered = new Set([...prev].filter(field => !newlyUpdated.has(field)));
-          return filtered;
-        });
-      }, 3000);
-    }
-  }, [updatedFields]);
+    if (!updatedFields || updatedFields.size === 0) return;
+
+    const newRecentFields = new Set<string>();
+    const newTimestamps: Record<string, number> = {};
+    const newHistory: Record<string, { oldValue: any; newValue: any; timestamp: number }> = { ...fieldHistory };
+
+    const currentTime = Date.now();
+    updatedFields.forEach(path => {
+      const timeDiff = currentTime - (fieldUpdateTimestamps[path] || 0);
+      if (timeDiff < 3000) { // 3 seconds for "recent"
+        newRecentFields.add(path);
+      }
+      newTimestamps[path] = fieldUpdateTimestamps[path] || currentTime;
+
+      // Capture delta information if we have the current parsed JSON
+      if (parsedJSON && !newHistory[path]) {
+        const currentValue = getValueAtPath(parsedJSON, path);
+        // Store the change (we'll need to track the old value separately in real implementation)
+        newHistory[path] = {
+          oldValue: null, // Will be populated when we have proper tracking
+          newValue: currentValue,
+          timestamp: newTimestamps[path]
+        };
+      }
+    });
+
+    setRecentlyUpdatedFields(newRecentFields);
+    setFieldUpdateTimestamps(newTimestamps);
+    setFieldHistory(newHistory);
+
+    // Auto-fade recent highlights after 3 seconds
+    const timer = setTimeout(() => {
+      setRecentlyUpdatedFields(new Set());
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [updatedFields, parsedJSON, fieldHistory, fieldUpdateTimestamps]);
 
   // Get update status for a field
   const getUpdateStatus = (fieldPath: string) => {
     const isUpdated = updatedFields.has(fieldPath);
     const isRecent = recentlyUpdatedFields.has(fieldPath);
     const hasUpdatedChild = hasUpdatedChildren(fieldPath, parsedJSON);
-    const timestamp = updateTimestamps.get(fieldPath);
+    const timestamp = fieldUpdateTimestamps[fieldPath];
     
     return {
       isUpdated,
@@ -558,11 +577,39 @@ const StructuredPromptEditor = ({
     };
   };
 
-  // Clear all update indicators
-  const clearUpdates = () => {
+  const clearUpdates = useCallback(() => {
     setRecentlyUpdatedFields(new Set());
-    setUpdateTimestamps(new Map());
+    setFieldUpdateTimestamps({});
+    setFieldHistory({});
+    setExpandedDeltas(new Set());
+  }, []);
+
+  // Helper function to get value at a specific path
+  const getValueAtPath = (obj: any, path: string): any => {
+    const keys = path.split('.');
+    let current = obj;
+    for (const key of keys) {
+      if (current && typeof current === 'object' && key in current) {
+        current = current[key];
+      } else {
+        return undefined;
+      }
+    }
+    return current;
   };
+
+  // Toggle delta expansion
+  const toggleDeltaExpansion = useCallback((path: string) => {
+    setExpandedDeltas(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(path)) {
+        newSet.delete(path);
+      } else {
+        newSet.add(path);
+      }
+      return newSet;
+    });
+  }, []);
 
   // Count total updates
   const updateCount = updatedFields.size;
@@ -600,7 +647,7 @@ const StructuredPromptEditor = ({
                     console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
                     handleParentLock(fieldPath, val, !parentLocked);
                   }}>
-                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                        {parentLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -722,7 +769,7 @@ const StructuredPromptEditor = ({
                       <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", parentLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
                     handleParentLock(fieldPath, val, !parentLocked);
                   }}>
-                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                        {parentLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -777,7 +824,7 @@ const StructuredPromptEditor = ({
                                 const itemLocked = isFieldLocked(itemPath);
                                 handleParentLock(itemPath, item, !itemLocked);
                               }}>
-                                       {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                                       {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                                      </Button>
                                    </TooltipTrigger>
                                    <TooltipContent>
@@ -857,7 +904,7 @@ const StructuredPromptEditor = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", isLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => onFieldLock(fieldPath, !isLocked)}>
-                    {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                    {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -924,7 +971,55 @@ const StructuredPromptEditor = ({
           {typeof val !== 'string' && <span className={cn("px-1.5 py-0.5 text-xs rounded font-mono flex-shrink-0", typeof val === 'number' && "bg-blue-500/10 text-blue-600 border border-blue-200/20", typeof val === 'boolean' && "bg-purple-500/10 text-purple-600 border border-purple-200/20", val === null && "bg-gray-500/10 text-gray-600 border border-gray-200/20", typeof val !== 'number' && typeof val !== 'boolean' && val !== null && "bg-muted text-muted-foreground")}>
               {val === null ? 'null' : typeof val}
             </span>}
+
+          {/* Update indicators and timestamp */}
+          {updateStatus.isUpdated && (
+            <div className="flex items-center gap-1 ml-2">
+              {updateStatus.isRecent ? (
+                <div className="update-badge">
+                  <Sparkles className="w-3 h-3" />
+                  <span>New</span>
+                </div>
+              ) : (
+                <div className="update-badge">
+                  <Clock className="w-3 h-3" />
+                  <span>Updated</span>
+                </div>
+              )}
+              {fieldUpdateTimestamps[fieldPath] && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button 
+                        className="text-xs opacity-60 hover:opacity-100 transition-opacity"
+                        onClick={() => toggleDeltaExpansion(fieldPath)}
+                      >
+                        {new Date(fieldUpdateTimestamps[fieldPath]).toLocaleTimeString()}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Last updated: {new Date(fieldUpdateTimestamps[fieldPath]).toLocaleString()}</p>
+                      <p className="text-xs opacity-75">Click to see changes</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Show delta information if available and field is updated */}
+        {updateStatus.isUpdated && fieldHistory[fieldPath] && (
+          <div style={{ paddingLeft: `${level * 12 + 36}px` }}>
+            <FieldDelta
+              oldValue={fieldHistory[fieldPath].oldValue}
+              newValue={fieldHistory[fieldPath].newValue}
+              timestamp={fieldHistory[fieldPath].timestamp}
+              isExpanded={expandedDeltas.has(fieldPath)}
+              onToggle={() => toggleDeltaExpansion(fieldPath)}
+            />
+          </div>
+        )}
       </div>;
   };
   const renderEmptyState = () => (
@@ -1104,7 +1199,7 @@ const StructuredPromptEditor = ({
                             });
                           }
                         }}>
-                                {allGeneralLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
+                                {allGeneralLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
