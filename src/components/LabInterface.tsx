@@ -10,7 +10,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ExternalLink, User, Settings, LogOut, FileText } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ExternalLink, User, Settings, LogOut, FileText, HelpCircle } from "lucide-react";
 
 const LabInterface = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -212,9 +220,104 @@ const LabInterface = () => {
       
       {/* Description Section */}
       <div className="px-4 pb-2 flex-none">
-        <p className="text-lab-text-secondary text-sm font-medium">
-          Check out under the hood of our ultra controlled text to image model
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-lab-text-secondary text-sm font-medium">
+            Check out under the hood of our ultra controlled text to image model
+          </p>
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 inline-flex items-center gap-1 px-2 py-1 rounded">
+                <HelpCircle className="w-3 h-3" />
+                Learn about Bria 4
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold text-lab-text-primary">
+                  Bria 4.0: Control-First Image Generation
+                </DialogTitle>
+                <DialogDescription className="text-lab-text-secondary">
+                  Reframing text-to-image from "pretty images" to professional control and automation
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 text-lab-text-primary">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-lab-surface-elevated rounded-lg p-3">
+                    <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
+                    <div className="text-lab-text-secondary text-xs">LLM interpretation layer for structured, scalable workflows</div>
+                  </div>
+                  <div className="bg-lab-surface-elevated rounded-lg p-3">
+                    <div className="font-semibold text-lab-primary mb-2">Professional Control</div>
+                    <div className="text-lab-text-secondary text-xs">Granular control over aesthetics, composition, and positioning</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
+                      <div className="font-medium text-lab-text-primary mb-2">Technical Foundation</div>
+                      <div className="space-y-1 text-xs text-lab-text-secondary">
+                        <div>• 8B Parameters optimized</div>
+                        <div>• SmolLM Text Encoder</div>
+                        <div>• WAN 2.2 VAE for quality</div>
+                        <div>• LLM-to-pixel connection</div>
+                      </div>
+                    </div>
+                    <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
+                      <div className="font-medium text-lab-text-primary mb-2">Workflow</div>
+                      <div className="text-xs text-lab-text-secondary">
+                        <div className="flex items-center justify-between mb-2">
+                          <span>Prompt</span><span>→</span><span>LLM</span><span>→</span><span>Image</span>
+                        </div>
+                        <div>• Generate from natural language</div>
+                        <div>• Refine with instructions</div>
+                        <div>• Inspire from existing images</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Advanced Control</h3>
+                  <div className="grid grid-cols-3 gap-2 text-xs">
+                    <div className="bg-lab-surface-elevated rounded p-2">
+                      <div className="font-medium text-lab-text-primary mb-1">Aesthetics</div>
+                      <div className="text-lab-text-secondary">Composition, color, mood</div>
+                    </div>
+                    <div className="bg-lab-surface-elevated rounded p-2">
+                      <div className="font-medium text-lab-text-primary mb-1">Photography</div>
+                      <div className="text-lab-text-secondary">Focus, angles, lighting</div>
+                    </div>
+                    <div className="bg-lab-surface-elevated rounded p-2">
+                      <div className="font-medium text-lab-text-primary mb-1">Objects</div>
+                      <div className="text-lab-text-secondary">Position, size, texture</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
+                  <div className="flex flex-wrap gap-2 text-sm">
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                      <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Bria 4</a>
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                      <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
+                        📚 API Docs
+                      </a>
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                      <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
+                        🚀 Bria Platform
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
       
       {/* Main Content Area - Floating Panels */}
