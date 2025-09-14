@@ -1154,7 +1154,7 @@ const StructuredPromptEditor = ({
             return <Collapsible key="general" defaultOpen={false}>
                   <div className="relative">
                     {renderTreeLines(0, isLast, true)}
-                    <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")} style={{
+                    <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm")} style={{
                   paddingLeft: '4px'
                 }}>
                       {/* General Lock Button */}
