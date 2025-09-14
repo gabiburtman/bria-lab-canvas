@@ -738,26 +738,12 @@ const StructuredPromptEditor = ({
       </div>;
   };
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center h-80 space-y-6 p-8">
-      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-lab-primary/10 mb-2">
-        <Sparkles className="w-8 h-8 text-lab-primary" />
-      </div>
-      <div className="text-center space-y-3">
-        <h3 className="text-xl font-semibold text-lab-text-primary">Populate Structured Prompt</h3>
-        <p className="text-sm text-lab-text-secondary max-w-md leading-relaxed">
-          Upload an image or brief to extract structured prompt specification, or describe the desired output in the prompt above to get started.
+    <div className="flex flex-col items-center justify-center h-80 space-y-4 p-8">
+      <div className="text-center space-y-2">
+        <h3 className="text-lg font-medium text-muted-foreground">Populate Structured Prompt</h3>
+        <p className="text-xs text-muted-foreground/70 max-w-md leading-relaxed">
+          Upload an image or brief to extract structured prompt specification, or describe the desired output in the prompt above.
         </p>
-      </div>
-      <div className="flex items-center gap-4 text-xs text-lab-text-muted">
-        <div className="flex items-center gap-2">
-          <Image className="w-4 h-4" />
-          <span>Upload Image</span>
-        </div>
-        <div className="w-px h-4 bg-lab-border"></div>
-        <div className="flex items-center gap-2">
-          <FileText className="w-4 h-4" />
-          <span>Upload Brief</span>
-        </div>
       </div>
     </div>
   );
