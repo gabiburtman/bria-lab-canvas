@@ -169,38 +169,32 @@ response = requests.post(
           {!inDialog && "Share"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-        <div className="space-y-3">
-          <h4 className="font-medium text-lab-text-primary text-sm">Share on Social Media</h4>
-          <div className="space-y-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-lab-text-secondary hover:text-[#0077B5] hover:bg-lab-interactive-hover transition-colors duration-200" 
-              onClick={handleLinkedInShare}
-            >
-              <Linkedin className="w-4 h-4 mr-2" />
-              Share on LinkedIn
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-lab-text-secondary hover:text-black hover:bg-lab-interactive-hover transition-colors duration-200" 
-              onClick={handleXShare}
-            >
-              <X className="w-4 h-4 mr-2" />
-              Share on X
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="w-full justify-start text-lab-text-secondary hover:text-[#FF4500] hover:bg-lab-interactive-hover transition-colors duration-200" 
-              onClick={handleRedditShare}
-            >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Share on Reddit
-            </Button>
-          </div>
+      <PopoverContent className="w-auto bg-lab-surface border-lab-border shadow-lg p-2">
+        <div className="flex gap-2">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-8 h-8 p-0 text-lab-text-secondary hover:text-[#0077B5] hover:bg-lab-interactive-hover transition-colors duration-200" 
+            onClick={handleLinkedInShare}
+          >
+            <Linkedin className="w-4 h-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-8 h-8 p-0 text-lab-text-secondary hover:text-black hover:bg-lab-interactive-hover transition-colors duration-200" 
+            onClick={handleXShare}
+          >
+            <X className="w-4 h-4" />
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-8 h-8 p-0 text-lab-text-secondary hover:text-[#FF4500] hover:bg-lab-interactive-hover transition-colors duration-200" 
+            onClick={handleRedditShare}
+          >
+            <MessageCircle className="w-4 h-4" />
+          </Button>
         </div>
       </PopoverContent>
     </Popover>;
