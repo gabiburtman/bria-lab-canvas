@@ -8,9 +8,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Toggle } from "@/components/ui/toggle";
 import ExperimentSpecEditor from "./ExperimentSpecEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Grid3X3 } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
   "short_description": "",
@@ -131,13 +130,7 @@ const PromptComponent = ({
   onSurpriseMe,
   onTranslatePrompt,
   isRefinementMode = false,
-  initialInput,
-  resultsQuantity,
-  setResultsQuantity,
-  onUploadImage,
-  onUploadDocument,
-  uploadedImageUrl,
-  uploadedBriefName
+  initialInput
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -161,15 +154,9 @@ const PromptComponent = ({
   onTranslatePrompt: () => void;
   isRefinementMode?: boolean;
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
-  resultsQuantity: number;
-  setResultsQuantity: (quantity: number) => void;
-  onUploadImage: () => void;
-  onUploadDocument: () => void;
-  uploadedImageUrl: string | null;
-  uploadedBriefName: string | null;
 }) => {
   // Height constants to maintain exact same total height
-  const baseEditorHeight = 180;
+  const baseEditorHeight = 120;
   const tabsBarHeight = 40;
   const refinedContentHeight = baseEditorHeight - tabsBarHeight;
   
@@ -286,165 +273,106 @@ const PromptComponent = ({
       
       {/* Controls Bar */}
       <TooltipProvider>
-        <div className="border-t border-lab-border bg-background">
-          {/* Row 1: Generation Parameters */}
-          <div className="flex items-center justify-between p-3 pb-2">
-            <div className="flex items-center gap-2">
-              {/* Aspect Ratio Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 px-2 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
-                        <Crop className="w-3 h-3" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
-                      <div className="space-y-1">
-                        {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
-                            {ratio.label}
-                          </button>)}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Aspect Ratio: {aspectRatio}</p>
-                </TooltipContent>
-              </Tooltip>
+        <div className="flex items-center justify-between p-3 border-t border-lab-border bg-background">
+          <div className="flex items-center gap-2">
+            {/* Aspect Ratio Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
+                      <Crop className="w-3 h-3" />
+                      {aspectRatio}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
+                    <div className="space-y-1">
+                      {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
+                          {ratio.label}
+                        </button>)}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Aspect Ratio</p>
+              </TooltipContent>
+            </Tooltip>
 
-              {/* Steps Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 px-2 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
-                        <Hash className="w-3 h-3" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-                      <div>
-                        <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
-                        <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]} steps</div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Steps: {steps[0]}</p>
-                </TooltipContent>
-              </Tooltip>
+            {/* Steps Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
+                      <Hash className="w-3 h-3" />
+                      {steps[0]} Steps
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                    <div>
+                      <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
+                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]} steps</div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Steps</p>
+              </TooltipContent>
+            </Tooltip>
 
-              {/* Guidance Scale Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 px-2 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
-                        <Zap className="w-3 h-3" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-                      <div>
-                        <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
-                        <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance: {guidanceScale[0]}</div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Guidance Scale: {guidanceScale[0]}</p>
-                </TooltipContent>
-              </Tooltip>
+            {/* Guidance Scale Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
+                      <Zap className="w-3 h-3" />
+                      CFG {guidanceScale[0]}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                    <div>
+                      <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
+                      <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance: {guidanceScale[0]}</div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Guidance Scale</p>
+              </TooltipContent>
+            </Tooltip>
 
-              {/* Seed Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 px-2 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary">
-                        <Sprout className="w-3 h-3" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-                      <div>
-                        <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Seed: {seed || "Random"}</p>
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Results Quantity Toggle */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => setResultsQuantity(resultsQuantity === 1 ? 4 : 1)}
-                    className="h-8 px-2 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary"
-                  >
-                    <Grid3X3 className="w-3 h-3" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Results: {resultsQuantity} image{resultsQuantity > 1 ? 's' : ''}</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
+            {/* Seed Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
+                      <Sprout className="w-3 h-3" />
+                      {seed || "Random"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                    <div>
+                      <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Seed</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
-          {/* Row 2: Upload & Actions */}
-          <div className="flex items-center justify-between px-3 pb-3">
-            <div className="flex items-center gap-2">
-              {/* Upload Image Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
-                    onClick={onUploadImage}
-                    disabled={isGenerating}
-                    className="h-8 px-3 text-xs flex items-center gap-1.5"
-                  >
-                    <Upload className="w-3 h-3" />
-                    {uploadedImageUrl ? "✓ Image" : "Image"}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{uploadedImageUrl ? "Image uploaded" : "Upload reference image"}</p>
-                </TooltipContent>
-              </Tooltip>
-
-              {/* Upload Brief Button */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
-                    onClick={onUploadDocument}
-                    disabled={isGenerating}
-                    className="h-8 px-3 text-xs flex items-center gap-1.5"
-                  >
-                    <FileText className="w-3 h-3" />
-                    {uploadedBriefName ? "✓ Brief" : "Brief"}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{uploadedBriefName ? `Brief: ${uploadedBriefName}` : "Upload creative brief"}</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            <div className="flex items-center gap-1">
-              {/* Translate Prompt Button */}
-              <Button onClick={onTranslatePrompt} disabled={isGenerating || !hasGenerated && !value.trim() || hasGenerated && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
-                Translate to JSON
-              </Button>
-            </div>
+          <div className="flex items-center gap-1">
+            {/* Translate Prompt Button */}
+            <Button onClick={onTranslatePrompt} disabled={isGenerating || !hasGenerated && !value.trim() || hasGenerated && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
+              Translate to JSON
+            </Button>
           </div>
         </div>
       </TooltipProvider>
@@ -478,7 +406,6 @@ const ConfigurationPanel = ({
   const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [uploadedBriefName, setUploadedBriefName] = useState<string | null>(null);
-  const [resultsQuantity, setResultsQuantity] = useState(4);
 
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -645,12 +572,10 @@ const ConfigurationPanel = ({
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
 
-      // Generate new mock images with correct aspect ratio and quantity
+      // Generate new mock images with correct aspect ratio
       const timestamp = Date.now();
       const dimensions = getImageDimensions(aspectRatio);
-      const mockImages = Array.from({ length: resultsQuantity }, (_, i) => 
-        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + i + 1}`
-      );
+      const mockImages = [`https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 1}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 2}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 3}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 4}`];
 
       // Notify parent component about generated images
       const config = {
@@ -824,7 +749,7 @@ const ConfigurationPanel = ({
       <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
         {/* Prompt Section - Fixed height */}
         <div className="flex-shrink-0">
-            <PromptComponent 
+          <PromptComponent 
             value={hasGenerated ? refinementPrompt : mainPrompt} 
             onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
             placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} 
@@ -844,19 +769,13 @@ const ConfigurationPanel = ({
             onTranslatePrompt={handleTranslatePrompt} 
             isRefinementMode={hasGenerated}
             initialInput={initialInput}
-            resultsQuantity={resultsQuantity}
-            setResultsQuantity={setResultsQuantity}
-            onUploadImage={handleUploadImage}
-            onUploadDocument={handleUploadDocument}
-            uploadedImageUrl={uploadedImageUrl}
-            uploadedBriefName={uploadedBriefName}
           />
         </div>
 
         {/* Experiment Spec Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
+            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
         </div>
 
