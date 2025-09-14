@@ -64,6 +64,11 @@ const LabInterface = () => {
     });
   }, []);
 
+  const handleUploadImage = useCallback(() => {
+    // This will be handled by the ConfigurationPanel component
+    console.log('Upload image requested');
+  }, []);
+
   return (
     <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
       {/* Floating Header Elements */}
@@ -210,6 +215,7 @@ const LabInterface = () => {
             onClearResults={clearResults}
             initialConfig={currentConfig}
             onGeneratingChange={setIsGenerating}
+            onUploadImage={handleUploadImage}
           />
           </div>
           

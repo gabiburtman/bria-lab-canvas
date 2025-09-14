@@ -398,12 +398,14 @@ const ConfigurationPanel = ({
   onImagesGenerated,
   onClearResults,
   initialConfig,
-  onGeneratingChange
+  onGeneratingChange,
+  onUploadImage
 }: {
   onImagesGenerated?: (images: string[], config: any) => void;
   onClearResults?: () => void;
   initialConfig?: any;
   onGeneratingChange?: (isGenerating: boolean) => void;
+  onUploadImage?: () => void;
 }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [originalPrompt, setOriginalPrompt] = useState(initialConfig?.mainPrompt || "");
@@ -669,7 +671,11 @@ const ConfigurationPanel = ({
     setLockedFields(newLockedFields);
   };
   const handleUploadImage = () => {
-    imageInputRef.current?.click();
+    if (onUploadImage) {
+      onUploadImage();
+    } else {
+      imageInputRef.current?.click();
+    }
   };
   const handleUploadDocument = () => {
     briefInputRef.current?.click();
