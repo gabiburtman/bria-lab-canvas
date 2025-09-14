@@ -63,9 +63,9 @@ const LabInterface = () => {
     // This will be handled by the ConfigurationPanel component
     console.log('Upload document requested');
   }, []);
-  return <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
+    return <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
       {/* Floating Header Elements */}
-      <div className="flex items-center justify-between p-4 flex-none">
+      <div className="flex items-center justify-between px-4 py-3 flex-none">
         {/* Left Group - Logo & Title */}
         <div className="flex items-center gap-3">
           <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="h-8 w-auto" />
@@ -260,7 +260,7 @@ const LabInterface = () => {
       
       
       {/* Main Content Area - Floating Panels */}
-      <div className="flex-1 min-h-0 p-4">
+      <div className="flex-1 min-h-0 px-4 pb-4 pt-2">
         <div className="flex gap-4 h-full min-h-0">
           {/* Configuration Panel - Fixed width since overlay doesn't affect layout */}
           <div className="w-[48.5%] min-w-0">
