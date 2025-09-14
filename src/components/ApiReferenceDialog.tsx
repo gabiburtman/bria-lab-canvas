@@ -33,16 +33,28 @@ headers = {
 
 payload = {
     "api": {
+        "prompt": "A serene landscape with mountains",
+        "num_results": 1,
+        "sync": True,
+        "width": 1024,
+        "height": 1024,
+        "seed": 123456,
+        "aspect_ratio": "1:1",
+        "steps": 20,
+        "cfg": 7.5,
         "json": {
-            "prompt": "A serene landscape with mountains",
-            "num_results": 1,
-            "sync": True,
-            "width": 1024,
-            "height": 1024,
-            "seed": 123456,
-            "aspect_ratio": "1:1",
-            "steps": 20,
-            "cfg": 7.5
+            "scene": {
+                "type": "landscape",
+                "lighting": "natural",
+                "weather": "clear"
+            },
+            "objects": [
+                {
+                    "type": "mountains",
+                    "position": "background",
+                    "style": "majestic"
+                }
+            ]
         }
     }
 }
@@ -67,16 +79,28 @@ except requests.exceptions.RequestException as e:
     },
     body: JSON.stringify({
       api: {
+        prompt: 'A serene landscape with mountains',
+        num_results: 1,
+        sync: true,
+        width: 1024,
+        height: 1024,
+        seed: 123456,
+        aspect_ratio: '1:1',
+        steps: 20,
+        cfg: 7.5,
         json: {
-          prompt: 'A serene landscape with mountains',
-          num_results: 1,
-          sync: true,
-          width: 1024,
-          height: 1024,
-          seed: 123456,
-          aspect_ratio: '1:1',
-          steps: 20,
-          cfg: 7.5
+          scene: {
+            type: 'landscape',
+            lighting: 'natural',
+            weather: 'clear'
+          },
+          objects: [
+            {
+              type: 'mountains',
+              position: 'background',
+              style: 'majestic'
+            }
+          ]
         }
       }
     })
@@ -111,16 +135,28 @@ const options = {
 
 const postData = JSON.stringify({
   api: {
+    prompt: 'A serene landscape with mountains',
+    num_results: 1,
+    sync: true,
+    width: 1024,
+    height: 1024,
+    seed: 123456,
+    aspect_ratio: '1:1',
+    steps: 20,
+    cfg: 7.5,
     json: {
-      prompt: 'A serene landscape with mountains',
-      num_results: 1,
-      sync: true,
-      width: 1024,
-      height: 1024,
-      seed: 123456,
-      aspect_ratio: '1:1',
-      steps: 20,
-      cfg: 7.5
+      scene: {
+        type: 'landscape',
+        lighting: 'natural',
+        weather: 'clear'
+      },
+      objects: [
+        {
+          type: 'mountains',
+          position: 'background',
+          style: 'majestic'
+        }
+      ]
     }
   }
 });
@@ -153,16 +189,28 @@ req.end();`
   -H "Content-Type: application/json" \\
   -d '{
     "api": {
+      "prompt": "A serene landscape with mountains",
+      "num_results": 1,
+      "sync": true,
+      "width": 1024,
+      "height": 1024,
+      "seed": 123456,
+      "aspect_ratio": "1:1",
+      "steps": 20,
+      "cfg": 7.5,
       "json": {
-        "prompt": "A serene landscape with mountains",
-        "num_results": 1,
-        "sync": true,
-        "width": 1024,
-        "height": 1024,
-        "seed": 123456,
-        "aspect_ratio": "1:1",
-        "steps": 20,
-        "cfg": 7.5
+        "scene": {
+          "type": "landscape",
+          "lighting": "natural",
+          "weather": "clear"
+        },
+        "objects": [
+          {
+            "type": "mountains",
+            "position": "background",
+            "style": "majestic"
+          }
+        ]
       }
     }
   }' \\
@@ -187,16 +235,28 @@ public class BriaImageGenerator {
         
         String requestBody = mapper.writeValueAsString(Map.of(
             "api", Map.of(
+                "prompt", "A serene landscape with mountains",
+                "num_results", 1,
+                "sync", true,
+                "width", 1024,
+                "height", 1024,
+                "seed", 123456,
+                "aspect_ratio", "1:1",
+                "steps", 20,
+                "cfg", 7.5,
                 "json", Map.of(
-                    "prompt", "A serene landscape with mountains",
-                    "num_results", 1,
-                    "sync", true,
-                    "width", 1024,
-                    "height", 1024,
-                    "seed", 123456,
-                    "aspect_ratio", "1:1",
-                    "steps", 20,
-                    "cfg", 7.5
+                    "scene", Map.of(
+                        "type", "landscape",
+                        "lighting", "natural",
+                        "weather", "clear"
+                    ),
+                    "objects", List.of(
+                        Map.of(
+                            "type", "mountains",
+                            "position", "background",
+                            "style", "majestic"
+                        )
+                    )
                 )
             )
         ));
@@ -240,17 +300,32 @@ public class BriaImageGenerator
         {
             api = new
             {
+                prompt = "A serene landscape with mountains",
+                num_results = 1,
+                sync = true,
+                width = 1024,
+                height = 1024,
+                seed = 123456,
+                aspect_ratio = "1:1",
+                steps = 20,
+                cfg = 7.5,
                 json = new
                 {
-                    prompt = "A serene landscape with mountains",
-                    num_results = 1,
-                    sync = true,
-                    width = 1024,
-                    height = 1024,
-                    seed = 123456,
-                    aspect_ratio = "1:1",
-                    steps = 20,
-                    cfg = 7.5
+                    scene = new
+                    {
+                        type = "landscape",
+                        lighting = "natural",
+                        weather = "clear"
+                    },
+                    objects = new[]
+                    {
+                        new
+                        {
+                            type = "mountains",
+                            position = "background",
+                            style = "majestic"
+                        }
+                    }
                 }
             }
         };
@@ -285,16 +360,28 @@ $api_key = 'YOUR_API_KEY';
 
 $data = array(
     'api' => array(
+        'prompt' => 'A serene landscape with mountains',
+        'num_results' => 1,
+        'sync' => true,
+        'width' => 1024,
+        'height' => 1024,
+        'seed' => 123456,
+        'aspect_ratio' => '1:1',
+        'steps' => 20,
+        'cfg' => 7.5,
         'json' => array(
-            'prompt' => 'A serene landscape with mountains',
-            'num_results' => 1,
-            'sync' => true,
-            'width' => 1024,
-            'height' => 1024,
-            'seed' => 123456,
-            'aspect_ratio' => '1:1',
-            'steps' => 20,
-            'cfg' => 7.5
+            'scene' => array(
+                'type' => 'landscape',
+                'lighting' => 'natural',
+                'weather' => 'clear'
+            ),
+            'objects' => array(
+                array(
+                    'type' => 'mountains',
+                    'position' => 'background',
+                    'style' => 'majestic'
+                )
+            )
         )
     )
 );
@@ -335,20 +422,34 @@ import (
     "net/http"
 )
 
-type JsonRequest struct {
-    Prompt      string  \`json:"prompt"\`
-    NumResults  int     \`json:"num_results"\`
-    Sync        bool    \`json:"sync"\`
-    Width       int     \`json:"width"\`
-    Height      int     \`json:"height"\`
-    Seed        int     \`json:"seed"\`
-    AspectRatio string  \`json:"aspect_ratio"\`
-    Steps       int     \`json:"steps"\`
-    CFG         float64 \`json:"cfg"\`
+type JsonStructure struct {
+    Scene   Scene    \`json:"scene"\`
+    Objects []Object \`json:"objects"\`
+}
+
+type Scene struct {
+    Type     string \`json:"type"\`
+    Lighting string \`json:"lighting"\`
+    Weather  string \`json:"weather"\`
+}
+
+type Object struct {
+    Type     string \`json:"type"\`
+    Position string \`json:"position"\`
+    Style    string \`json:"style"\`
 }
 
 type ApiRequest struct {
-    Json JsonRequest \`json:"json"\`
+    Prompt      string        \`json:"prompt"\`
+    NumResults  int           \`json:"num_results"\`
+    Sync        bool          \`json:"sync"\`
+    Width       int           \`json:"width"\`
+    Height      int           \`json:"height"\`
+    Seed        int           \`json:"seed"\`
+    AspectRatio string        \`json:"aspect_ratio"\`
+    Steps       int           \`json:"steps"\`
+    CFG         float64       \`json:"cfg"\`
+    Json        JsonStructure \`json:"json"\`
 }
 
 type GenerateRequest struct {
@@ -361,16 +462,28 @@ func main() {
     
     payload := GenerateRequest{
         Api: ApiRequest{
-            Json: JsonRequest{
-                Prompt:      "A serene landscape with mountains",
-                NumResults:  1,
-                Sync:        true,
-                Width:       1024,
-                Height:      1024,
-                Seed:        123456,
-                AspectRatio: "1:1",
-                Steps:       20,
-                CFG:         7.5,
+            Prompt:      "A serene landscape with mountains",
+            NumResults:  1,
+            Sync:        true,
+            Width:       1024,
+            Height:      1024,
+            Seed:        123456,
+            AspectRatio: "1:1",
+            Steps:       20,
+            CFG:         7.5,
+            Json: JsonStructure{
+                Scene: Scene{
+                    Type:     "landscape",
+                    Lighting: "natural",
+                    Weather:  "clear",
+                },
+                Objects: []Object{
+                    {
+                        Type:     "mountains",
+                        Position: "background",
+                        Style:    "majestic",
+                    },
+                },
             },
         },
     }
