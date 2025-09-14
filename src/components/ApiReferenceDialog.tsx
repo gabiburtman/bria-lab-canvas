@@ -33,15 +33,17 @@ headers = {
 
 payload = {
     "api": {
-        "prompt": "A serene landscape with mountains",
-        "num_results": 1,
-        "sync": True,
-        "width": 1024,
-        "height": 1024,
-        "seed": 123456,
-        "aspect_ratio": "1:1",
-        "steps": 20,
-        "cfg": 7.5
+        "json": {
+            "prompt": "A serene landscape with mountains",
+            "num_results": 1,
+            "sync": True,
+            "width": 1024,
+            "height": 1024,
+            "seed": 123456,
+            "aspect_ratio": "1:1",
+            "steps": 20,
+            "cfg": 7.5
+        }
     }
 }
 
@@ -65,15 +67,17 @@ except requests.exceptions.RequestException as e:
     },
     body: JSON.stringify({
       api: {
-        prompt: 'A serene landscape with mountains',
-        num_results: 1,
-        sync: true,
-        width: 1024,
-        height: 1024,
-        seed: 123456,
-        aspect_ratio: '1:1',
-        steps: 20,
-        cfg: 7.5
+        json: {
+          prompt: 'A serene landscape with mountains',
+          num_results: 1,
+          sync: true,
+          width: 1024,
+          height: 1024,
+          seed: 123456,
+          aspect_ratio: '1:1',
+          steps: 20,
+          cfg: 7.5
+        }
       }
     })
   });
@@ -107,15 +111,17 @@ const options = {
 
 const postData = JSON.stringify({
   api: {
-    prompt: 'A serene landscape with mountains',
-    num_results: 1,
-    sync: true,
-    width: 1024,
-    height: 1024,
-    seed: 123456,
-    aspect_ratio: '1:1',
-    steps: 20,
-    cfg: 7.5
+    json: {
+      prompt: 'A serene landscape with mountains',
+      num_results: 1,
+      sync: true,
+      width: 1024,
+      height: 1024,
+      seed: 123456,
+      aspect_ratio: '1:1',
+      steps: 20,
+      cfg: 7.5
+    }
   }
 });
 
@@ -147,15 +153,17 @@ req.end();`
   -H "Content-Type: application/json" \\
   -d '{
     "api": {
-      "prompt": "A serene landscape with mountains",
-      "num_results": 1,
-      "sync": true,
-      "width": 1024,
-      "height": 1024,
-      "seed": 123456,
-      "aspect_ratio": "1:1",
-      "steps": 20,
-      "cfg": 7.5
+      "json": {
+        "prompt": "A serene landscape with mountains",
+        "num_results": 1,
+        "sync": true,
+        "width": 1024,
+        "height": 1024,
+        "seed": 123456,
+        "aspect_ratio": "1:1",
+        "steps": 20,
+        "cfg": 7.5
+      }
     }
   }' \\
   | jq '.result[0].urls[0]'`
@@ -179,15 +187,17 @@ public class BriaImageGenerator {
         
         String requestBody = mapper.writeValueAsString(Map.of(
             "api", Map.of(
-                "prompt", "A serene landscape with mountains",
-                "num_results", 1,
-                "sync", true,
-                "width", 1024,
-                "height", 1024,
-                "seed", 123456,
-                "aspect_ratio", "1:1",
-                "steps", 20,
-                "cfg", 7.5
+                "json", Map.of(
+                    "prompt", "A serene landscape with mountains",
+                    "num_results", 1,
+                    "sync", true,
+                    "width", 1024,
+                    "height", 1024,
+                    "seed", 123456,
+                    "aspect_ratio", "1:1",
+                    "steps", 20,
+                    "cfg", 7.5
+                )
             )
         ));
         
@@ -230,15 +240,18 @@ public class BriaImageGenerator
         {
             api = new
             {
-                prompt = "A serene landscape with mountains",
-                num_results = 1,
-                sync = true,
-                width = 1024,
-                height = 1024,
-                seed = 123456,
-                aspect_ratio = "1:1",
-                steps = 20,
-                cfg = 7.5
+                json = new
+                {
+                    prompt = "A serene landscape with mountains",
+                    num_results = 1,
+                    sync = true,
+                    width = 1024,
+                    height = 1024,
+                    seed = 123456,
+                    aspect_ratio = "1:1",
+                    steps = 20,
+                    cfg = 7.5
+                }
             }
         };
         
@@ -272,15 +285,17 @@ $api_key = 'YOUR_API_KEY';
 
 $data = array(
     'api' => array(
-        'prompt' => 'A serene landscape with mountains',
-        'num_results' => 1,
-        'sync' => true,
-        'width' => 1024,
-        'height' => 1024,
-        'seed' => 123456,
-        'aspect_ratio' => '1:1',
-        'steps' => 20,
-        'cfg' => 7.5
+        'json' => array(
+            'prompt' => 'A serene landscape with mountains',
+            'num_results' => 1,
+            'sync' => true,
+            'width' => 1024,
+            'height' => 1024,
+            'seed' => 123456,
+            'aspect_ratio' => '1:1',
+            'steps' => 20,
+            'cfg' => 7.5
+        )
     )
 );
 
@@ -320,7 +335,7 @@ import (
     "net/http"
 )
 
-type ApiRequest struct {
+type JsonRequest struct {
     Prompt      string  \`json:"prompt"\`
     NumResults  int     \`json:"num_results"\`
     Sync        bool    \`json:"sync"\`
@@ -330,6 +345,10 @@ type ApiRequest struct {
     AspectRatio string  \`json:"aspect_ratio"\`
     Steps       int     \`json:"steps"\`
     CFG         float64 \`json:"cfg"\`
+}
+
+type ApiRequest struct {
+    Json JsonRequest \`json:"json"\`
 }
 
 type GenerateRequest struct {
@@ -342,15 +361,17 @@ func main() {
     
     payload := GenerateRequest{
         Api: ApiRequest{
-            Prompt:      "A serene landscape with mountains",
-            NumResults:  1,
-            Sync:        true,
-            Width:       1024,
-            Height:      1024,
-            Seed:        123456,
-            AspectRatio: "1:1",
-            Steps:       20,
-            CFG:         7.5,
+            Json: JsonRequest{
+                Prompt:      "A serene landscape with mountains",
+                NumResults:  1,
+                Sync:        true,
+                Width:       1024,
+                Height:      1024,
+                Seed:        123456,
+                AspectRatio: "1:1",
+                Steps:       20,
+                CFG:         7.5,
+            },
         },
     }
     
