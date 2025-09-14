@@ -1096,7 +1096,7 @@ const StructuredPromptEditor = ({
     </div>
   );
   const renderStructuredView = () => {
-    const generalFields = ['short_description', 'background_setting', 'style_medium', 'context', 'artistic_style'];
+    const generalFields = ['background_setting', 'style_medium', 'context', 'artistic_style'];
     const renderGeneralGroup = () => {
       const generalData: Record<string, any> = {};
       const otherData: Record<string, any> = {};
@@ -1113,6 +1113,11 @@ const StructuredPromptEditor = ({
       }
       const allEntries: Array<[string, any]> = [];
 
+      // Add short_description first if it exists
+      if (parsedJSON && 'short_description' in parsedJSON) {
+        allEntries.push(['short_description', parsedJSON.short_description]);
+      }
+
       // Add General group if it has content
       if (Object.keys(generalData).length > 0) {
         allEntries.push(['General', generalData]);
@@ -1120,7 +1125,9 @@ const StructuredPromptEditor = ({
 
       // Add other fields
       Object.entries(otherData).forEach(([key, val]) => {
-        allEntries.push([key, val]);
+        if (key !== 'short_description') { // Skip short_description since we already added it first
+          allEntries.push([key, val]);
+        }
       });
       return <div className="space-y-1">
           {allEntries.map(([key, val], index, arr) => {
