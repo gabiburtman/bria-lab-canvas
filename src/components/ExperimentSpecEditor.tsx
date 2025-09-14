@@ -845,6 +845,21 @@ const ExperimentSpecEditor = ({
               <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
               <div className="flex flex-wrap gap-2 text-sm">
                 <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                  <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">
+                    🤗 Bria 4 Models
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                  <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
+                    📚 API Docs
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                  <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
+                    🚀 Bria Platform
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                   <a href="https://huggingface.co/microsoft/SmolLM2-1.7B" target="_blank" rel="noopener noreferrer">
                     🤗 SmolLM
                   </a>
@@ -852,11 +867,6 @@ const ExperimentSpecEditor = ({
                 <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                   <a href="https://huggingface.co/wangfuyun/WAN2.2-T12V-5B" target="_blank" rel="noopener noreferrer">
                     🤗 WAN2.2
-                  </a>
-                </Button>
-                <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                  <a href="#research-paper" rel="noopener noreferrer">
-                    📄 Paper
                   </a>
                 </Button>
               </div>
