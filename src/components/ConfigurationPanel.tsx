@@ -8,9 +8,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import StructuredPromptEditor from "./StructuredPromptEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Image, HelpCircle } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
   "short_description": "",
@@ -127,11 +126,9 @@ const PromptComponent = ({
   setSeed,
   handleGenerate,
   hasGenerated,
-  onUploadDocument,
   isGenerating,
   onSurpriseMe,
   onTranslatePrompt,
-  onUploadImage,
   isRefinementMode = false,
   initialInput
 }: {
@@ -155,76 +152,55 @@ const PromptComponent = ({
   isGenerating: boolean;
   onSurpriseMe: () => void;
   onTranslatePrompt: () => void;
-  onUploadImage: () => void;
-  onUploadDocument: () => void;
   isRefinementMode?: boolean;
-  initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
+  initialInput?: {
+    type: 'text' | 'image' | 'brief';
+    data: string | {
+      url: string;
+      name?: string;
+    };
+  } | null;
 }) => {
   // Height constants to maintain exact same total height
-  const baseEditorHeight = 180; // Increased from 120 to make prompt field bigger
+  const baseEditorHeight = 120;
   const tabsBarHeight = 40;
   const refinedContentHeight = baseEditorHeight - tabsBarHeight;
-  
   const renderViewInput = () => {
-    const contentStyle = { minHeight: `${refinedContentHeight}px` };
-    
+    const contentStyle = {
+      minHeight: `${refinedContentHeight}px`
+    };
     if (!initialInput || initialInput.type !== 'text' || !(initialInput.data as string).trim()) {
-      return (
-        <div 
-          className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
-          style={contentStyle}
-        >
+      return <div className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent" style={contentStyle}>
           <p className="text-sm italic">No original prompt</p>
-        </div>
-      );
+        </div>;
     }
-    
-    return (
-      <div 
-        className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60"
-        style={contentStyle}
-      >
+    return <div className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60" style={contentStyle}>
         {initialInput.data as string}
-      </div>
-    );
+      </div>;
   };
-
-  return (
-    <div className="rounded-lg bg-background overflow-hidden relative">
-      {hasGenerated ? (
-        <Tabs defaultValue="refine" className="w-full">
+  return <div className="rounded-lg bg-background overflow-hidden relative">
+      {hasGenerated ? <Tabs defaultValue="refine" className="w-full">
           <TabsList className="w-full justify-start rounded-none bg-lab-surface h-10">
             <TabsTrigger value="refine" className="text-sm">Refine</TabsTrigger>
             <TabsTrigger value="input" className="text-sm">View input</TabsTrigger>
           </TabsList>
           
           <TabsContent value="refine" className="mt-0 relative">
-            <Textarea 
-              placeholder={placeholder}
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  if (value.trim() || hasGenerated) {
-                    handleGenerate();
-                  }
-                }
-              }}
-              className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12"
-              style={{ minHeight: `${refinedContentHeight}px` }}
-            />
+            <Textarea placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (value.trim() || hasGenerated) {
+              handleGenerate();
+            }
+          }
+        }} className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12" style={{
+          minHeight: `${refinedContentHeight}px`
+        }} />
             
             {/* Surprise Me Button - positioned inside textarea */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  onClick={onSurpriseMe} 
-                  disabled={isGenerating} 
-                  variant="ghost" 
-                  size="sm" 
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-                >
+                <Button onClick={onSurpriseMe} disabled={isGenerating} variant="ghost" size="sm" className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
                   <Wand2 className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -237,68 +213,30 @@ const PromptComponent = ({
           <TabsContent value="input" className="mt-0">
             {renderViewInput()}
           </TabsContent>
-        </Tabs>
-      ) : (
-        <>
-          <Textarea 
-            placeholder={placeholder}
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (value.trim() || hasGenerated) {
-                  handleGenerate();
-                }
-              }
-            }}
-            className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12"
-            style={{ minHeight: `${baseEditorHeight}px` }}
-          />
+        </Tabs> : <>
+          <Textarea placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          if (value.trim() || hasGenerated) {
+            handleGenerate();
+          }
+        }
+      }} className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12" style={{
+        minHeight: `${baseEditorHeight}px`
+      }} />
           
-          {/* Upload Image, Upload Document, and Surprise Me Buttons - positioned inside textarea */}
-          <div className="absolute top-2 right-2 flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
-                  <Image className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Image</p>
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
-                  <FileText className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Brief</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  onClick={onSurpriseMe} 
-                  disabled={isGenerating} 
-                  variant="ghost" 
-                  size="sm"
-                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-                >
-                  <Wand2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Surprise me with a random prompt</p>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </>
-      )}
+          {/* Surprise Me Button - positioned inside textarea */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button onClick={onSurpriseMe} disabled={isGenerating} variant="ghost" size="sm" className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
+                <Wand2 className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Surprise me with a random prompt</p>
+            </TooltipContent>
+          </Tooltip>
+        </>}
       
       {/* Controls Bar */}
       <TooltipProvider>
@@ -405,23 +343,18 @@ const PromptComponent = ({
           </div>
         </div>
       </TooltipProvider>
-    </div>
-  );
+    </div>;
 };
 const ConfigurationPanel = ({
   onImagesGenerated,
   onClearResults,
   initialConfig,
-  onGeneratingChange,
-  onUploadImage,
-  onUploadDocument
+  onGeneratingChange
 }: {
   onImagesGenerated?: (images: string[], config: any) => void;
   onClearResults?: () => void;
   initialConfig?: any;
   onGeneratingChange?: (isGenerating: boolean) => void;
-  onUploadImage?: () => void;
-  onUploadDocument?: () => void;
 }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
   const [originalPrompt, setOriginalPrompt] = useState(initialConfig?.mainPrompt || "");
@@ -436,7 +369,13 @@ const ConfigurationPanel = ({
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-  const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
+  const [initialInput, setInitialInput] = useState<{
+    type: 'text' | 'image' | 'brief';
+    data: string | {
+      url: string;
+      name?: string;
+    };
+  } | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [uploadedBriefName, setUploadedBriefName] = useState<string | null>(null);
 
@@ -494,7 +433,10 @@ const ConfigurationPanel = ({
     // Capture the initial input if not already done
     if (!hasGenerated) {
       if (mainPrompt.trim()) {
-        setInitialInput({ type: 'text', data: mainPrompt });
+        setInitialInput({
+          type: 'text',
+          data: mainPrompt
+        });
         setOriginalPrompt(mainPrompt);
       }
       // Switch to refine mode by setting hasGenerated to true
@@ -585,12 +527,24 @@ const ConfigurationPanel = ({
     if (!hasGenerated) {
       // Capture the initial input for the first generation
       if (mainPrompt.trim()) {
-        setInitialInput({ type: 'text', data: mainPrompt });
+        setInitialInput({
+          type: 'text',
+          data: mainPrompt
+        });
         setOriginalPrompt(mainPrompt);
       } else if (uploadedImageUrl) {
-        setInitialInput({ type: 'image', data: { url: uploadedImageUrl, name: 'uploaded-image' } });
+        setInitialInput({
+          type: 'image',
+          data: {
+            url: uploadedImageUrl,
+            name: 'uploaded-image'
+          }
+        });
       } else if (uploadedBriefName) {
-        setInitialInput({ type: 'brief', data: uploadedBriefName });
+        setInitialInput({
+          type: 'brief',
+          data: uploadedBriefName
+        });
       }
       setHasGenerated(true);
     }
@@ -651,7 +605,7 @@ const ConfigurationPanel = ({
     setUpdatedFields(new Set());
     setIsGenerating(false);
     setInitialInput(null);
-    
+
     // Clean up uploaded file URLs to prevent memory leaks
     if (uploadedImageUrl) {
       URL.revokeObjectURL(uploadedImageUrl);
@@ -687,18 +641,10 @@ const ConfigurationPanel = ({
     setLockedFields(newLockedFields);
   };
   const handleUploadImage = () => {
-    if (onUploadImage) {
-      onUploadImage();
-    } else {
-      imageInputRef.current?.click();
-    }
+    imageInputRef.current?.click();
   };
   const handleUploadDocument = () => {
-    if (onUploadDocument) {
-      onUploadDocument();
-    } else {
-      briefInputRef.current?.click();
-    }
+    briefInputRef.current?.click();
   };
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -708,7 +654,7 @@ const ConfigurationPanel = ({
     if (uploadedImageUrl) {
       URL.revokeObjectURL(uploadedImageUrl);
     }
-    
+
     // Create object URL for the uploaded image
     const imageUrl = URL.createObjectURL(file);
     setUploadedImageUrl(imageUrl);
@@ -754,7 +700,6 @@ const ConfigurationPanel = ({
       return false;
     }
   }, [jsonData]);
-
   const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -778,272 +723,46 @@ const ConfigurationPanel = ({
       setUpdatedFields(updatedFieldsSet);
     }, 2000);
   };
-  return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
+  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
       <input ref={imageInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
       <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt" onChange={handleDocumentUpload} className="hidden" />
 
       {/* Header */}
       <div className="flex items-center justify-between p-6 pb-4">
-        <div className="flex items-center gap-3">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 flex items-center gap-1">
-                <HelpCircle className="w-3 h-3" />
-                Learn about Bria 4
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold text-lab-text-primary">
-                  Bria 4.0: Control-First Image Generation
-                </DialogTitle>
-                <DialogDescription className="text-lab-text-secondary">
-                  Reframing text-to-image from "pretty images" to professional control and automation
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 text-lab-text-primary">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
-                    <div className="text-lab-text-secondary text-xs">LLM interpretation layer for structured, scalable workflows</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Professional Control</div>
-                    <div className="text-lab-text-secondary text-xs">Granular control over aesthetics, composition, and positioning</div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
-                      <div className="font-medium text-lab-text-primary mb-2">Technical Foundation</div>
-                      <div className="space-y-1 text-xs text-lab-text-secondary">
-                        <div>• 8B Parameters optimized</div>
-                        <div>• SmolLM Text Encoder</div>
-                        <div>• WAN 2.2 VAE for quality</div>
-                        <div>• LLM-to-pixel connection</div>
-                      </div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
-                      <div className="font-medium text-lab-text-primary mb-2">Workflow</div>
-                      <div className="text-xs text-lab-text-secondary">
-                        <div className="flex items-center justify-between mb-2">
-                          <span>Prompt</span><span>→</span><span>LLM</span><span>→</span><span>Image</span>
-                        </div>
-                        <div>• Generate from natural language</div>
-                        <div>• Refine with instructions</div>
-                        <div>• Inspire from existing images</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Advanced Control</h3>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Aesthetics</div>
-                      <div className="text-lab-text-secondary">Composition, color, mood</div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Photography</div>
-                      <div className="text-lab-text-secondary">Focus, angles, lighting</div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Objects</div>
-                      <div className="text-lab-text-secondary">Position, size, texture</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
-                  <div className="flex flex-wrap gap-2 text-sm">
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Bria 4</a>
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
-                        📚 API Docs
-                      </a>
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
-                        🚀 Bria Platform
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-medium text-lab-text-primary">
+            Configuration
+          </h2>
         </div>
-      </div>
-
-      {/* Description */}
-      <div className="px-6 pb-4">
-        <p className="text-sm text-lab-text-secondary">
-          Check out the under the hood of our ultra controlled text to image model{" "}
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="text-lab-primary hover:text-lab-primary-hover underline underline-offset-2 transition-colors">
-                Learn more
-              </button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold text-lab-text-primary">
-                  Bria 4.0: Control-First Image Generation
-                </DialogTitle>
-                <DialogDescription className="text-lab-text-secondary">
-                  Reframing text-to-image from "pretty images" to professional control and automation
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 text-lab-text-primary">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
-                    <div className="text-lab-text-secondary text-xs">LLM interpretation layer for structured, scalable workflows</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Ethical Foundation</div>
-                    <div className="text-lab-text-secondary text-xs">Trained on licensed data with full IP protection</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Real-World Ready</div>
-                    <div className="text-lab-text-secondary text-xs">Enterprise-grade consistency and reliability</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Beyond Text Prompts</div>
-                    <div className="text-lab-text-secondary text-xs">Structured inputs with precise control parameters</div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-semibold mb-3 text-lab-primary">How Bria 4 Works</h3>
-                  <div className="bg-lab-surface-elevated rounded-lg p-4">
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      <div>
-                        <div className="bg-lab-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <span className="text-lab-primary font-bold">1</span>
-                        </div>
-                        <div className="font-medium text-sm mb-1">Input Processing</div>
-                        <div className="text-xs text-lab-text-secondary">Natural language or structured data</div>
-                      </div>
-                      <div>
-                        <div className="bg-lab-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <span className="text-lab-primary font-bold">2</span>
-                        </div>
-                        <div className="font-medium text-sm mb-1">Structured Parsing</div>
-                        <div className="text-xs text-lab-text-secondary">AI interprets and organizes requirements</div>
-                      </div>
-                      <div>
-                        <div className="bg-lab-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <span className="text-lab-primary font-bold">3</span>
-                        </div>
-                        <div className="font-medium text-sm mb-1">Controlled Generation</div>
-                        <div className="text-xs text-lab-text-secondary">Precise image creation with quality assurance</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Key Features</h3>
-                  <div className="grid grid-cols-4 gap-2">
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Style Control</div>
-                      <div className="text-lab-text-secondary">Artistic medium, aesthetics</div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Photography</div>
-                      <div className="text-lab-text-secondary">Focus, angles, lighting</div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Objects</div>
-                      <div className="text-lab-text-secondary">Position, size, texture</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
-                  <div className="flex flex-wrap gap-2 text-sm">
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Bria 4</a>
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
-                        📚 API Docs
-                      </a>
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
-                        🚀 Bria Platform
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </p>
+        <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" size="sm" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
+          Start Over
+        </Button>
       </div>
 
       {/* Content */}
       <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
         {/* Prompt Section - Fixed height */}
-        <div className="flex-shrink-0" style={{ height: '240px' }}>
-          <PromptComponent
-            value={hasGenerated ? refinementPrompt : mainPrompt} 
-            onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
-            placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} 
-            aspectRatio={aspectRatio} 
-            aspectRatios={aspectRatios} 
-            setAspectRatio={setAspectRatio} 
-            steps={steps} 
-            setSteps={setSteps} 
-            guidanceScale={guidanceScale}
-            setGuidanceScale={setGuidanceScale}
-            seed={seed}
-            setSeed={setSeed} 
-            handleGenerate={handleGenerate} 
-            hasGenerated={hasGenerated} 
-            isGenerating={isGenerating} 
-            onSurpriseMe={handleSurpriseMe} 
-            onTranslatePrompt={handleTranslatePrompt} 
-            onUploadImage={handleUploadImage}
-            onUploadDocument={handleUploadDocument}
-            isRefinementMode={hasGenerated}
-            initialInput={initialInput}
-          />
+        <div className="flex-shrink-0">
+          <PromptComponent value={hasGenerated ? refinementPrompt : mainPrompt} onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} guidanceScale={guidanceScale} setGuidanceScale={setGuidanceScale} seed={seed} setSeed={setSeed} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} onTranslatePrompt={handleTranslatePrompt} isRefinementMode={hasGenerated} initialInput={initialInput} />
         </div>
 
-        {/* Structured Prompt Editor - Flexible height that grows */}
+        {/* Structured Prompt Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
+            
           </div>
         </div>
 
-        {/* Action Buttons - Fixed at bottom */}
-        <div className="flex-shrink-0 pt-4 border-t border-lab-border">
+        {/* Action Buttons */}
+        <div className="p-4 border-t border-lab-border bg-background">
           <div className="flex gap-3">
-            <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
+            <Button onClick={handleGenerate} disabled={isGenerating || !hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent()} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : "Generate"}
             </Button>
-            {hasGenerated && (
-              <Button onClick={handleStartOver} variant="ghost" size="default" className="px-6 py-3 text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-surface transition-colors">
-                Start Over
-              </Button>
-            )}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
 export default ConfigurationPanel;
