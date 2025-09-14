@@ -85,29 +85,46 @@ const StructuredPromptEditor = ({
       
       const targetJSON = value;
       let currentIndex = 0;
+      let timeoutId: NodeJS.Timeout;
+      
+      const getTypingDelay = (char: string, nextChar?: string) => {
+        // Realistic typing patterns
+        if (char === '\n') return 150; // Pause after line breaks
+        if (char === '{' || char === '}') return 100; // Pause at structure
+        if (char === '"' && nextChar === ':') return 80; // Pause after keys
+        if (char === ':') return 120; // Pause after colons
+        if (char === ',') return 200; // Longer pause after commas
+        if (char === ' ') return 30; // Quick spaces
+        if (/[a-zA-Z]/.test(char)) return Math.random() * 40 + 40; // Variable letter speed
+        return 60; // Default
+      };
       
       const writeChar = () => {
         if (currentIndex < targetJSON.length) {
           setProgressiveJSON(targetJSON.slice(0, currentIndex + 1));
+          
+          const currentChar = targetJSON[currentIndex];
+          const nextChar = targetJSON[currentIndex + 1];
+          const delay = getTypingDelay(currentChar, nextChar);
+          
           currentIndex++;
-          
-          // Vary the speed - faster for spaces and punctuation, slower for content
-          const char = targetJSON[currentIndex - 1];
-          const delay = char === ' ' || char === '\n' || char === ',' || char === '{' || char === '}' ? 20 : 50;
-          
-          setTimeout(writeChar, delay);
+          timeoutId = setTimeout(writeChar, delay);
         } else {
-          // Writing complete
+          // Writing complete - smooth transition
           setIsWritingJSON(false);
-          // Switch to collapsed tree view
-          setTimeout(() => {
+          timeoutId = setTimeout(() => {
             setViewState('structured');
-          }, 500);
+          }, 800);
         }
       };
       
       // Start writing after a brief delay
-      setTimeout(writeChar, 300);
+      timeoutId = setTimeout(writeChar, 500);
+      
+      // Cleanup function
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId);
+      };
     }
   }, [isGenerating, value]);
   const copyToClipboard = useCallback(() => {
@@ -1006,13 +1023,19 @@ const StructuredPromptEditor = ({
     return (
       <div className="absolute inset-0 bg-background flex flex-col z-20">
         <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
-          <span className="text-sm font-medium text-foreground">
-            Generating Structured Prompt...
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-foreground">
+              Generating Structured Prompt...
+            </span>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {Math.round((progressiveJSON.length / (value?.length || 1)) * 100)}%
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm">
+        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gradient-to-br from-background to-muted/20">
           {lines.map((line, index) => (
-            <div key={index} className="flex items-center min-h-[24px]">
+            <div key={index} className="flex items-center min-h-[24px] animate-fade-in">
               <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
                 {index + 1}
               </span>
@@ -1022,8 +1045,10 @@ const StructuredPromptEditor = ({
               />
             </div>
           ))}
-          {/* Blinking cursor at the end */}
-          <div className="inline-block w-2 h-4 bg-primary animate-pulse ml-1"></div>
+          {/* Enhanced blinking cursor */}
+          <div className="inline-flex items-center">
+            <div className="w-2 h-4 bg-primary animate-pulse ml-1 rounded-sm"></div>
+          </div>
         </div>
       </div>
     );
