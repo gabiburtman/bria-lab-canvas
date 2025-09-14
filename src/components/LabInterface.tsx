@@ -75,9 +75,9 @@ const LabInterface = () => {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button 
-                    variant="outline" 
+                    variant="link" 
                     size="sm" 
-                    className="ml-3 h-7 px-3 text-xs bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary hover:text-lab-primary hover:border-lab-primary transition-all duration-200"
+                    className="ml-3 h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200"
                   >
                     Learn more
                   </Button>
