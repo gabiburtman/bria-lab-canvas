@@ -210,6 +210,13 @@ const LabInterface = () => {
         </div>
       </div>
       
+      {/* Description Section */}
+      <div className="px-4 pb-2 flex-none">
+        <p className="text-lab-text-secondary text-sm font-medium">
+          Check out under the hood of our ultra controlled text to image model
+        </p>
+      </div>
+      
       {/* Main Content Area - Floating Panels */}
       <div className="flex-1 min-h-0 p-4">
         <div className="flex gap-4 h-full min-h-0">
