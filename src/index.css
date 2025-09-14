@@ -92,6 +92,93 @@
   body {
     @apply bg-background text-foreground font-roboto;
   }
+
+  /* Enhanced update indicators */
+  .field-updated-recent {
+    @apply relative bg-blue-500/15 border border-blue-500/40 rounded-md;
+    animation: field-pulse 2s ease-in-out;
+    box-shadow: 0 0 0 1px hsl(var(--lab-primary) / 0.3), 0 0 8px hsl(var(--lab-primary) / 0.2);
+  }
+
+  .field-updated-recent::before {
+    content: '';
+    @apply absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 to-blue-400/20 rounded-md -z-10;
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  .field-updated-previous {
+    @apply bg-amber-500/10 border border-amber-500/25 rounded-md;
+    transition: all 0.3s ease-out;
+  }
+
+  .field-updated-child {
+    @apply bg-green-500/8 border-l-2 border-green-500/30;
+  }
+
+  .update-badge {
+    @apply inline-flex items-center gap-1 px-1.5 py-0.5 text-xs bg-blue-500/20 text-blue-300 rounded border border-blue-500/30 font-mono;
+    animation: badge-appear 0.3s ease-out;
+  }
+
+  .update-count {
+    @apply inline-flex items-center justify-center w-5 h-5 text-xs bg-blue-500/30 text-blue-200 rounded-full border border-blue-500/40;
+    animation: count-bounce 0.4s ease-out;
+  }
+
+  @keyframes field-pulse {
+    0% { 
+      box-shadow: 0 0 0 0 hsl(var(--lab-primary) / 0.4);
+      transform: scale(1);
+    }
+    50% { 
+      box-shadow: 0 0 0 4px hsl(var(--lab-primary) / 0.2);
+      transform: scale(1.002);
+    }
+    100% { 
+      box-shadow: 0 0 0 0 hsl(var(--lab-primary) / 0);
+      transform: scale(1);
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+  }
+
+  @keyframes badge-appear {
+    0% { 
+      opacity: 0; 
+      transform: translateY(-4px) scale(0.9); 
+    }
+    100% { 
+      opacity: 1; 
+      transform: translateY(0) scale(1); 
+    }
+  }
+
+  @keyframes count-bounce {
+    0% { 
+      transform: scale(0.8); 
+      opacity: 0; 
+    }
+    50% { 
+      transform: scale(1.1); 
+      opacity: 1; 
+    }
+    100% { 
+      transform: scale(1); 
+      opacity: 1; 
+    }
+  }
+
+  .clear-updates-btn {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 hover:text-amber-200 rounded-md border border-amber-500/30 hover:border-amber-500/40 transition-all duration-200;
+  }
+
+  .update-tooltip {
+    @apply bg-lab-surface text-lab-text-primary px-2 py-1 text-xs rounded-md border border-lab-border shadow-lg;
+  }
+}
 }
 
 /* JSON Editor Syntax Highlighting */
