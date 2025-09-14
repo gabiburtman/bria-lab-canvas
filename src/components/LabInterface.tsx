@@ -163,11 +163,11 @@ const LabInterface = () => {
       
       {/* Description Section */}
       <div className="px-4 pb-2 flex-none">
-        <div className="flex items-center gap-2">
-          <div className="text-lab-text-secondary text-sm font-medium">
-            <p>This is the interactive lab for GAIA, the first open-source model</p>
-            <p>that uses long, structured prompts for developer-native precision and professional control.</p>
-          </div>
+        <div className="text-lab-text-secondary text-sm font-medium space-y-1">
+          <p>This is the interactive lab for GAIA, the first open-source model that uses long, structured prompts</p>
+          <p>for developer-native precision and professional control.</p>
+        </div>
+        <div className="mt-2">
           <Dialog>
             <DialogTrigger asChild>
               <button className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 inline-flex items-center gap-1 px-2 py-1 rounded">
