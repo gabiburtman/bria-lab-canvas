@@ -391,7 +391,7 @@ const PromptComponent = ({
                 </Popover>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Seed</p>
+                <p>Set an image seed to recreate or vary a generation</p>
               </TooltipContent>
             </Tooltip>
           </div>
