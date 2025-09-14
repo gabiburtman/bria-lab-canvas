@@ -783,20 +783,8 @@ const ConfigurationPanel = ({
       <input ref={imageInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
       <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt" onChange={handleDocumentUpload} className="hidden" />
 
-      {/* Header */}
-      <div className="flex items-center justify-between p-6 pb-4">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-medium text-lab-text-primary">
-            Configuration
-          </h2>
-        </div>
-        <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" size="sm" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
-          Start Over
-        </Button>
-      </div>
-
       {/* Content */}
-      <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
+      <div className="flex-1 flex flex-col min-h-0 p-6 gap-4">{/* Removed header, adjusted padding */}
         {/* Prompt Section - Fixed height */}
         <div className="flex-shrink-0" style={{ height: '240px' }}>
           <PromptComponent
@@ -834,6 +822,9 @@ const ConfigurationPanel = ({
         {/* Action Buttons - Fixed at bottom */}
         <div className="flex-shrink-0 pt-4 border-t border-lab-border">
           <div className="flex gap-3">
+            <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" size="sm" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
+              Start Over
+            </Button>
             <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : "Generate"}
             </Button>
