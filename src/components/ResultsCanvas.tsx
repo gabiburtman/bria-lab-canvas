@@ -26,7 +26,6 @@ const ImageCard = ({
     // Define action logic here
     console.log('Define action triggered for image', index + 1);
   };
-
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (src) {
@@ -38,64 +37,34 @@ const ImageCard = ({
       document.body.removeChild(link);
     }
   };
-
   const ActionButtons = () => <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lab flex items-start justify-between p-3">
       <div className="flex gap-2">
-        <Button 
-          size="sm" 
-          variant="ghost" 
-          onClick={handleDefineAction}
-          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
-        >
+        <Button size="sm" variant="ghost" onClick={handleDefineAction} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
           <Badge className="w-4 h-4" />
         </Button>
-        <Button 
-          size="sm" 
-          variant="ghost" 
-          onClick={handleDownload}
-          className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
-        >
+        <Button size="sm" variant="ghost" onClick={handleDownload} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
           <Download className="w-4 h-4" />
         </Button>
       </div>
       
       <div className="flex gap-2">
-        <ApiReferenceDialog 
-          trigger={
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              onClick={(e) => e.stopPropagation()}
-              className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm"
-            >
+        <ApiReferenceDialog trigger={<Button size="sm" variant="ghost" onClick={e => e.stopPropagation()} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
               <Code className="w-4 h-4" />
-            </Button>
-          }
-        />
+            </Button>} />
       </div>
     </div>;
   const FeedbackButtons = () => <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
       <div className="flex gap-2">
-        <Button 
-          size="sm" 
-          variant="ghost" 
-          onClick={(e) => {
-            e.stopPropagation();
-            setLiked(true);
-          }} 
-          className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === true && "bg-green-500 text-white border-green-500 hover:bg-green-600")}
-        >
+        <Button size="sm" variant="ghost" onClick={e => {
+        e.stopPropagation();
+        setLiked(true);
+      }} className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === true && "bg-green-500 text-white border-green-500 hover:bg-green-600")}>
           <ThumbsUp className="w-4 h-4" />
         </Button>
-        <Button 
-          size="sm" 
-          variant="ghost" 
-          onClick={(e) => {
-            e.stopPropagation();
-            setLiked(false);
-          }} 
-          className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === false && "bg-red-500 text-white border-red-500 hover:bg-red-600")}
-        >
+        <Button size="sm" variant="ghost" onClick={e => {
+        e.stopPropagation();
+        setLiked(false);
+      }} className={cn("w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm", liked === false && "bg-red-500 text-white border-red-500 hover:bg-red-600")}>
           <ThumbsDown className="w-4 h-4" />
         </Button>
       </div>
@@ -108,25 +77,21 @@ const ImageCard = ({
     const shareMessage = "Check out this amazing image generated with Bria AI! 🎨✨ #AIArt #BriaAI #GenerativeAI";
     const imageUrl = encodeURIComponent(src || '');
     const encodedMessage = encodeURIComponent(shareMessage);
-    
     const handleLinkedInShare = (e: React.MouseEvent) => {
       e.stopPropagation();
       const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${imageUrl}&title=${encodedMessage}`;
       window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
     };
-
     const handleXShare = (e: React.MouseEvent) => {
       e.stopPropagation();
       const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}&url=${imageUrl}`;
       window.open(xUrl, '_blank', 'noopener,noreferrer');
     };
-
     const handleRedditShare = (e: React.MouseEvent) => {
       e.stopPropagation();
       const redditUrl = `https://reddit.com/submit?url=${imageUrl}&title=${encodedMessage}`;
       window.open(redditUrl, '_blank', 'noopener,noreferrer');
     };
-
     return <Popover>
       <PopoverTrigger asChild>
         <Button variant={inDialog ? "ghost" : "outline"} size={inDialog ? "sm" : "default"} className={inDialog ? "w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm" : "w-full bg-lab-surface hover:bg-lab-interactive-hover border-lab-border hover:border-lab-border-hover text-lab-text-primary transition-all duration-200"}>
@@ -136,28 +101,13 @@ const ImageCard = ({
       </PopoverTrigger>
       <PopoverContent className="w-auto bg-lab-surface border-lab-border shadow-lg p-2">
         <div className="flex gap-2">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="w-8 h-8 p-0 text-[#0077B5] hover:text-[#005885] hover:bg-lab-interactive-hover transition-colors duration-200" 
-            onClick={handleLinkedInShare}
-          >
+          <Button variant="ghost" size="sm" className="w-8 h-8 p-0 text-[#0077B5] hover:text-[#005885] hover:bg-lab-interactive-hover transition-colors duration-200" onClick={handleLinkedInShare}>
             <FaLinkedin className="w-4 h-4" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="w-8 h-8 p-0 text-white hover:text-gray-300 hover:bg-lab-interactive-hover transition-colors duration-200" 
-            onClick={handleXShare}
-          >
+          <Button variant="ghost" size="sm" className="w-8 h-8 p-0 text-white hover:text-gray-300 hover:bg-lab-interactive-hover transition-colors duration-200" onClick={handleXShare}>
             <FaXTwitter className="w-4 h-4" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="w-8 h-8 p-0 text-[#FF4500] hover:text-[#CC3700] hover:bg-lab-interactive-hover transition-colors duration-200" 
-            onClick={handleRedditShare}
-          >
+          <Button variant="ghost" size="sm" className="w-8 h-8 p-0 text-[#FF4500] hover:text-[#CC3700] hover:bg-lab-interactive-hover transition-colors duration-200" onClick={handleRedditShare}>
             <FaReddit className="w-4 h-4" />
           </Button>
         </div>
@@ -189,13 +139,9 @@ const ImageCard = ({
               <div className="flex gap-2">
                 <SharePopover inDialog={true} />
                 
-                <ApiReferenceDialog 
-                  trigger={
-                    <Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+                <ApiReferenceDialog trigger={<Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
                       <Code className="w-4 h-4" />
-                    </Button>
-                  }
-                />
+                    </Button>} />
               </div>
             </div>
             <FeedbackButtons />
@@ -220,14 +166,12 @@ const ResultsCanvas = ({
 
   // Show loading state when generating
   if (isGenerating) {
-    return (
-      <div className="h-full bg-lab-surface border border-lab-border rounded-lg flex items-center justify-center">
+    return <div className="h-full bg-lab-surface border border-lab-border rounded-lg flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-lab-primary mx-auto mb-4"></div>
           <p className="text-lab-text-secondary">Generating images...</p>
         </div>
-      </div>
-    );
+      </div>;
   }
 
   // Mock function to simulate image generation
@@ -247,9 +191,7 @@ const ResultsCanvas = ({
   }
   return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg p-6 flex flex-col">
       <div className="mb-4 flex-shrink-0">
-        <h2 className="text-lg font-medium text-lab-text-primary">
-          Generated Images
-        </h2>
+        
       </div>
       <div className="grid grid-cols-2 gap-4 flex-1">
         {Array.from({
