@@ -220,8 +220,6 @@ const LabInterface = () => {
             onClearResults={clearResults}
             initialConfig={currentConfig}
             onGeneratingChange={setIsGenerating}
-            onUploadImage={handleUploadImage}
-            onUploadDocument={handleUploadDocument}
           />
           </div>
           
