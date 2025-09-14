@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield, Linkedin, X } from "lucide-react";
-import { FaReddit } from "react-icons/fa";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
+import { FaReddit, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 interface ImageCardProps {
   src?: string;
@@ -178,7 +178,7 @@ response = requests.post(
             className="w-8 h-8 p-0 text-[#0077B5] hover:text-[#005885] hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleLinkedInShare}
           >
-            <Linkedin className="w-4 h-4" />
+            <FaLinkedin className="w-4 h-4" />
           </Button>
           <Button 
             variant="ghost" 
@@ -186,7 +186,7 @@ response = requests.post(
             className="w-8 h-8 p-0 text-black hover:text-gray-700 hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleXShare}
           >
-            <X className="w-4 h-4" />
+            <FaXTwitter className="w-4 h-4" />
           </Button>
           <Button 
             variant="ghost" 
