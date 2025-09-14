@@ -8,7 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ExperimentSpecEditor from "./ExperimentSpecEditor";
+import StructuredPromptEditor from "./StructuredPromptEditor";
 import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
@@ -369,9 +369,9 @@ const PromptComponent = ({
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Translate Prompt Button */}
+            {/* Show Structured Prompt Button */}
             <Button onClick={onTranslatePrompt} disabled={isGenerating || !hasGenerated && !value.trim() || hasGenerated && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
-              Translate to JSON
+              Show Structured Prompt
             </Button>
           </div>
         </div>
@@ -453,20 +453,30 @@ const ConfigurationPanel = ({
   // Refinement suggestions for when in refinement mode
   const refinementSuggestions = ["Add more dramatic lighting with stronger shadows", "Make the colors more vibrant and saturated", "Add atmospheric fog or mist for depth", "Include more detailed textures on surfaces", "Enhance the contrast between light and dark areas", "Add subtle motion blur to suggest movement", "Increase the depth of field for better focus", "Add warm golden hour lighting", "Include more intricate details in the foreground", "Make the composition more dynamic with diagonal lines", "Add reflections for more visual interest", "Enhance the mood with cooler or warmer tones", "Add subtle lens flare effects", "Include more environmental storytelling elements", "Make the scene more cinematic with wider framing"];
 
-  // Handle translate prompt to experiment spec
+  // Handle translate prompt to structured prompt
   const handleTranslatePrompt = useCallback(() => {
     const currentPrompt = hasGenerated ? refinementPrompt : mainPrompt;
     if (!currentPrompt.trim()) return;
 
+    // Capture the initial input if not already done
+    if (!hasGenerated) {
+      if (mainPrompt.trim()) {
+        setInitialInput({ type: 'text', data: mainPrompt });
+        setOriginalPrompt(mainPrompt);
+      }
+      // Switch to refine mode by setting hasGenerated to true
+      setHasGenerated(true);
+    }
+
     // Clear previous highlights
     setUpdatedFields(new Set());
 
-    // Show loading state in experiment spec area
+    // Show loading state in structured prompt area
     setIsProcessingFile(true);
 
     // Simulate translation processing
     setTimeout(() => {
-      // Populate experiment spec with mock data based on the prompt
+      // Populate structured prompt with mock data based on the prompt
       setJsonData(JSON.stringify(mockFilledJSON, null, 2));
 
       // Mark some fields as updated, but exclude locked fields
@@ -564,7 +574,7 @@ const ConfigurationPanel = ({
       // Clear previous highlights on new generation
       setUpdatedFields(new Set());
 
-      // Populate experiment spec with mock data based on the prompt
+      // Populate structured prompt with mock data based on the prompt
       setJsonData(JSON.stringify(mockFilledJSON, null, 2));
 
       // Mark some fields as updated, but exclude locked fields
@@ -678,8 +688,8 @@ const ConfigurationPanel = ({
       setUpdatedFields(updatedFieldsSet);
     }, 2000);
   };
-  // Helper function to check if experiment spec has meaningful content
-  const hasExperimentSpecContent = useCallback(() => {
+  // Helper function to check if structured prompt has meaningful content
+  const hasStructuredPromptContent = useCallback(() => {
     try {
       const parsed = JSON.parse(jsonData);
       // Check if any field has non-empty content
@@ -711,14 +721,14 @@ const ConfigurationPanel = ({
     // Store the uploaded brief name
     setUploadedBriefName(file.name);
 
-    // Simulate processing the brief and extracting experiment spec
+    // Simulate processing the brief and extracting structured prompt
     setIsProcessingFile(true);
     setTimeout(() => {
       setIsProcessingFile(false);
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
-        short_description: `Experiment spec extracted from brief: ${file.name}`,
-        context: "Brief-based experiment spec extraction",
+        short_description: `Structured prompt extracted from brief: ${file.name}`,
+        context: "Brief-based structured prompt extraction",
         artistic_style: "Style defined in uploaded brief document"
       }, null, 2));
 
@@ -772,17 +782,17 @@ const ConfigurationPanel = ({
           />
         </div>
 
-        {/* Experiment Spec Editor - Fixed height container with internal scrolling */}
+        {/* Structured Prompt Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
+            <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="p-4 border-t border-lab-border bg-background">
           <div className="flex gap-3">
-            <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasExperimentSpecContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
+            <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : "Generate"}
             </Button>
           </div>
