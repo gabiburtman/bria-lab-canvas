@@ -174,7 +174,7 @@ response = requests.post(
           <Button 
             variant="ghost" 
             size="sm" 
-            className="w-8 h-8 p-0 text-lab-text-secondary hover:text-[#0077B5] hover:bg-lab-interactive-hover transition-colors duration-200" 
+            className="w-8 h-8 p-0 text-[#0077B5] hover:text-[#005885] hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleLinkedInShare}
           >
             <Linkedin className="w-4 h-4" />
@@ -182,7 +182,7 @@ response = requests.post(
           <Button 
             variant="ghost" 
             size="sm" 
-            className="w-8 h-8 p-0 text-lab-text-secondary hover:text-black hover:bg-lab-interactive-hover transition-colors duration-200" 
+            className="w-8 h-8 p-0 text-black hover:text-gray-700 hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleXShare}
           >
             <X className="w-4 h-4" />
@@ -190,7 +190,7 @@ response = requests.post(
           <Button 
             variant="ghost" 
             size="sm" 
-            className="w-8 h-8 p-0 text-lab-text-secondary hover:text-[#FF4500] hover:bg-lab-interactive-hover transition-colors duration-200" 
+            className="w-8 h-8 p-0 text-[#FF4500] hover:text-[#CC3700] hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleRedditShare}
           >
             <MessageCircle className="w-4 h-4" />
