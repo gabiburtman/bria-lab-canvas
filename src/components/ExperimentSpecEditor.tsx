@@ -12,8 +12,6 @@ interface ExperimentSpecEditorProps {
   lockedFields: Set<string>;
   onFieldLock: (field: string, locked: boolean) => void;
   onBatchFieldLock?: (fields: string[], locked: boolean) => void;
-  onUploadImage: () => void;
-  onUploadDocument: () => void;
   updatedFields?: Set<string>;
   forceStructuredView?: boolean;
   readOnly?: boolean;
@@ -26,8 +24,6 @@ const ExperimentSpecEditor = ({
   lockedFields,
   onFieldLock,
   onBatchFieldLock,
-  onUploadImage,
-  onUploadDocument,
   updatedFields = new Set(),
   forceStructuredView = false,
   readOnly = false
@@ -746,15 +742,9 @@ const ExperimentSpecEditor = ({
       </div>
       
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={onUploadImage} className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" disabled={isGenerating}>
-          <Image className="w-3 h-3" />
-          Upload Image
-        </Button>
-        
-        <Button variant="ghost" size="sm" onClick={onUploadDocument} className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" disabled={isGenerating}>
-          <FileText className="w-3 h-3" />
-          Upload Brief
-        </Button>
+        <p className="text-xs text-lab-text-muted">
+          Describe the desired output in the prompt above to automatically generate the experiment specification.
+        </p>
       </div>
       
       <Dialog>
@@ -1088,15 +1078,9 @@ const ExperimentSpecEditor = ({
                           Experiment Spec
                         </span>
                          <div className="flex items-center gap-1">
-                           <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                              <Code className="w-4 h-4" />
-                           </Button>
-                           <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                             <Image className="w-4 h-4" />
-                           </Button>
-                           <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                             <FileText className="w-4 h-4" />
-                           </Button>
+                            <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
+                               <Code className="w-4 h-4" />
+                            </Button>
                            <Button variant="ghost" size="sm" onClick={copyToClipboard} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
                              <Copy className="w-4 h-4" />
                            </Button>
@@ -1118,28 +1102,6 @@ const ExperimentSpecEditor = ({
         
         <TooltipProvider>
           <div className="flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
-                  <Image className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Image</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground" disabled={isGenerating}>
-                  <FileText className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Brief</p>
-              </TooltipContent>
-            </Tooltip>
-            
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">

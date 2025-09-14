@@ -8,8 +8,9 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Toggle } from "@/components/ui/toggle";
 import ExperimentSpecEditor from "./ExperimentSpecEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
   "short_description": "",
@@ -130,7 +131,13 @@ const PromptComponent = ({
   onSurpriseMe,
   onTranslatePrompt,
   isRefinementMode = false,
-  initialInput
+  initialInput,
+  resultsQuantity,
+  setResultsQuantity,
+  onUploadImage,
+  onUploadDocument,
+  uploadedImageUrl,
+  uploadedBriefName
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -154,6 +161,12 @@ const PromptComponent = ({
   onTranslatePrompt: () => void;
   isRefinementMode?: boolean;
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
+  resultsQuantity: number;
+  setResultsQuantity: (quantity: number) => void;
+  onUploadImage: () => void;
+  onUploadDocument: () => void;
+  uploadedImageUrl: string | null;
+  uploadedBriefName: string | null;
 }) => {
   // Height constants to maintain exact same total height
   const baseEditorHeight = 120;
@@ -366,6 +379,62 @@ const PromptComponent = ({
                 <p>Seed</p>
               </TooltipContent>
             </Tooltip>
+
+            {/* Results Quantity Toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setResultsQuantity(resultsQuantity === 1 ? 4 : 1)}
+                  className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1"
+                >
+                  <Grid3X3 className="w-3 h-3" />
+                  {resultsQuantity} Result{resultsQuantity > 1 ? 's' : ''}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Toggle between 1 or 4 results</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Upload Image Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={onUploadImage}
+                  disabled={isGenerating}
+                  className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1"
+                >
+                  <Upload className="w-3 h-3" />
+                  {uploadedImageUrl ? "✓ Image" : "Image"}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{uploadedImageUrl ? "Image uploaded" : "Upload reference image"}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            {/* Upload Brief Button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={onUploadDocument}
+                  disabled={isGenerating}
+                  className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1"
+                >
+                  <FileText className="w-3 h-3" />
+                  {uploadedBriefName ? "✓ Brief" : "Brief"}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{uploadedBriefName ? `Brief: ${uploadedBriefName}` : "Upload creative brief"}</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <div className="flex items-center gap-1">
@@ -406,6 +475,7 @@ const ConfigurationPanel = ({
   const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [uploadedBriefName, setUploadedBriefName] = useState<string | null>(null);
+  const [resultsQuantity, setResultsQuantity] = useState(4);
 
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -572,10 +642,12 @@ const ConfigurationPanel = ({
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
 
-      // Generate new mock images with correct aspect ratio
+      // Generate new mock images with correct aspect ratio and quantity
       const timestamp = Date.now();
       const dimensions = getImageDimensions(aspectRatio);
-      const mockImages = [`https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 1}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 2}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 3}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 4}`];
+      const mockImages = Array.from({ length: resultsQuantity }, (_, i) => 
+        `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + i + 1}`
+      );
 
       // Notify parent component about generated images
       const config = {
@@ -749,7 +821,7 @@ const ConfigurationPanel = ({
       <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
         {/* Prompt Section - Fixed height */}
         <div className="flex-shrink-0">
-          <PromptComponent 
+            <PromptComponent 
             value={hasGenerated ? refinementPrompt : mainPrompt} 
             onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
             placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} 
@@ -769,13 +841,19 @@ const ConfigurationPanel = ({
             onTranslatePrompt={handleTranslatePrompt} 
             isRefinementMode={hasGenerated}
             initialInput={initialInput}
+            resultsQuantity={resultsQuantity}
+            setResultsQuantity={setResultsQuantity}
+            onUploadImage={handleUploadImage}
+            onUploadDocument={handleUploadDocument}
+            uploadedImageUrl={uploadedImageUrl}
+            uploadedBriefName={uploadedBriefName}
           />
         </div>
 
         {/* Experiment Spec Editor - Fixed height container with internal scrolling */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
+            <ExperimentSpecEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
         </div>
 
