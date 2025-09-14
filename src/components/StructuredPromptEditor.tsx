@@ -658,18 +658,22 @@ const StructuredPromptEditor = ({
                     <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
                       {typeInfo.icon} {typeInfo.count}
                     </span>
-                    {isUpdated && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="update-indicator" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>This {Array.isArray(val) ? 'array' : 'object'} contains updated fields</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
+                     {isUpdated && (
+                       <TooltipProvider>
+                         <Tooltip>
+                           <TooltipTrigger asChild>
+                             <div className="update-badge">
+                               <div className="w-1.5 h-1.5 rounded-full bg-current" />
+                               Updated
+                             </div>
+                           </TooltipTrigger>
+                           <TooltipContent className="update-tooltip">
+                             <p className="font-medium mb-1">Updated Fields</p>
+                             <p className="text-xs opacity-75">This {Array.isArray(val) ? 'array' : 'object'} contains fields that were recently updated</p>
+                           </TooltipContent>
+                         </Tooltip>
+                       </TooltipProvider>
+                     )}
                   </div>
                 </div>
               </CollapsibleTrigger>
@@ -752,10 +756,14 @@ const StructuredPromptEditor = ({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <div className="update-indicator" />
+                            <div className="update-badge">
+                              <div className="w-1.5 h-1.5 rounded-full bg-current" />
+                              Updated
+                            </div>
                           </TooltipTrigger>
-                          <TooltipContent>
-                            <p>This array contains updated items</p>
+                          <TooltipContent className="update-tooltip">
+                            <p className="font-medium mb-1">Updated Array</p>
+                            <p className="text-xs opacity-75">This array contains updated items</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -785,7 +793,7 @@ const StructuredPromptEditor = ({
                 const isLastItem = index === val.length - 1;
                 if (typeof item === 'object' && item !== null) {
                   return <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={false}>
-      <div className={cn("relative group/item", updateStatus.isUpdated && "field-updated-previous")}>
+      <div className={cn("relative group/item", updateStatus.isUpdated && "field-updated")}>
                            {renderTreeLines(level + 1, isLastItem, true)}
                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
                         paddingLeft: `${(level + 1) * 12 + 4}px`
@@ -894,26 +902,37 @@ const StructuredPromptEditor = ({
             <span className="text-foreground font-medium min-w-0 flex-shrink-0">
               {key}:
             </span>
-            {updateStatus.isUpdated && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="update-indicator" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <div className="space-y-1">
-                      <p>Field was updated</p>
-                      {fieldHistory[fieldPath] && fieldHistory[fieldPath].oldValue !== null && (
-                        <div className="text-xs">
-                          <div className="opacity-60">Previous: {String(fieldHistory[fieldPath].oldValue)}</div>
-                          <div>Current: {String(val)}</div>
-                        </div>
-                      )}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
+             {updateStatus.isUpdated && (
+               <TooltipProvider>
+                 <Tooltip>
+                   <TooltipTrigger asChild>
+                     <div className="update-badge">
+                       <div className="w-1.5 h-1.5 rounded-full bg-current" />
+                       New
+                     </div>
+                   </TooltipTrigger>
+                   <TooltipContent className="update-tooltip">
+                     <div>
+                       <p className="font-medium mb-2">Field Updated</p>
+                       {fieldHistory[fieldPath] && fieldHistory[fieldPath].oldValue !== null ? (
+                         <div className="space-y-1">
+                           <div className="flex items-center gap-2">
+                             <span className="previous-value">Previous:</span>
+                             <span className="previous-value">{String(fieldHistory[fieldPath].oldValue) || '(empty)'}</span>
+                           </div>
+                           <div className="flex items-center gap-2">
+                             <span className="current-value">Current:</span>
+                             <span className="current-value">{String(val) || '(empty)'}</span>
+                           </div>
+                         </div>
+                       ) : (
+                         <p className="text-xs opacity-75">This field was recently updated</p>
+                       )}
+                     </div>
+                   </TooltipContent>
+                 </Tooltip>
+               </TooltipProvider>
+             )}
           </div>
           
           {/* Value Display (read-only) or Input (editable) */}

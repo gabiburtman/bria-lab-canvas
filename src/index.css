@@ -93,21 +93,27 @@
     @apply bg-background text-foreground font-roboto;
   }
 
-  /* Simple update indicator */
+  /* Updated field indicator - subtle left border */
   .field-updated {
-    @apply relative;
+    @apply relative border-l-2 pl-3;
+    border-left-color: hsl(var(--lab-success));
+    background: linear-gradient(90deg, hsl(var(--lab-success) / 0.08) 0%, transparent 100%);
   }
 
-  .field-updated::after {
-    content: '';
-    @apply absolute -top-1 -right-1 w-2 h-2 rounded-full;
-    background-color: hsl(var(--lab-accent));
-    animation: gentle-pulse 2s ease-out;
+  /* Updated badge for groups/arrays */
+  .update-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full border font-medium;
+    background-color: hsl(var(--lab-success) / 0.1);
+    border-color: hsl(var(--lab-success) / 0.3);
+    color: hsl(var(--lab-success));
   }
 
-  .update-indicator {
-    @apply inline-flex items-center justify-center w-2 h-2 rounded-full flex-shrink-0;
-    background-color: hsl(var(--lab-accent));
+  /* Previous value tooltip */
+  .update-tooltip {
+    @apply max-w-xs p-3 text-xs rounded-lg shadow-lg border;
+    background-color: hsl(var(--lab-surface-elevated));
+    border-color: hsl(var(--lab-border));
+    color: hsl(var(--lab-text-primary));
   }
 
   .field-delta {
@@ -130,14 +136,10 @@
     @apply opacity-50;
   }
 
-  @keyframes gentle-pulse {
+  @keyframes fade-in-scale {
     0% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1.2);
+      opacity: 0;
+      transform: scale(0.95);
     }
     100% {
       opacity: 1;
@@ -159,8 +161,17 @@
     border-color: hsl(var(--lab-border) / 0.8);
   }
 
-  .update-tooltip {
-    @apply bg-popover text-popover-foreground px-2 py-1 text-xs rounded-md border border-border shadow-lg;
+  /* Previous value display styles */
+  .previous-value {
+    @apply text-red-400 line-through opacity-75;
+  }
+  
+  .current-value {
+    @apply text-green-400 font-medium;
+  }
+  
+  .value-arrow {
+    @apply text-gray-400 mx-2;
   }
 }
 
