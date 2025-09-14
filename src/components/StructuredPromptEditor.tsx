@@ -738,10 +738,10 @@ const StructuredPromptEditor = ({
       </div>;
   };
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center h-80 space-y-4 p-8">
-      <div className="text-center space-y-2">
+    <div className="flex flex-col items-center justify-center h-80 p-8">
+      <div className="text-center space-y-3">
         <h3 className="text-lg font-medium text-muted-foreground">Populate Structured Prompt</h3>
-        <p className="text-xs text-muted-foreground/70 max-w-md leading-relaxed">
+        <p className="text-sm text-muted-foreground/70 max-w-md leading-relaxed mx-auto">
           Upload an image or brief to extract structured prompt specification, or describe the desired output in the prompt above.
         </p>
       </div>
