@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield, Linkedin, X, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface ImageCardProps {
   src?: string;
@@ -139,7 +139,30 @@ response = requests.post(
     inDialog = false
   }: {
     inDialog?: boolean;
-  }) => <Popover>
+  }) => {
+    const shareMessage = "Check out this amazing image generated with Bria AI! 🎨✨ #AIArt #BriaAI #GenerativeAI";
+    const imageUrl = encodeURIComponent(src || '');
+    const encodedMessage = encodeURIComponent(shareMessage);
+    
+    const handleLinkedInShare = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${imageUrl}&title=${encodedMessage}`;
+      window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    const handleXShare = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}&url=${imageUrl}`;
+      window.open(xUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    const handleRedditShare = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      const redditUrl = `https://reddit.com/submit?url=${imageUrl}&title=${encodedMessage}`;
+      window.open(redditUrl, '_blank', 'noopener,noreferrer');
+    };
+
+    return <Popover>
       <PopoverTrigger asChild>
         <Button variant={inDialog ? "ghost" : "outline"} size={inDialog ? "sm" : "default"} className={inDialog ? "w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm" : "w-full bg-lab-surface hover:bg-lab-interactive-hover border-lab-border hover:border-lab-border-hover text-lab-text-primary transition-all duration-200"}>
           <Share className={inDialog ? "w-4 h-4" : "w-4 h-4 mr-2"} />
@@ -148,27 +171,40 @@ response = requests.post(
       </PopoverTrigger>
       <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
         <div className="space-y-3">
-          <h4 className="font-medium text-lab-text-primary text-sm">Share Image</h4>
+          <h4 className="font-medium text-lab-text-primary text-sm">Share on Social Media</h4>
           <div className="space-y-2">
-            <Button variant="ghost" size="sm" className="w-full justify-start text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover" onClick={() => {
-            navigator.clipboard.writeText(src || '');
-          }}>
-              Copy Image Link
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-lab-text-secondary hover:text-[#0077B5] hover:bg-lab-interactive-hover transition-colors duration-200" 
+              onClick={handleLinkedInShare}
+            >
+              <Linkedin className="w-4 h-4 mr-2" />
+              Share on LinkedIn
             </Button>
-            <Button variant="ghost" size="sm" className="w-full justify-start text-lab-text-secondary hover:text-lab-text-primary hover:bg-lab-interactive-hover" onClick={() => {
-            if (navigator.share) {
-              navigator.share({
-                title: `Generated Image ${index + 1}`,
-                url: src
-              });
-            }
-          }}>
-              Native Share
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-lab-text-secondary hover:text-black hover:bg-lab-interactive-hover transition-colors duration-200" 
+              onClick={handleXShare}
+            >
+              <X className="w-4 h-4 mr-2" />
+              Share on X
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-full justify-start text-lab-text-secondary hover:text-[#FF4500] hover:bg-lab-interactive-hover transition-colors duration-200" 
+              onClick={handleRedditShare}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Share on Reddit
             </Button>
           </div>
         </div>
       </PopoverContent>
     </Popover>;
+  };
   return <div className="flex flex-col h-full">
       <Dialog>
         <DialogTrigger asChild>
