@@ -746,24 +746,12 @@ const ExperimentSpecEditor = ({
       </div>
       
       <div className="flex items-center gap-3">
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={onUploadImage} 
-          className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" 
-          disabled={isGenerating}
-        >
+        <Button variant="ghost" size="sm" onClick={onUploadImage} className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" disabled={isGenerating}>
           <Image className="w-3 h-3" />
           Upload Image
         </Button>
         
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={onUploadDocument} 
-          className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" 
-          disabled={isGenerating}
-        >
+        <Button variant="ghost" size="sm" onClick={onUploadDocument} className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" disabled={isGenerating}>
           <FileText className="w-3 h-3" />
           Upload Brief
         </Button>
@@ -845,9 +833,7 @@ const ExperimentSpecEditor = ({
               <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
               <div className="flex flex-wrap gap-2 text-sm">
                 <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                  <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">
-                    🤗 Bria 4 Models
-                  </a>
+                  <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Bria 4</a>
                 </Button>
                 <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                   <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
@@ -860,14 +846,10 @@ const ExperimentSpecEditor = ({
                   </a>
                 </Button>
                 <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                  <a href="https://huggingface.co/microsoft/SmolLM2-1.7B" target="_blank" rel="noopener noreferrer">
-                    🤗 SmolLM
-                  </a>
+                  
                 </Button>
                 <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                  <a href="https://huggingface.co/wangfuyun/WAN2.2-T12V-5B" target="_blank" rel="noopener noreferrer">
-                    🤗 WAN2.2
-                  </a>
+                  
                 </Button>
               </div>
             </div>
