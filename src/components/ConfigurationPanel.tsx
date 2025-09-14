@@ -398,9 +398,16 @@ const PromptComponent = ({
 
           <div className="flex items-center gap-1">
             {/* Show Structured Prompt Button */}
-            <Button onClick={onTranslatePrompt} disabled={isGenerating || !hasGenerated && !value.trim() || hasGenerated && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
-              Show Structured Prompt
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={onTranslatePrompt} disabled={isGenerating || !hasGenerated && !value.trim() || hasGenerated && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
+                  Show Structured Prompt
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Convert prompt to structured format</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </TooltipProvider>
