@@ -763,8 +763,7 @@ const StructuredPromptEditor = ({
       </div>
       
       <div className="flex-1 grid place-items-center p-8">
-        <div className="text-center space-y-3">
-          <h3 className="text-lg font-medium text-muted-foreground">GAIA's Structured Prompt</h3>
+        <div className="text-center">
           <p className="text-sm text-muted-foreground/70 max-w-md leading-relaxed">This is the detailed blueprint GAIA follows for generation. It will be populated from your instructions or uploaded assets, giving you predictable, repeatable control without any guesswork.</p>
         </div>
       </div>
