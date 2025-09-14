@@ -183,7 +183,7 @@ response = requests.post(
           <Button 
             variant="ghost" 
             size="sm" 
-            className="w-8 h-8 p-0 text-black hover:text-gray-700 hover:bg-lab-interactive-hover transition-colors duration-200" 
+            className="w-8 h-8 p-0 text-white hover:text-gray-300 hover:bg-lab-interactive-hover transition-colors duration-200" 
             onClick={handleXShare}
           >
             <FaXTwitter className="w-4 h-4" />
