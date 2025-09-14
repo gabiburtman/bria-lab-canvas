@@ -265,7 +265,7 @@ const PromptComponent = ({
                   }
                 }
               }}
-              className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12"
+              className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-20"
               style={{ minHeight: `${refinedContentHeight}px` }}
             />
             
@@ -306,7 +306,7 @@ const PromptComponent = ({
                 }
               }
             }}
-            className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-12"
+            className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-20"
             style={{ minHeight: `${baseEditorHeight}px` }}
           />
           
