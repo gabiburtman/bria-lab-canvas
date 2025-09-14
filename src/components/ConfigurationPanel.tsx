@@ -61,55 +61,201 @@ const defaultJSON = {
   "context": "",
   "artistic_style": ""
 };
-const mockFilledJSON = {
-  "short_description": "A serene mountain landscape at sunrise with vibrant colors",
-  "objects": [{
-    "description": "Majestic snow-capped mountain peak",
-    "location": "Center background of the image",
-    "relationship": "Dominates the skyline",
-    "relative_size": "Large, occupying 60% of the frame",
-    "shape_and_color": "Triangular peak with white snow and gray rock faces",
-    "texture": "Rocky with smooth snow patches",
-    "appearance_details": "Sharp edges with dramatic shadows",
-    "pose": "Static mountain formation",
-    "expression": "N/A",
-    "clothing": "N/A",
-    "action": "Standing majestically",
-    "gender": "N/A",
-    "skin_tone_and_texture": "N/A",
-    "orientation": "Vertical peak pointing upward",
-    "number_of_objects": "1 main peak with 2 smaller peaks"
-  }],
-  "background_setting": "Alpine mountain range during golden hour with clear sky",
-  "lighting": {
-    "conditions": "Golden hour sunrise lighting",
-    "direction": "Side lighting from the left",
-    "shadows": "Long dramatic shadows cast to the right"
-  },
-  "aesthetics": {
-    "composition": "Rule of thirds with mountain peak in upper third",
-    "color_scheme": "Warm oranges and yellows contrasting with cool blues",
-    "mood_atmosphere": "Peaceful, inspiring, and majestic",
-    "preference_score": "9.2",
-    "aesthetic_score": "8.8"
-  },
-  "photographic_characteristics": {
-    "depth_of_field": "Deep focus with sharp foreground and background",
-    "focus": "Sharp focus throughout the scene",
-    "camera_angle": "Low angle looking up at the mountain",
-    "lens_focal_length": "35mm wide angle"
-  },
-  "style_medium": "Photorealistic digital photography",
-  "text_render": [{
-    "text": "ALPINE SUNRISE",
-    "location": "Bottom left corner",
-    "size": "Medium, 24pt font",
-    "color": "White with subtle shadow",
-    "font": "Modern sans-serif",
-    "appearance_details": "Clean, minimalist typography"
-  }],
-  "context": "Nature photography showcasing the beauty of mountain landscapes",
-  "artistic_style": "Contemporary landscape photography with emphasis on natural lighting"
+// Function to get random item from array
+const getRandomItem = <T,>(array: T[]): T => {
+  return array[Math.floor(Math.random() * array.length)];
+};
+
+// Function to generate varied structured prompt data
+const generateVariedStructuredPrompt = () => {
+  const descriptions = [
+    "A serene mountain landscape at sunrise with vibrant colors",
+    "A bustling city street at night with neon reflections",
+    "A mystical forest clearing with ethereal lighting",
+    "A cozy café interior with warm ambient lighting",
+    "A futuristic laboratory with holographic displays",
+    "A vintage library filled with ancient books",
+    "A tranquil beach scene with crystal clear waters",
+    "A dramatic stormy sky over rolling hills",
+    "A modern architectural marvel with geometric patterns",
+    "A whimsical garden with exotic flowers"
+  ];
+
+  const objects = [
+    {
+      "description": "Majestic snow-capped mountain peak",
+      "location": "Center background of the image",
+      "relationship": "Dominates the skyline",
+      "relative_size": "Large, occupying 60% of the frame",
+      "shape_and_color": "Triangular peak with white snow and gray rock faces",
+      "texture": "Rocky with smooth snow patches",
+      "appearance_details": "Sharp edges with dramatic shadows",
+      "pose": "Static mountain formation",
+      "expression": "N/A",
+      "clothing": "N/A",
+      "action": "Standing majestically",
+      "gender": "N/A",
+      "skin_tone_and_texture": "N/A",
+      "orientation": "Vertical peak pointing upward",
+      "number_of_objects": "1 main peak with 2 smaller peaks"
+    },
+    {
+      "description": "Elegant figure walking through the scene",
+      "location": "Center-left of the composition",
+      "relationship": "Main focal point of the image",
+      "relative_size": "Medium, about 30% of frame height",
+      "shape_and_color": "Graceful silhouette in flowing garments",
+      "texture": "Soft fabric with subtle wrinkles",
+      "appearance_details": "Confident posture with natural movement",
+      "pose": "Mid-stride walking pose",
+      "expression": "Serene and contemplative",
+      "clothing": "Flowing coat in earth tones",
+      "action": "Walking purposefully",
+      "gender": "Androgynous",
+      "skin_tone_and_texture": "Warm medium tone with natural highlights",
+      "orientation": "Profile view facing right",
+      "number_of_objects": "1 person with subtle shadow"
+    }
+  ];
+
+  const backgrounds = [
+    "Alpine mountain range during golden hour with clear sky",
+    "Urban cityscape with towering skyscrapers and busy streets",
+    "Dense forest with shafts of sunlight filtering through leaves",
+    "Minimalist interior with clean lines and natural materials",
+    "Futuristic environment with glowing panels and sleek surfaces",
+    "Classic library setting with wooden shelves and vintage furniture",
+    "Tropical paradise with palm trees and turquoise water",
+    "Dramatic landscape with rolling clouds and open fields",
+    "Modern architectural space with glass and steel elements",
+    "Enchanted garden with lush vegetation and magical atmosphere"
+  ];
+
+  const lightingConditions = [
+    "Golden hour sunrise lighting",
+    "Dramatic studio lighting with key and fill",
+    "Soft natural window lighting",
+    "Moody evening twilight",
+    "Bright midday sun with harsh shadows",
+    "Warm candlelight ambiance",
+    "Cool blue moonlight",
+    "Colorful neon lighting",
+    "Soft overcast daylight",
+    "Dramatic rim lighting"
+  ];
+
+  const lightingDirections = [
+    "Side lighting from the left",
+    "Backlighting creating silhouettes",
+    "Top-down overhead lighting",
+    "Front lighting with even illumination",
+    "Three-quarter lighting for dimension",
+    "Rim lighting from behind",
+    "Window lighting from the right",
+    "Multiple light sources",
+    "Bounced soft lighting",
+    "Directional spotlight"
+  ];
+
+  const colorSchemes = [
+    "Warm oranges and yellows contrasting with cool blues",
+    "Monochromatic blues with subtle variations",
+    "High contrast black and white with red accents",
+    "Earthy browns and greens with gold highlights",
+    "Vibrant purples and magentas",
+    "Muted pastels with soft transitions",
+    "Bold primary colors with strong saturation",
+    "Vintage sepia tones with cream highlights",
+    "Cool grays and silvers with blue undertones",
+    "Rich jewel tones with deep shadows"
+  ];
+
+  const moods = [
+    "Peaceful, inspiring, and majestic",
+    "Dynamic, energetic, and urban",
+    "Mysterious, ethereal, and contemplative",
+    "Cozy, intimate, and welcoming",
+    "Futuristic, sleek, and innovative",
+    "Nostalgic, scholarly, and timeless",
+    "Relaxing, tropical, and carefree",
+    "Dramatic, powerful, and emotional",
+    "Clean, modern, and sophisticated",
+    "Whimsical, magical, and enchanting"
+  ];
+
+  const cameraAngles = [
+    "Low angle looking up at the mountain",
+    "High angle bird's eye view",
+    "Eye level straight on perspective",
+    "Dutch angle for dynamic tension",
+    "Extreme close-up detail shot",
+    "Wide establishing shot",
+    "Medium shot with balanced framing",
+    "Over-the-shoulder perspective",
+    "Worm's eye view from below",
+    "Aerial drone perspective"
+  ];
+
+  const styleMediums = [
+    "Photorealistic digital photography",
+    "Oil painting with visible brushstrokes",
+    "Watercolor with soft bleeding effects",
+    "Digital art with clean vector lines",
+    "Charcoal sketch with textural elements",
+    "Acrylic painting with bold colors",
+    "Vintage film photography",
+    "Modern digital illustration",
+    "Mixed media collage",
+    "Hyperrealistic rendering"
+  ];
+
+  const contexts = [
+    "Nature photography showcasing the beauty of mountain landscapes",
+    "Street photography capturing urban life and energy",
+    "Fine art photography exploring light and shadow",
+    "Portrait photography emphasizing human emotion",
+    "Architectural photography highlighting design elements",
+    "Travel photography documenting cultural experiences",
+    "Commercial photography for advertising purposes",
+    "Editorial photography telling a story",
+    "Documentary photography capturing real moments",
+    "Conceptual photography expressing abstract ideas"
+  ];
+
+  return {
+    "short_description": getRandomItem(descriptions),
+    "objects": [getRandomItem(objects)],
+    "background_setting": getRandomItem(backgrounds),
+    "lighting": {
+      "conditions": getRandomItem(lightingConditions),
+      "direction": getRandomItem(lightingDirections),
+      "shadows": "Long dramatic shadows cast to the right"
+    },
+    "aesthetics": {
+      "composition": "Rule of thirds with mountain peak in upper third",
+      "color_scheme": getRandomItem(colorSchemes),
+      "mood_atmosphere": getRandomItem(moods),
+      "preference_score": (8.0 + Math.random() * 2).toFixed(1),
+      "aesthetic_score": (7.5 + Math.random() * 2).toFixed(1)
+    },
+    "photographic_characteristics": {
+      "depth_of_field": "Deep focus with sharp foreground and background",
+      "focus": "Sharp focus throughout the scene",
+      "camera_angle": getRandomItem(cameraAngles),
+      "lens_focal_length": "35mm wide angle"
+    },
+    "style_medium": getRandomItem(styleMediums),
+    "text_render": [{
+      "text": "CREATIVE VISION",
+      "location": "Bottom left corner",
+      "size": "Medium, 24pt font",
+      "color": "White with subtle shadow",
+      "font": "Modern sans-serif",
+      "appearance_details": "Clean, minimalist typography"
+    }],
+    "context": getRandomItem(contexts),
+    "artistic_style": "Contemporary landscape photography with emphasis on natural lighting"
+  };
 };
 const PromptComponent = ({
   value,
@@ -570,8 +716,8 @@ const ConfigurationPanel = ({
 
     // Simulate translation processing
     setTimeout(() => {
-      // Populate structured prompt with mock data based on the prompt
-      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+      // Populate structured prompt with varied data based on the prompt
+      setJsonData(JSON.stringify(generateVariedStructuredPrompt(), null, 2));
 
       // Mark some fields as updated, but exclude locked fields
       const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
@@ -668,8 +814,8 @@ const ConfigurationPanel = ({
       // Clear previous highlights on new generation
       setUpdatedFields(new Set());
 
-      // Populate structured prompt with mock data based on the prompt
-      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+      // Populate structured prompt with varied data based on the prompt
+      setJsonData(JSON.stringify(generateVariedStructuredPrompt(), null, 2));
 
       // Mark some fields as updated, but exclude locked fields
       const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
@@ -784,9 +930,10 @@ const ConfigurationPanel = ({
   setTimeout(() => {
     setIsProcessingFile(false);
     
-    // Populate structured prompt
+    // Populate structured prompt with varied data
+    const variedData = generateVariedStructuredPrompt();
     setJsonData(JSON.stringify({
-      ...mockFilledJSON,
+      ...variedData,
       short_description: `Analysis of uploaded image: ${file.name}`,
       context: "Image analysis and experiment spec extraction",
       style_medium: "Based on uploaded reference image"
@@ -844,9 +991,10 @@ const ConfigurationPanel = ({
   setTimeout(() => {
     setIsProcessingFile(false);
     
-    // Populate structured prompt
+    // Populate structured prompt with varied data
+    const variedData = generateVariedStructuredPrompt();
     setJsonData(JSON.stringify({
-      ...mockFilledJSON,
+      ...variedData,
       short_description: `Structured prompt extracted from brief: ${file.name}`,
       context: "Brief-based structured prompt extraction",
       artistic_style: "Style defined in uploaded brief document"
