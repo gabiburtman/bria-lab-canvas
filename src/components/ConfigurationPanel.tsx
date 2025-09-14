@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import StructuredPromptEditor from "./StructuredPromptEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
 const defaultJSON = {
   "short_description": "",
@@ -129,6 +129,7 @@ const PromptComponent = ({
   isGenerating,
   onSurpriseMe,
   onTranslatePrompt,
+  onUploadImage,
   isRefinementMode = false,
   initialInput
 }: {
@@ -152,6 +153,7 @@ const PromptComponent = ({
   isGenerating: boolean;
   onSurpriseMe: () => void;
   onTranslatePrompt: () => void;
+  onUploadImage: () => void;
   isRefinementMode?: boolean;
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
 }) => {
@@ -251,23 +253,36 @@ const PromptComponent = ({
             style={{ minHeight: `${baseEditorHeight}px` }}
           />
           
-          {/* Surprise Me Button - positioned inside textarea */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                onClick={onSurpriseMe} 
-                disabled={isGenerating} 
-                variant="ghost" 
-                size="sm"
-                className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-              >
-                <Wand2 className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Surprise me with a random prompt</p>
-            </TooltipContent>
-          </Tooltip>
+          {/* Upload Image and Surprise Me Buttons - positioned inside textarea */}
+          <div className="absolute top-2 right-2 flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
+                  <Image className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Upload Image</p>
+              </TooltipContent>
+            </Tooltip>
+            
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  onClick={onSurpriseMe} 
+                  disabled={isGenerating} 
+                  variant="ghost" 
+                  size="sm"
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                >
+                  <Wand2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Surprise me with a random prompt</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </>
       )}
       
@@ -777,6 +792,7 @@ const ConfigurationPanel = ({
             isGenerating={isGenerating} 
             onSurpriseMe={handleSurpriseMe} 
             onTranslatePrompt={handleTranslatePrompt} 
+            onUploadImage={handleUploadImage}
             isRefinementMode={hasGenerated}
             initialInput={initialInput}
           />
