@@ -738,7 +738,7 @@ const StructuredPromptEditor = ({
       </div>;
   };
   const renderEmptyState = () => (
-    <div className="flex items-center justify-center h-full min-h-80">
+    <div className="grid place-items-center h-full min-h-80 p-8">
       <div className="text-center space-y-3">
         <h3 className="text-lg font-medium text-muted-foreground">Populate Structured Prompt</h3>
         <p className="text-sm text-muted-foreground/70 max-w-md leading-relaxed">
