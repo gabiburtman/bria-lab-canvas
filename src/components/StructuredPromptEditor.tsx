@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, Unlock, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Clock, X, Code2, Dot } from "lucide-react";
+import { Copy, Upload, FileText, Lock, LockOpen, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { FieldDelta } from './FieldDelta';
 interface StructuredPromptEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -38,11 +37,6 @@ const StructuredPromptEditor = ({
   const [progressiveJSON, setProgressiveJSON] = useState<string>('');
   const [isWritingJSON, setIsWritingJSON] = useState(false);
   const progressiveContainerRef = useRef<HTMLDivElement>(null);
-  // Enhanced state for tracking field changes with delta information
-  const [recentlyUpdatedFields, setRecentlyUpdatedFields] = useState<Set<string>>(new Set());
-  const [fieldUpdateTimestamps, setFieldUpdateTimestamps] = useState<Record<string, number>>({});
-  const [fieldHistory, setFieldHistory] = useState<Record<string, { oldValue: any; newValue: any; timestamp: number }>>({});
-  const [expandedDeltas, setExpandedDeltas] = useState<Set<string>>(new Set());
 
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
@@ -520,108 +514,14 @@ const StructuredPromptEditor = ({
   const hasUpdatedGeneralFields = (generalData: Record<string, any>): boolean => {
     return Object.keys(generalData).some(key => updatedFields.has(key));
   };
-
-  // Enhanced tracking with delta information
-  useEffect(() => {
-    if (!updatedFields || updatedFields.size === 0) return;
-
-    const newRecentFields = new Set<string>();
-    const newTimestamps: Record<string, number> = {};
-    const newHistory: Record<string, { oldValue: any; newValue: any; timestamp: number }> = { ...fieldHistory };
-
-    const currentTime = Date.now();
-    updatedFields.forEach(path => {
-      const timeDiff = currentTime - (fieldUpdateTimestamps[path] || 0);
-      if (timeDiff < 3000) { // 3 seconds for "recent"
-        newRecentFields.add(path);
-      }
-      newTimestamps[path] = fieldUpdateTimestamps[path] || currentTime;
-
-      // Capture delta information if we have the current parsed JSON
-      if (parsedJSON && !newHistory[path]) {
-        const currentValue = getValueAtPath(parsedJSON, path);
-        // Store the change (we'll need to track the old value separately in real implementation)
-        newHistory[path] = {
-          oldValue: null, // Will be populated when we have proper tracking
-          newValue: currentValue,
-          timestamp: newTimestamps[path]
-        };
-      }
-    });
-
-    setRecentlyUpdatedFields(newRecentFields);
-    setFieldUpdateTimestamps(newTimestamps);
-    setFieldHistory(newHistory);
-
-    // Auto-fade recent highlights after 3 seconds
-    const timer = setTimeout(() => {
-      setRecentlyUpdatedFields(new Set());
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [updatedFields, parsedJSON, fieldHistory, fieldUpdateTimestamps]);
-
-  // Get update status for a field
-  const getUpdateStatus = (fieldPath: string) => {
-    const isUpdated = updatedFields.has(fieldPath);
-    const isRecent = recentlyUpdatedFields.has(fieldPath);
-    const hasUpdatedChild = hasUpdatedChildren(fieldPath, parsedJSON);
-    const timestamp = fieldUpdateTimestamps[fieldPath];
-    
-    return {
-      isUpdated,
-      isRecent,
-      hasUpdatedChild,
-      timestamp,
-      updateAge: timestamp ? Date.now() - timestamp : 0
-    };
-  };
-
-  const clearUpdates = useCallback(() => {
-    setRecentlyUpdatedFields(new Set());
-    setFieldUpdateTimestamps({});
-    setFieldHistory({});
-    setExpandedDeltas(new Set());
-  }, []);
-
-  // Helper function to get value at a specific path
-  const getValueAtPath = (obj: any, path: string): any => {
-    const keys = path.split('.');
-    let current = obj;
-    for (const key of keys) {
-      if (current && typeof current === 'object' && key in current) {
-        current = current[key];
-      } else {
-        return undefined;
-      }
-    }
-    return current;
-  };
-
-  // Toggle delta expansion
-  const toggleDeltaExpansion = useCallback((path: string) => {
-    setExpandedDeltas(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(path)) {
-        newSet.delete(path);
-      } else {
-        newSet.add(path);
-      }
-      return newSet;
-    });
-  }, []);
-
-  // Count total updates
-  const updateCount = updatedFields.size;
   const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false) => {
     const fieldPath = path ? `${path}.${key}` : key;
     const isLocked = isFieldLocked(fieldPath);
-    const updateStatus = getUpdateStatus(fieldPath);
+    const isUpdated = updatedFields.has(fieldPath);
+    const hasUpdatedChild = hasUpdatedChildren(fieldPath, val);
+    const isHighlighted = isUpdated || hasUpdatedChild;
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
-
-    // Determine simple update indicator
-    const isUpdated = updateStatus.isUpdated || updateStatus.hasUpdatedChild;
 
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
@@ -629,7 +529,7 @@ const StructuredPromptEditor = ({
       return <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm transition-all duration-200")} style={{
+            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
               {/* Parent Lock Button */}
@@ -640,7 +540,7 @@ const StructuredPromptEditor = ({
                     console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
                     handleParentLock(fieldPath, val, !parentLocked);
                   }}>
-                        {parentLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -654,26 +554,9 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  <div className="flex items-center gap-1">
-                    <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
-                      {typeInfo.icon} {typeInfo.count}
-                    </span>
-                      {isUpdated && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="ml-2">
-                                <div className="pulse-indicator" />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent className="update-tooltip">
-                              <p className="font-medium mb-1">Updated Fields</p>
-                              <p className="text-xs opacity-75">This {Array.isArray(val) ? 'array' : 'object'} contains fields that were recently updated</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                  </div>
+                  <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
+                    {typeInfo.icon} {typeInfo.count}
+                  </span>
                 </div>
               </CollapsibleTrigger>
               
@@ -723,9 +606,9 @@ const StructuredPromptEditor = ({
       return <Collapsible key={fieldPath} defaultOpen={false}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
-        <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm transition-all duration-200")} style={{
-        paddingLeft: `${level * 12 + 4}px`
-      }}>
+            <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")} style={{
+            paddingLeft: `${level * 12 + 4}px`
+          }}>
               {/* Parent Lock Button */}
               {!readOnly && <TooltipProvider>
                   <Tooltip>
@@ -733,7 +616,7 @@ const StructuredPromptEditor = ({
                       <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", parentLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
                     handleParentLock(fieldPath, val, !parentLocked);
                   }}>
-                        {parentLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
@@ -747,26 +630,9 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  <div className="flex items-center gap-1">
-                    <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
-                      {typeInfo.icon} {typeInfo.count}
-                    </span>
-                    {isUpdated && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="ml-2">
-                              <div className="pulse-indicator" />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent className="update-tooltip">
-                            <p className="font-medium mb-1">Updated Array</p>
-                            <p className="text-xs opacity-75">This array contains updated items</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                  </div>
+                  <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
+                    {typeInfo.icon} {typeInfo.count}
+                  </span>
                 </div>
               </CollapsibleTrigger>
               
@@ -791,7 +657,7 @@ const StructuredPromptEditor = ({
                 const isLastItem = index === val.length - 1;
                 if (typeof item === 'object' && item !== null) {
                   return <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={false}>
-      <div className={cn("relative group/item", updateStatus.isUpdated && "field-updated")}>
+      <div className={cn("relative group/item", isUpdated && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")}>
                            {renderTreeLines(level + 1, isLastItem, true)}
                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
                         paddingLeft: `${(level + 1) * 12 + 4}px`
@@ -805,7 +671,7 @@ const StructuredPromptEditor = ({
                                 const itemLocked = isFieldLocked(itemPath);
                                 handleParentLock(itemPath, item, !itemLocked);
                               }}>
-                                       {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                                       {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                                      </Button>
                                    </TooltipTrigger>
                                    <TooltipContent>
@@ -877,7 +743,7 @@ const StructuredPromptEditor = ({
     // Handle primitive values
     return <div key={fieldPath} className="relative">
         {renderTreeLines(level, isLast, false)}
-        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm")} style={{
+        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", isUpdated && "bg-yellow-100/50")} style={{
         paddingLeft: `${level * 12 + 4}px`
       }}>
           {/* Lock Icon Button */}
@@ -885,7 +751,7 @@ const StructuredPromptEditor = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", isLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => onFieldLock(fieldPath, !isLocked)}>
-                    {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                    {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -895,42 +761,10 @@ const StructuredPromptEditor = ({
             </TooltipProvider>}
           {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
 
-          {/* Field Name and Update Indicator */}
-          <div className="flex items-center gap-2">
-            <span className="text-foreground font-medium min-w-0 flex-shrink-0">
-              {key}:
-            </span>
-             {updateStatus.isUpdated && (
-               <TooltipProvider>
-                 <Tooltip>
-                   <TooltipTrigger asChild>
-                     <div className="ml-2">
-                       <div className="pulse-indicator pulse-indicator-sm" />
-                     </div>
-                   </TooltipTrigger>
-                   <TooltipContent className="update-tooltip">
-                     <div>
-                       <p className="font-medium mb-2">Field Updated</p>
-                       {fieldHistory[fieldPath] && fieldHistory[fieldPath].oldValue !== null ? (
-                         <div className="space-y-1">
-                           <div className="flex items-center gap-2">
-                             <span className="previous-value">Previous:</span>
-                             <span className="previous-value">{String(fieldHistory[fieldPath].oldValue) || '(empty)'}</span>
-                           </div>
-                           <div className="flex items-center gap-2">
-                             <span className="current-value">Current:</span>
-                             <span className="current-value">{String(val) || '(empty)'}</span>
-                           </div>
-                         </div>
-                       ) : (
-                         <p className="text-xs opacity-75">This field was recently updated</p>
-                       )}
-                     </div>
-                   </TooltipContent>
-                 </Tooltip>
-               </TooltipProvider>
-             )}
-          </div>
+          {/* Field Name */}
+          <span className="text-foreground font-medium min-w-0 flex-shrink-0">
+            {key}:
+          </span>
           
           {/* Value Display (read-only) or Input (editable) */}
           <TooltipProvider>
@@ -1109,7 +943,7 @@ const StructuredPromptEditor = ({
     </div>
   );
   const renderStructuredView = () => {
-    const generalFields = ['background_setting', 'style_medium', 'context', 'artistic_style'];
+    const generalFields = ['short_description', 'background_setting', 'style_medium', 'context', 'artistic_style'];
     const renderGeneralGroup = () => {
       const generalData: Record<string, any> = {};
       const otherData: Record<string, any> = {};
@@ -1126,11 +960,6 @@ const StructuredPromptEditor = ({
       }
       const allEntries: Array<[string, any]> = [];
 
-      // Add short_description first if it exists
-      if (parsedJSON && 'short_description' in parsedJSON) {
-        allEntries.push(['short_description', parsedJSON.short_description]);
-      }
-
       // Add General group if it has content
       if (Object.keys(generalData).length > 0) {
         allEntries.push(['General', generalData]);
@@ -1138,9 +967,7 @@ const StructuredPromptEditor = ({
 
       // Add other fields
       Object.entries(otherData).forEach(([key, val]) => {
-        if (key !== 'short_description') { // Skip short_description since we already added it first
-          allEntries.push([key, val]);
-        }
+        allEntries.push([key, val]);
       });
       return <div className="space-y-1">
           {allEntries.map(([key, val], index, arr) => {
@@ -1154,7 +981,7 @@ const StructuredPromptEditor = ({
             return <Collapsible key="general" defaultOpen={false}>
                   <div className="relative">
                     {renderTreeLines(0, isLast, true)}
-                    <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm")} style={{
+                    <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "bg-yellow-500/10 border border-yellow-500/30 rounded-md")} style={{
                   paddingLeft: '4px'
                 }}>
                       {/* General Lock Button */}
@@ -1171,7 +998,7 @@ const StructuredPromptEditor = ({
                             });
                           }
                         }}>
-                                {allGeneralLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                                {allGeneralLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -1430,7 +1257,7 @@ const StructuredPromptEditor = ({
                         </span>
                          <div className="flex items-center gap-1">
                            <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                               <Code2 className="w-4 h-4" />
+                              <Code className="w-4 h-4" />
                            </Button>
                            <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
                              <Image className="w-4 h-4" />
@@ -1463,7 +1290,7 @@ const StructuredPromptEditor = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                  {viewState === 'structured' ? <Code2 className="w-4 h-4" /> : <Network className="w-4 h-4" />}
+                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Network className="w-4 h-4" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

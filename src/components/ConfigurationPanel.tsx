@@ -547,23 +547,11 @@ const ConfigurationPanel = ({
   // Refinement suggestions for when in refinement mode
   const refinementSuggestions = ["Add more dramatic lighting with stronger shadows", "Make the colors more vibrant and saturated", "Add atmospheric fog or mist for depth", "Include more detailed textures on surfaces", "Enhance the contrast between light and dark areas", "Add subtle motion blur to suggest movement", "Increase the depth of field for better focus", "Add warm golden hour lighting", "Include more intricate details in the foreground", "Make the composition more dynamic with diagonal lines", "Add reflections for more visual interest", "Enhance the mood with cooler or warmer tones", "Add subtle lens flare effects", "Include more environmental storytelling elements", "Make the scene more cinematic with wider framing"];
 
-  // Helper function to populate structured prompt parameters
-  const populateStructuredPrompt = useCallback((customFields: Partial<typeof mockFilledJSON> = {}) => {
-    // Always populate with mock data, merging with any custom fields
-    const filledData = { ...mockFilledJSON, ...customFields };
-    setJsonData(JSON.stringify(filledData, null, 2));
-
-    // Mark fields as updated, excluding locked fields
-    const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere', 'objects', 'style_medium', 'context', 'artistic_style']);
-    const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
-    setUpdatedFields(fieldsToUpdate);
-  }, [lockedFields]);
-
   // Handle translate prompt to structured prompt
   const handleTranslatePrompt = useCallback(() => {
     const currentPrompt = hasGenerated ? refinementPrompt : mainPrompt;
-    
-    // Allow translation even if prompt is empty - always populate the structured prompt
+    if (!currentPrompt.trim()) return;
+
     // Capture the initial input if not already done
     if (!hasGenerated) {
       if (mainPrompt.trim()) {
@@ -582,8 +570,13 @@ const ConfigurationPanel = ({
 
     // Simulate translation processing
     setTimeout(() => {
-      // Always populate structured prompt with parameters
-      populateStructuredPrompt();
+      // Populate structured prompt with mock data based on the prompt
+      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+
+      // Mark some fields as updated, but exclude locked fields
+      const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
+      const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
+      setUpdatedFields(fieldsToUpdate);
 
       // Clear the refinement prompt if in refine mode
       if (hasGenerated) {
@@ -593,7 +586,7 @@ const ConfigurationPanel = ({
       // Hide loading state
       setIsProcessingFile(false);
     }, 1500); // 1.5 second delay to simulate processing
-  }, [hasGenerated, refinementPrompt, mainPrompt, populateStructuredPrompt]);
+  }, [hasGenerated, refinementPrompt, mainPrompt, lockedFields]);
 
   // Handle surprise me functionality
   const handleSurpriseMe = useCallback(() => {
@@ -672,8 +665,16 @@ const ConfigurationPanel = ({
       setIsProcessingFile(false);
       onGeneratingChange?.(false);
 
-      // Always populate structured prompt parameters on generate
-      populateStructuredPrompt();
+      // Clear previous highlights on new generation
+      setUpdatedFields(new Set());
+
+      // Populate structured prompt with mock data based on the prompt
+      setJsonData(JSON.stringify(mockFilledJSON, null, 2));
+
+      // Mark some fields as updated, but exclude locked fields
+      const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
+      const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
+      setUpdatedFields(fieldsToUpdate);
 
       // Generate new mock images with correct aspect ratio
       const timestamp = Date.now();
@@ -783,12 +784,17 @@ const ConfigurationPanel = ({
   setTimeout(() => {
     setIsProcessingFile(false);
     
-    // Always populate structured prompt parameters when uploading image
-    populateStructuredPrompt({
+    // Populate structured prompt
+    setJsonData(JSON.stringify({
+      ...mockFilledJSON,
       short_description: `Analysis of uploaded image: ${file.name}`,
       context: "Image analysis and experiment spec extraction",
       style_medium: "Based on uploaded reference image"
-    });
+    }, null, 2));
+
+    // Mark fields as updated
+    const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
+    setUpdatedFields(updatedFieldsSet);
   }, 2000);
   };
   // Helper function to check if structured prompt has meaningful content
@@ -838,12 +844,17 @@ const ConfigurationPanel = ({
   setTimeout(() => {
     setIsProcessingFile(false);
     
-    // Always populate structured prompt parameters when uploading brief
-    populateStructuredPrompt({
+    // Populate structured prompt
+    setJsonData(JSON.stringify({
+      ...mockFilledJSON,
       short_description: `Structured prompt extracted from brief: ${file.name}`,
       context: "Brief-based structured prompt extraction",
       artistic_style: "Style defined in uploaded brief document"
-    });
+    }, null, 2));
+
+    // Mark fields as updated
+    const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
+    setUpdatedFields(updatedFieldsSet);
   }, 2000);
   };
   return (

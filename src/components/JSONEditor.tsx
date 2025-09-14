@@ -82,7 +82,7 @@ const JSONEditor = ({
           key={index} 
           className={cn(
             "flex items-center group relative min-h-[24px]",
-            isUpdated && "field-updated"
+            isUpdated && "bg-yellow-200/20 animate-pulse"
           )}
         >
           <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
