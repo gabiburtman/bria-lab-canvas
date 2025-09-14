@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
@@ -36,6 +36,7 @@ const StructuredPromptEditor = ({
   const [parsedJSON, setParsedJSON] = useState<any>(null);
   const [progressiveJSON, setProgressiveJSON] = useState<string>('');
   const [isWritingJSON, setIsWritingJSON] = useState(false);
+  const progressiveContainerRef = useRef<HTMLDivElement>(null);
 
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
@@ -88,7 +89,7 @@ const StructuredPromptEditor = ({
       let currentLineIndex = 0;
       let currentCharIndex = 0;
       let accumulatedText = '';
-      let timeoutId: NodeJS.Timeout;
+      let timeoutId: ReturnType<typeof setTimeout>;
       
       const writeContent = () => {
         if (currentLineIndex >= lines.length) {
@@ -96,13 +97,11 @@ const StructuredPromptEditor = ({
           setIsWritingJSON(false);
           timeoutId = setTimeout(() => {
             setViewState('structured');
-          }, 1200);
+          }, 600);
           return;
         }
         
         const currentLine = lines[currentLineIndex];
-        
-        // Check if we should write the whole line at once (for structure)
         const isStructuralLine = /^\s*[{}\[\],]\s*$/.test(currentLine) || currentLine.trim() === '';
         
         if (isStructuralLine || currentCharIndex >= currentLine.length) {
@@ -113,44 +112,59 @@ const StructuredPromptEditor = ({
             currentLineIndex++;
             currentCharIndex = 0;
             
-            // Pause between lines (longer for structural elements)
-            const delay = isStructuralLine ? 200 : Math.random() * 300 + 200;
+            // Pause between lines
+            const delay = isStructuralLine ? 120 : Math.random() * 200 + 120;
             timeoutId = setTimeout(writeContent, delay);
           }
         } else {
-          // Write character by character for content lines
-          const char = currentLine[currentCharIndex];
-          accumulatedText += char;
+          // Write chunks for content lines
+          const remaining = currentLine.slice(currentCharIndex);
+          // Prefer writing a small word or token chunk for realism
+          const wordMatch = remaining.match(/^\w{1,6}/);
+          let take = 1;
+          if (wordMatch && Math.random() < 0.5) {
+            take = wordMatch[0].length;
+          } else {
+            // Otherwise take 1-3 chars
+            take = Math.min(remaining.length, 1 + Math.floor(Math.random() * 3));
+          }
+          const chunk = remaining.slice(0, take);
+          accumulatedText += chunk;
           setProgressiveJSON(accumulatedText);
-          currentCharIndex++;
+          currentCharIndex += take;
           
-          // Variable typing speed based on content
-          let delay = 30;
-          if (char === '"') delay = 100; // Pause at quotes
-          if (char === ':') delay = 150; // Pause at colons
-          if (char === ',') delay = 120; // Pause at commas
-          if (/\s/.test(char)) delay = 20; // Fast spaces
-          if (/[a-zA-Z]/.test(char)) delay = Math.random() * 50 + 25; // Variable letters
+          // Variable typing speed based on last char of chunk
+          const last = chunk[chunk.length - 1];
+          let delay = 35;
+          if (last === '"') delay = 110;
+          else if (last === ':') delay = 140;
+          else if (last === ',') delay = 130;
+          else if (/\s/.test(last)) delay = 20;
+          else if (/[a-zA-Z]/.test(last)) delay = 40 + Math.random() * 40;
           
           timeoutId = setTimeout(writeContent, delay);
         }
       };
       
       // Start writing after initial delay
-      timeoutId = setTimeout(writeContent, 800);
+      timeoutId = setTimeout(writeContent, 500);
       
       return () => {
         if (timeoutId) clearTimeout(timeoutId);
       };
     }
   }, [isGenerating, value]);
+  // Auto-scroll while writing
+  useEffect(() => {
+    if (isWritingJSON && progressiveContainerRef.current) {
+      progressiveContainerRef.current.scrollTop = progressiveContainerRef.current.scrollHeight;
+    }
+  }, [progressiveJSON, isWritingJSON]);
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(value);
   }, [value]);
   const renderTreeLines = (level: number, isLast: boolean, hasChildren: boolean) => {
     const lines = [];
-
-    // Vertical lines for parent levels
     for (let i = 0; i < level; i++) {
       lines.push(<div key={`line-${i}`} className="absolute border-l border-border/30" style={{
         left: `${i * 12 + 6}px`,
@@ -1066,35 +1080,32 @@ const StructuredPromptEditor = ({
         </div>
 
         {/* Code Display Area */}
-        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gradient-to-br from-background via-background to-muted/10">
+        <div ref={progressiveContainerRef} className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gradient-to-br from-background via-background to-muted/10">
           <div className="space-y-0">
-            {lines.map((line, index) => (
-              <div 
-                key={index} 
-                className="flex items-start min-h-[24px] animate-fade-in opacity-0"
-                style={{ 
-                  animationDelay: `${index * 50}ms`,
-                  animationFillMode: 'forwards'
-                }}
-              >
-                <span className="w-10 text-xs text-muted-foreground/60 text-right pr-3 select-none flex-shrink-0 pt-0.5">
-                  {index + 1}
-                </span>
-                <span 
-                  className="flex-1 leading-6" 
-                  dangerouslySetInnerHTML={{ __html: highlightSyntax(line || '&nbsp;') }}
-                />
-              </div>
-            ))}
-            
-            {/* Enhanced typing cursor */}
-            <div className="flex items-center mt-1">
-              <span className="w-10 pr-3"></span>
-              <div className="flex items-center">
-                <div className="w-2 h-5 bg-blue-500 animate-pulse rounded-sm shadow-lg"></div>
-                <div className="ml-2 text-xs text-muted-foreground animate-pulse">writing...</div>
-              </div>
-            </div>
+            {lines.map((line, index) => {
+              const isCurrent = index === lines.length - 1;
+              return (
+                <div 
+                  key={index} 
+                  className={`flex items-start min-h-[24px] animate-fade-in ${isCurrent ? 'bg-muted/20 rounded' : 'opacity-0'}`}
+                  style={{ 
+                    animationDelay: `${index * 50}ms`,
+                    animationFillMode: 'forwards'
+                  }}
+                >
+                  <span className="w-10 text-xs text-muted-foreground/60 text-right pr-3 select-none flex-shrink-0 pt-0.5">
+                    {index + 1}
+                  </span>
+                  <span 
+                    className="flex-1 leading-6" 
+                    dangerouslySetInnerHTML={{ __html: highlightSyntax(line || '&nbsp;') }}
+                  />
+                  {isCurrent && (
+                    <span className="inline-block w-2 h-5 bg-blue-500 animate-pulse rounded-sm ml-1" />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
