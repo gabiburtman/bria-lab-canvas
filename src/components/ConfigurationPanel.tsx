@@ -748,18 +748,14 @@ const ConfigurationPanel = ({
     setLockedFields(newLockedFields);
   };
   const handleUploadImage = () => {
-    if (onUploadImage) {
-      onUploadImage();
-    } else {
-      imageInputRef.current?.click();
-    }
+    // Notify parent (analytics/telemetry) but always open the file dialog here
+    onUploadImage?.();
+    imageInputRef.current?.click();
   };
   const handleUploadDocument = () => {
-    if (onUploadDocument) {
-      onUploadDocument();
-    } else {
-      briefInputRef.current?.click();
-    }
+    // Notify parent (analytics/telemetry) but always open the file dialog here
+    onUploadDocument?.();
+    briefInputRef.current?.click();
   };
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -780,26 +776,26 @@ const ConfigurationPanel = ({
       data: { url: imageUrl, name: file.name } 
     });
 
-    // Simulate processing the image and extracting experiment spec
-    setIsProcessingFile(true);
-    setTimeout(() => {
-      setIsProcessingFile(false);
-      
-      // Auto-switch to refine mode
-      setHasGenerated(true);
-      
-      // Populate structured prompt
-      setJsonData(JSON.stringify({
-        ...mockFilledJSON,
-        short_description: `Analysis of uploaded image: ${file.name}`,
-        context: "Image analysis and experiment spec extraction",
-        style_medium: "Based on uploaded reference image"
-      }, null, 2));
+  // Switch to refine mode immediately
+  setHasGenerated(true);
 
-      // Mark fields as updated
-      const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
-      setUpdatedFields(updatedFieldsSet);
-    }, 2000);
+  // Simulate processing the image and extracting experiment spec
+  setIsProcessingFile(true);
+  setTimeout(() => {
+    setIsProcessingFile(false);
+    
+    // Populate structured prompt
+    setJsonData(JSON.stringify({
+      ...mockFilledJSON,
+      short_description: `Analysis of uploaded image: ${file.name}`,
+      context: "Image analysis and experiment spec extraction",
+      style_medium: "Based on uploaded reference image"
+    }, null, 2));
+
+    // Mark fields as updated
+    const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
+    setUpdatedFields(updatedFieldsSet);
+  }, 2000);
   };
   // Helper function to check if structured prompt has meaningful content
   const hasStructuredPromptContent = useCallback(() => {
@@ -840,26 +836,26 @@ const ConfigurationPanel = ({
       data: file.name 
     });
 
-    // Simulate processing the brief and extracting structured prompt
-    setIsProcessingFile(true);
-    setTimeout(() => {
-      setIsProcessingFile(false);
-      
-      // Auto-switch to refine mode
-      setHasGenerated(true);
-      
-      // Populate structured prompt
-      setJsonData(JSON.stringify({
-        ...mockFilledJSON,
-        short_description: `Structured prompt extracted from brief: ${file.name}`,
-        context: "Brief-based structured prompt extraction",
-        artistic_style: "Style defined in uploaded brief document"
-      }, null, 2));
+  // Switch to refine mode immediately
+  setHasGenerated(true);
 
-      // Mark fields as updated
-      const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
-      setUpdatedFields(updatedFieldsSet);
-    }, 2000);
+  // Simulate processing the brief and extracting structured prompt
+  setIsProcessingFile(true);
+  setTimeout(() => {
+    setIsProcessingFile(false);
+    
+    // Populate structured prompt
+    setJsonData(JSON.stringify({
+      ...mockFilledJSON,
+      short_description: `Structured prompt extracted from brief: ${file.name}`,
+      context: "Brief-based structured prompt extraction",
+      artistic_style: "Style defined in uploaded brief document"
+    }, null, 2));
+
+    // Mark fields as updated
+    const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
+    setUpdatedFields(updatedFieldsSet);
+  }, 2000);
   };
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
