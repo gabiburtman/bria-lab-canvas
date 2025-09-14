@@ -746,10 +746,12 @@ const StructuredPromptEditor = ({
         <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", isUpdated && "field-updated-primitive")} style={{
         paddingLeft: `${level * 12 + 4}px`
       }}>
-          {/* Update Indicator */}
-          {isUpdated && (
-            <div className="updated-dot updated-dot-animate" title="Recently updated field" />
-          )}
+          {/* Update Indicator - Always reserve space for alignment */}
+          <div className="w-2 h-2 flex-shrink-0">
+            {isUpdated && (
+              <div className="updated-dot updated-dot-animate" title="Recently updated field" />
+            )}
+          </div>
           
           {/* Lock Icon Button */}
           {!readOnly && <TooltipProvider>
