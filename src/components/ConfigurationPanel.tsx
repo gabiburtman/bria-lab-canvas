@@ -385,7 +385,7 @@ const PromptComponent = ({
                   </PopoverTrigger>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Set an image seed to recreate or vary a generation</p>
+                  <p>Set a seed to recreate or vary a result</p>
                 </TooltipContent>
               </Tooltip>
               <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
