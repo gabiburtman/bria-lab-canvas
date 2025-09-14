@@ -254,7 +254,7 @@ const PromptComponent = ({
           
           <TabsContent value="refine" className="mt-0 relative">
             <Textarea 
-              placeholder={placeholder}
+              placeholder="Refine a specific visual element. Instruct on a change to the mood, colors, or details."
               value={value}
               onChange={e => onChange(e.target.value)}
               onKeyDown={e => {
