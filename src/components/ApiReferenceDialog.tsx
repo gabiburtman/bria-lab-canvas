@@ -32,11 +32,17 @@ headers = {
 }
 
 payload = {
-    "prompt": "A serene landscape with mountains",
-    "num_results": 1,
-    "sync": True,
-    "width": 1024,
-    "height": 1024
+    "api": {
+        "prompt": "A serene landscape with mountains",
+        "num_results": 1,
+        "sync": True,
+        "width": 1024,
+        "height": 1024,
+        "seed": 123456,
+        "aspect_ratio": "1:1",
+        "steps": 20,
+        "cfg": 7.5
+    }
 }
 
 try:
@@ -58,11 +64,17 @@ except requests.exceptions.RequestException as e:
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      prompt: 'A serene landscape with mountains',
-      num_results: 1,
-      sync: true,
-      width: 1024,
-      height: 1024
+      api: {
+        prompt: 'A serene landscape with mountains',
+        num_results: 1,
+        sync: true,
+        width: 1024,
+        height: 1024,
+        seed: 123456,
+        aspect_ratio: '1:1',
+        steps: 20,
+        cfg: 7.5
+      }
     })
   });
   
@@ -94,11 +106,17 @@ const options = {
 };
 
 const postData = JSON.stringify({
-  prompt: 'A serene landscape with mountains',
-  num_results: 1,
-  sync: true,
-  width: 1024,
-  height: 1024
+  api: {
+    prompt: 'A serene landscape with mountains',
+    num_results: 1,
+    sync: true,
+    width: 1024,
+    height: 1024,
+    seed: 123456,
+    aspect_ratio: '1:1',
+    steps: 20,
+    cfg: 7.5
+  }
 });
 
 const req = https.request(options, (res) => {
@@ -128,11 +146,17 @@ req.end();`
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "prompt": "A serene landscape with mountains",
-    "num_results": 1,
-    "sync": true,
-    "width": 1024,
-    "height": 1024
+    "api": {
+      "prompt": "A serene landscape with mountains",
+      "num_results": 1,
+      "sync": true,
+      "width": 1024,
+      "height": 1024,
+      "seed": 123456,
+      "aspect_ratio": "1:1",
+      "steps": 20,
+      "cfg": 7.5
+    }
   }' \\
   | jq '.result[0].urls[0]'`
   },
@@ -154,11 +178,17 @@ public class BriaImageGenerator {
         ObjectMapper mapper = new ObjectMapper();
         
         String requestBody = mapper.writeValueAsString(Map.of(
-            "prompt", "A serene landscape with mountains",
-            "num_results", 1,
-            "sync", true,
-            "width", 1024,
-            "height", 1024
+            "api", Map.of(
+                "prompt", "A serene landscape with mountains",
+                "num_results", 1,
+                "sync", true,
+                "width", 1024,
+                "height", 1024,
+                "seed", 123456,
+                "aspect_ratio", "1:1",
+                "steps", 20,
+                "cfg", 7.5
+            )
         ));
         
         HttpRequest request = HttpRequest.newBuilder()
@@ -198,11 +228,18 @@ public class BriaImageGenerator
     {
         var payload = new
         {
-            prompt = "A serene landscape with mountains",
-            num_results = 1,
-            sync = true,
-            width = 1024,
-            height = 1024
+            api = new
+            {
+                prompt = "A serene landscape with mountains",
+                num_results = 1,
+                sync = true,
+                width = 1024,
+                height = 1024,
+                seed = 123456,
+                aspect_ratio = "1:1",
+                steps = 20,
+                cfg = 7.5
+            }
         };
         
         var json = JsonConvert.SerializeObject(payload);
@@ -234,11 +271,17 @@ $url = 'https://api.bria.ai/v1/text-to-image/base/2.3/base';
 $api_key = 'YOUR_API_KEY';
 
 $data = array(
-    'prompt' => 'A serene landscape with mountains',
-    'num_results' => 1,
-    'sync' => true,
-    'width' => 1024,
-    'height' => 1024
+    'api' => array(
+        'prompt' => 'A serene landscape with mountains',
+        'num_results' => 1,
+        'sync' => true,
+        'width' => 1024,
+        'height' => 1024,
+        'seed' => 123456,
+        'aspect_ratio' => '1:1',
+        'steps' => 20,
+        'cfg' => 7.5
+    )
 );
 
 $options = array(
@@ -277,12 +320,20 @@ import (
     "net/http"
 )
 
+type ApiRequest struct {
+    Prompt      string  \`json:"prompt"\`
+    NumResults  int     \`json:"num_results"\`
+    Sync        bool    \`json:"sync"\`
+    Width       int     \`json:"width"\`
+    Height      int     \`json:"height"\`
+    Seed        int     \`json:"seed"\`
+    AspectRatio string  \`json:"aspect_ratio"\`
+    Steps       int     \`json:"steps"\`
+    CFG         float64 \`json:"cfg"\`
+}
+
 type GenerateRequest struct {
-    Prompt     string \`json:"prompt"\`
-    NumResults int    \`json:"num_results"\`
-    Sync       bool   \`json:"sync"\`
-    Width      int    \`json:"width"\`
-    Height     int    \`json:"height"\`
+    Api ApiRequest \`json:"api"\`
 }
 
 func main() {
@@ -290,11 +341,17 @@ func main() {
     apiKey := "YOUR_API_KEY"
     
     payload := GenerateRequest{
-        Prompt:     "A serene landscape with mountains",
-        NumResults: 1,
-        Sync:       true,
-        Width:      1024,
-        Height:     1024,
+        Api: ApiRequest{
+            Prompt:      "A serene landscape with mountains",
+            NumResults:  1,
+            Sync:        true,
+            Width:       1024,
+            Height:      1024,
+            Seed:        123456,
+            AspectRatio: "1:1",
+            Steps:       20,
+            CFG:         7.5,
+        },
     }
     
     jsonData, err := json.Marshal(payload)
