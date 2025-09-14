@@ -228,7 +228,7 @@ const LabInterface = () => {
             <DialogTrigger asChild>
               <button className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 inline-flex items-center gap-1 px-2 py-1 rounded">
                 <HelpCircle className="w-3 h-3" />
-                Learn about Bria 4
+                Learn more
               </button>
             </DialogTrigger>
             <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
