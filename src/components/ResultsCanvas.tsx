@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
 import { FaReddit, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
+import { ApiReferenceDialog } from "@/components/ApiReferenceDialog";
 interface ImageCardProps {
   src?: string;
   index: number;
@@ -15,30 +16,6 @@ const ImageCard = ({
 }: ImageCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [liked, setLiked] = useState<boolean | null>(null);
-  const mockCodeSnippets = {
-    python: `import requests
-
-response = requests.post(
-  "https://api.bria.ai/v1/generate",
-  headers={"Authorization": "Bearer YOUR_API_KEY"},
-  json={"prompt": "Your prompt here", "model": "bria-4"}
-)`,
-    javascript: `fetch('https://api.bria.ai/v1/generate', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    prompt: 'Your prompt here',
-    model: 'bria-4'
-  })
-})`,
-    curl: `curl -X POST https://api.bria.ai/v1/generate \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{"prompt": "Your prompt here", "model": "bria-4"}'`
-  };
   if (!src) {
     return <div className="aspect-square bg-lab-interactive-hover border border-lab-border rounded-lab flex items-center justify-center">
         <div className="w-8 h-8 bg-lab-interactive-active rounded-lab animate-pulse"></div>
@@ -83,8 +60,8 @@ response = requests.post(
       </div>
       
       <div className="flex gap-2">
-        <Popover>
-          <PopoverTrigger asChild>
+        <ApiReferenceDialog 
+          trigger={
             <Button 
               size="sm" 
               variant="ghost" 
@@ -93,21 +70,8 @@ response = requests.post(
             >
               <Code className="w-4 h-4" />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80 bg-background border-border shadow-lg z-50">
-            <div className="space-y-3">
-              <h4 className="font-medium text-foreground text-sm">Code Snippets</h4>
-              {Object.entries(mockCodeSnippets).map(([lang, code]) => <div key={lang} className="space-y-1">
-                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                    {lang}
-                  </div>
-                  <pre className="text-xs bg-muted text-muted-foreground p-2 rounded overflow-x-auto">
-                    <code>{code}</code>
-                  </pre>
-                </div>)}
-            </div>
-          </PopoverContent>
-        </Popover>
+          }
+        />
       </div>
     </div>;
   const FeedbackButtons = () => <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -225,26 +189,13 @@ response = requests.post(
               <div className="flex gap-2">
                 <SharePopover inDialog={true} />
                 
-                <Popover>
-                  <PopoverTrigger asChild>
+                <ApiReferenceDialog 
+                  trigger={
                     <Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
                       <Code className="w-4 h-4" />
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-80 bg-background border-border shadow-lg z-50">
-                    <div className="space-y-3">
-                      <h4 className="font-medium text-foreground text-sm">Code Snippets</h4>
-                      {Object.entries(mockCodeSnippets).map(([lang, code]) => <div key={lang} className="space-y-1">
-                          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                            {lang}
-                          </div>
-                          <pre className="text-xs bg-muted text-muted-foreground p-2 rounded overflow-x-auto">
-                            <code>{code}</code>
-                          </pre>
-                        </div>)}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                  }
+                />
               </div>
             </div>
             <FeedbackButtons />
