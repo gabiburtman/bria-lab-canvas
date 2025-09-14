@@ -883,6 +883,116 @@ const ConfigurationPanel = ({
         </div>
       </div>
 
+      {/* Description */}
+      <div className="px-6 pb-4">
+        <p className="text-sm text-lab-text-secondary">
+          Check out the under the hood of our ultra controlled text to image model{" "}
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="text-lab-primary hover:text-lab-primary-hover underline underline-offset-2 transition-colors">
+                Learn more
+              </button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold text-lab-text-primary">
+                  Bria 4.0: Control-First Image Generation
+                </DialogTitle>
+                <DialogDescription className="text-lab-text-secondary">
+                  Reframing text-to-image from "pretty images" to professional control and automation
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 text-lab-text-primary">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-lab-surface-elevated rounded-lg p-3">
+                    <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
+                    <div className="text-lab-text-secondary text-xs">LLM interpretation layer for structured, scalable workflows</div>
+                  </div>
+                  <div className="bg-lab-surface-elevated rounded-lg p-3">
+                    <div className="font-semibold text-lab-primary mb-2">Ethical Foundation</div>
+                    <div className="text-lab-text-secondary text-xs">Trained on licensed data with full IP protection</div>
+                  </div>
+                  <div className="bg-lab-surface-elevated rounded-lg p-3">
+                    <div className="font-semibold text-lab-primary mb-2">Real-World Ready</div>
+                    <div className="text-lab-text-secondary text-xs">Enterprise-grade consistency and reliability</div>
+                  </div>
+                  <div className="bg-lab-surface-elevated rounded-lg p-3">
+                    <div className="font-semibold text-lab-primary mb-2">Beyond Text Prompts</div>
+                    <div className="text-lab-text-secondary text-xs">Structured inputs with precise control parameters</div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-lab-primary">How Bria 4 Works</h3>
+                  <div className="bg-lab-surface-elevated rounded-lg p-4">
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="bg-lab-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <span className="text-lab-primary font-bold">1</span>
+                        </div>
+                        <div className="font-medium text-sm mb-1">Input Processing</div>
+                        <div className="text-xs text-lab-text-secondary">Natural language or structured data</div>
+                      </div>
+                      <div>
+                        <div className="bg-lab-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <span className="text-lab-primary font-bold">2</span>
+                        </div>
+                        <div className="font-medium text-sm mb-1">Structured Parsing</div>
+                        <div className="text-xs text-lab-text-secondary">AI interprets and organizes requirements</div>
+                      </div>
+                      <div>
+                        <div className="bg-lab-primary/20 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                          <span className="text-lab-primary font-bold">3</span>
+                        </div>
+                        <div className="font-medium text-sm mb-1">Controlled Generation</div>
+                        <div className="text-xs text-lab-text-secondary">Precise image creation with quality assurance</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Key Features</h3>
+                  <div className="grid grid-cols-4 gap-2">
+                    <div className="bg-lab-surface-elevated rounded p-2">
+                      <div className="font-medium text-lab-text-primary mb-1">Style Control</div>
+                      <div className="text-lab-text-secondary">Artistic medium, aesthetics</div>
+                    </div>
+                    <div className="bg-lab-surface-elevated rounded p-2">
+                      <div className="font-medium text-lab-text-primary mb-1">Photography</div>
+                      <div className="text-lab-text-secondary">Focus, angles, lighting</div>
+                    </div>
+                    <div className="bg-lab-surface-elevated rounded p-2">
+                      <div className="font-medium text-lab-text-primary mb-1">Objects</div>
+                      <div className="text-lab-text-secondary">Position, size, texture</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
+                  <div className="flex flex-wrap gap-2 text-sm">
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                      <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Bria 4</a>
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                      <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
+                        📚 API Docs
+                      </a>
+                    </Button>
+                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                      <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
+                        🚀 Bria Platform
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </p>
+      </div>
+
       {/* Content */}
       <div className="flex-1 flex flex-col min-h-0 px-6 pb-6 gap-4">
         {/* Prompt Section - Fixed height */}
