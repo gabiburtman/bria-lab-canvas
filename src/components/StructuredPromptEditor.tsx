@@ -34,6 +34,8 @@ const StructuredPromptEditor = ({
 }: StructuredPromptEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
+  const [progressiveJSON, setProgressiveJSON] = useState<string>('');
+  const [isWritingJSON, setIsWritingJSON] = useState(false);
 
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
@@ -74,6 +76,40 @@ const StructuredPromptEditor = ({
       setViewState('empty');
     }
   }, [value, viewState, hasData, forceStructuredView]);
+
+  // Progressive JSON writing effect
+  useEffect(() => {
+    if (isGenerating && value) {
+      setIsWritingJSON(true);
+      setProgressiveJSON('');
+      
+      const targetJSON = value;
+      let currentIndex = 0;
+      
+      const writeChar = () => {
+        if (currentIndex < targetJSON.length) {
+          setProgressiveJSON(targetJSON.slice(0, currentIndex + 1));
+          currentIndex++;
+          
+          // Vary the speed - faster for spaces and punctuation, slower for content
+          const char = targetJSON[currentIndex - 1];
+          const delay = char === ' ' || char === '\n' || char === ',' || char === '{' || char === '}' ? 20 : 50;
+          
+          setTimeout(writeChar, delay);
+        } else {
+          // Writing complete
+          setIsWritingJSON(false);
+          // Switch to collapsed tree view
+          setTimeout(() => {
+            setViewState('structured');
+          }, 500);
+        }
+      };
+      
+      // Start writing after a brief delay
+      setTimeout(writeChar, 300);
+    }
+  }, [isGenerating, value]);
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(value);
   }, [value]);
@@ -955,6 +991,43 @@ const StructuredPromptEditor = ({
         </div>
       </div>;
   };
+  const renderProgressiveJSONView = () => {
+    const lines = progressiveJSON.split('\n');
+    const highlightSyntax = (text: string) => {
+      return text
+        .replace(/"([^"]+)":/g, '<span class="text-blue-400 font-medium">"$1":</span>')
+        .replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
+        .replace(/:\s*(\d+)/g, ': <span class="text-orange-400">$1</span>')
+        .replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>')
+        .replace(/:\s*(null)/g, ': <span class="text-gray-400">$1</span>')
+        .replace(/([{}[\],])/g, '<span class="text-gray-300">$1</span>');
+    };
+
+    return (
+      <div className="absolute inset-0 bg-background flex flex-col z-20">
+        <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
+          <span className="text-sm font-medium text-foreground">
+            Generating Structured Prompt...
+          </span>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm">
+          {lines.map((line, index) => (
+            <div key={index} className="flex items-center min-h-[24px]">
+              <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
+                {index + 1}
+              </span>
+              <span 
+                className="flex-1" 
+                dangerouslySetInnerHTML={{ __html: highlightSyntax(line) }}
+              />
+            </div>
+          ))}
+          {/* Blinking cursor at the end */}
+          <div className="inline-block w-2 h-4 bg-primary animate-pulse ml-1"></div>
+        </div>
+      </div>
+    );
+  };
   const renderSourceView = () => {
     const lines = value.split('\n');
     const highlightSyntax = (text: string) => {
@@ -1153,9 +1226,7 @@ const StructuredPromptEditor = ({
         {viewState === 'structured' && renderStructuredView()}
         {viewState === 'source' && renderSourceView()}
         
-        {isGenerating && <div className="absolute inset-0 bg-background/80 flex items-center justify-center z-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>}
+        {(isGenerating && isWritingJSON) && renderProgressiveJSONView()}
       </div>
     </div>;
 };
