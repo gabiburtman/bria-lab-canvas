@@ -112,7 +112,8 @@
   }
 
   .field-updated-child {
-    @apply bg-green-500/8 border-l-2 border-green-500/30;
+    @apply border-l-2 border-green-500/30 rounded-md;
+    background-color: hsl(var(--lab-success) / 0.10);
   }
 
   .update-badge {
@@ -176,9 +177,8 @@
   }
 
   .update-tooltip {
-    @apply bg-lab-surface text-lab-text-primary px-2 py-1 text-xs rounded-md border border-lab-border shadow-lg;
+    @apply bg-popover text-popover-foreground px-2 py-1 text-xs rounded-md border border-border shadow-lg;
   }
-}
 }
 
 /* JSON Editor Syntax Highlighting */
