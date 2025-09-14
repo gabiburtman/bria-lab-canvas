@@ -304,96 +304,96 @@ const PromptComponent = ({
         <div className="flex items-center justify-between p-3 border-t border-lab-border bg-background">
           <div className="flex items-center gap-2">
             {/* Aspect Ratio Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Popover>
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
                       <Crop className="w-3 h-3" />
                       {aspectRatio}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
-                    <div className="space-y-1">
-                      {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
-                          {ratio.label}
-                        </button>)}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Aspect Ratio</p>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Aspect Ratio</p>
+                </TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
+                <div className="space-y-1">
+                  {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
+                      {ratio.label}
+                    </button>)}
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Steps Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Popover>
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
                       <Hash className="w-3 h-3" />
                       {steps[0]} Steps
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-                    <div>
-                      <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
-                      <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]} steps</div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Steps</p>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Steps</p>
+                </TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                <div>
+                  <Slider value={steps} onValueChange={setSteps} max={50} min={20} step={1} className="w-full" />
+                  <div className="mt-2 text-center text-sm text-lab-text-secondary">{steps[0]} steps</div>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Guidance Scale Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Popover>
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
                       <Zap className="w-3 h-3" />
                       CFG {guidanceScale[0]}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-                    <div>
-                      <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
-                      <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance: {guidanceScale[0]}</div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Guidance Scale</p>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Guidance Scale</p>
+                </TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                <div>
+                  <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
+                  <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance: {guidanceScale[0]}</div>
+                </div>
+              </PopoverContent>
+            </Popover>
 
             {/* Seed Button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Popover>
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
                       <Sprout className="w-3 h-3" />
                       {seed || "Random"}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
-                    <div>
-                      <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Set an image seed to recreate or vary a generation</p>
-              </TooltipContent>
-            </Tooltip>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Set an image seed to recreate or vary a generation</p>
+                </TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
+                <div>
+                  <Input placeholder="Random" value={seed} onChange={e => setSeed(e.target.value)} className="bg-lab-surface border-lab-border focus:border-lab-border-focus" />
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="flex items-center gap-1">
