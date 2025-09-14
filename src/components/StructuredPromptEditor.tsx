@@ -746,15 +746,9 @@ const StructuredPromptEditor = ({
       </div>
       
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={onUploadImage} className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" disabled={isGenerating}>
-          <Image className="w-3 h-3" />
-          Upload Image
-        </Button>
         
-        <Button variant="ghost" size="sm" onClick={onUploadDocument} className="text-xs px-2 h-7 rounded bg-transparent hover:bg-lab-border text-lab-text-muted hover:text-lab-text-secondary transition-all duration-200 flex items-center gap-1" disabled={isGenerating}>
-          <FileText className="w-3 h-3" />
-          Upload Brief
-        </Button>
+        
+        
       </div>
       
       <Dialog>
