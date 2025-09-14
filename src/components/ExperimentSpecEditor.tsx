@@ -733,7 +733,7 @@ const ExperimentSpecEditor = ({
         </div>
       </div>;
   };
-  const renderEmptyState = () => <div className="flex flex-col items-center justify-center h-80 space-y-4 p-8">
+  const renderEmptyState = () => <div className="flex flex-col items-center justify-center h-32 space-y-2 p-4">
       <div className="text-center space-y-2">
         <h3 className="text-lg font-medium text-muted-foreground">Populate Experiment Spec</h3>
         <p className="text-xs text-muted-foreground/70 max-w-md leading-relaxed">
