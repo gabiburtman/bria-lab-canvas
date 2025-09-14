@@ -162,19 +162,24 @@ const LabInterface = () => {
       </div>
       
       {/* Description Section */}
-      <div className="px-4 pb-2 flex-none">
-        <div className="text-lab-text-secondary text-sm font-medium space-y-1">
-          <p>This is the interactive lab for GAIA, the first open-source model that uses long, structured prompts</p>
-          <p>for developer-native precision and professional control.</p>
-        </div>
-        <div className="mt-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="text-xs text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 inline-flex items-center gap-1 px-2 py-1 rounded">
-                <HelpCircle className="w-3 h-3" />
-                Learn more
-              </button>
-            </DialogTrigger>
+      <div className="flex-none bg-lab-surface/30 border-y border-lab-border/50">
+        <div className="max-w-4xl mx-auto px-6 py-6">
+          <div className="text-center space-y-4">
+            <div className="space-y-2">
+              <p className="text-base font-medium text-lab-text-primary leading-relaxed">
+                This is the interactive lab for GAIA, the first open-source model
+              </p>
+              <p className="text-base font-medium text-lab-text-primary leading-relaxed">
+                that uses long, structured prompts for developer-native precision and professional control.
+              </p>
+            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-sm text-lab-primary hover:text-lab-primary-hover hover:bg-lab-primary/10 transition-all duration-200 inline-flex items-center gap-2 px-4 py-2 rounded-md font-medium border border-lab-primary/20 hover:border-lab-primary/40">
+                  <HelpCircle className="w-4 h-4" />
+                  Learn more about GAIA
+                </button>
+              </DialogTrigger>
             <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
               <DialogHeader>
                 <DialogTitle className="text-xl font-bold text-lab-text-primary">
@@ -260,7 +265,8 @@ const LabInterface = () => {
                 </div>
               </div>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
       </div>
       
