@@ -662,8 +662,8 @@ const StructuredPromptEditor = ({
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <div className="ml-2 text-lab-success">
-                                <Dot size={20} />
+                              <div className="ml-2">
+                                <div className="pulse-indicator" />
                               </div>
                             </TooltipTrigger>
                             <TooltipContent className="update-tooltip">
@@ -755,8 +755,8 @@ const StructuredPromptEditor = ({
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <div className="ml-2 text-lab-success">
-                              <Dot size={20} />
+                            <div className="ml-2">
+                              <div className="pulse-indicator" />
                             </div>
                           </TooltipTrigger>
                           <TooltipContent className="update-tooltip">
@@ -904,8 +904,8 @@ const StructuredPromptEditor = ({
                <TooltipProvider>
                  <Tooltip>
                    <TooltipTrigger asChild>
-                     <div className="ml-2 text-lab-success">
-                       <Dot size={16} />
+                     <div className="ml-2">
+                       <div className="pulse-indicator pulse-indicator-sm" />
                      </div>
                    </TooltipTrigger>
                    <TooltipContent className="update-tooltip">

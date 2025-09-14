@@ -135,6 +135,27 @@
     @apply opacity-50;
   }
 
+  @keyframes pulse-breathe {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+  }
+
+  .pulse-indicator {
+    @apply w-2 h-2 rounded-full;
+    background-color: hsl(var(--lab-success));
+    animation: pulse-breathe 2s ease-in-out infinite;
+  }
+
+  .pulse-indicator-sm {
+    @apply w-1.5 h-1.5;
+  }
+
   @keyframes fade-in-scale {
     0% {
       opacity: 0;
