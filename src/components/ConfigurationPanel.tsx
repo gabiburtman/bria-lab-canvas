@@ -870,7 +870,7 @@ const ConfigurationPanel = ({
           <PromptComponent
             value={hasGenerated ? refinementPrompt : mainPrompt} 
             onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
-            placeholder={hasGenerated ? "Refine with new instructions..." : "Describe the image you want to generate..."} 
+            placeholder={hasGenerated ? "Refine with new instructions..." : "Start with your core concept—a detailed goal, an image, or a brief. GAIA will translate it into a structured prompt."} 
             aspectRatio={aspectRatio} 
             aspectRatios={aspectRatios} 
             setAspectRatio={setAspectRatio} 
