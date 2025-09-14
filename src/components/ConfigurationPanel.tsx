@@ -825,7 +825,7 @@ const ConfigurationPanel = ({
         </div>
 
         {/* Structured Prompt Editor - Fixed height container with internal scrolling */}
-        <div className="flex-shrink-0 overflow-hidden" style={{ height: '300px' }}>
+        <div className="flex-shrink-0 overflow-hidden" style={{ height: '200px' }}>
           <div className="h-full">
             <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
