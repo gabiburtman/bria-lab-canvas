@@ -77,51 +77,68 @@ const StructuredPromptEditor = ({
     }
   }, [value, viewState, hasData, forceStructuredView]);
 
-  // Progressive JSON writing effect
+  // Progressive JSON writing effect - AI-style generation
   useEffect(() => {
     if (isGenerating && value) {
       setIsWritingJSON(true);
       setProgressiveJSON('');
       
       const targetJSON = value;
-      let currentIndex = 0;
+      const lines = targetJSON.split('\n');
+      let currentLineIndex = 0;
+      let currentCharIndex = 0;
+      let accumulatedText = '';
       let timeoutId: NodeJS.Timeout;
       
-      const getTypingDelay = (char: string, nextChar?: string) => {
-        // Realistic typing patterns
-        if (char === '\n') return 150; // Pause after line breaks
-        if (char === '{' || char === '}') return 100; // Pause at structure
-        if (char === '"' && nextChar === ':') return 80; // Pause after keys
-        if (char === ':') return 120; // Pause after colons
-        if (char === ',') return 200; // Longer pause after commas
-        if (char === ' ') return 30; // Quick spaces
-        if (/[a-zA-Z]/.test(char)) return Math.random() * 40 + 40; // Variable letter speed
-        return 60; // Default
-      };
-      
-      const writeChar = () => {
-        if (currentIndex < targetJSON.length) {
-          setProgressiveJSON(targetJSON.slice(0, currentIndex + 1));
-          
-          const currentChar = targetJSON[currentIndex];
-          const nextChar = targetJSON[currentIndex + 1];
-          const delay = getTypingDelay(currentChar, nextChar);
-          
-          currentIndex++;
-          timeoutId = setTimeout(writeChar, delay);
-        } else {
-          // Writing complete - smooth transition
+      const writeContent = () => {
+        if (currentLineIndex >= lines.length) {
+          // Writing complete
           setIsWritingJSON(false);
           timeoutId = setTimeout(() => {
             setViewState('structured');
-          }, 800);
+          }, 1200);
+          return;
+        }
+        
+        const currentLine = lines[currentLineIndex];
+        
+        // Check if we should write the whole line at once (for structure)
+        const isStructuralLine = /^\s*[{}\[\],]\s*$/.test(currentLine) || currentLine.trim() === '';
+        
+        if (isStructuralLine || currentCharIndex >= currentLine.length) {
+          // Complete the current line and move to next
+          if (currentLineIndex < lines.length) {
+            accumulatedText += currentLine + (currentLineIndex < lines.length - 1 ? '\n' : '');
+            setProgressiveJSON(accumulatedText);
+            currentLineIndex++;
+            currentCharIndex = 0;
+            
+            // Pause between lines (longer for structural elements)
+            const delay = isStructuralLine ? 200 : Math.random() * 300 + 200;
+            timeoutId = setTimeout(writeContent, delay);
+          }
+        } else {
+          // Write character by character for content lines
+          const char = currentLine[currentCharIndex];
+          accumulatedText += char;
+          setProgressiveJSON(accumulatedText);
+          currentCharIndex++;
+          
+          // Variable typing speed based on content
+          let delay = 30;
+          if (char === '"') delay = 100; // Pause at quotes
+          if (char === ':') delay = 150; // Pause at colons
+          if (char === ',') delay = 120; // Pause at commas
+          if (/\s/.test(char)) delay = 20; // Fast spaces
+          if (/[a-zA-Z]/.test(char)) delay = Math.random() * 50 + 25; // Variable letters
+          
+          timeoutId = setTimeout(writeContent, delay);
         }
       };
       
-      // Start writing after a brief delay
-      timeoutId = setTimeout(writeChar, 500);
+      // Start writing after initial delay
+      timeoutId = setTimeout(writeContent, 800);
       
-      // Cleanup function
       return () => {
         if (timeoutId) clearTimeout(timeoutId);
       };
@@ -1010,11 +1027,14 @@ const StructuredPromptEditor = ({
   };
   const renderProgressiveJSONView = () => {
     const lines = progressiveJSON.split('\n');
+    const totalLines = value?.split('\n').length || 1;
+    const progress = Math.round((lines.length / totalLines) * 100);
+    
     const highlightSyntax = (text: string) => {
       return text
         .replace(/"([^"]+)":/g, '<span class="text-blue-400 font-medium">"$1":</span>')
         .replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
-        .replace(/:\s*(\d+)/g, ': <span class="text-orange-400">$1</span>')
+        .replace(/:\s*(\d+(\.\d+)?)/g, ': <span class="text-orange-400">$1</span>')
         .replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>')
         .replace(/:\s*(null)/g, ': <span class="text-gray-400">$1</span>')
         .replace(/([{}[\],])/g, '<span class="text-gray-300">$1</span>');
@@ -1022,32 +1042,70 @@ const StructuredPromptEditor = ({
 
     return (
       <div className="absolute inset-0 bg-background flex flex-col z-20">
-        <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
+        {/* AI Generation Header */}
+        <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+              <div className="absolute inset-0 w-3 h-3 bg-blue-500 rounded-full animate-ping opacity-20"></div>
+            </div>
+            <div>
+              <div className="text-sm font-medium text-foreground">GAIA is generating your structured prompt</div>
+              <div className="text-xs text-muted-foreground">Analyzing your requirements and creating detailed specifications...</div>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-foreground">
-              Generating Structured Prompt...
-            </span>
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {Math.round((progressiveJSON.length / (value?.length || 1)) * 100)}%
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gradient-to-br from-background to-muted/20">
-          {lines.map((line, index) => (
-            <div key={index} className="flex items-center min-h-[24px] animate-fade-in">
-              <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
-                {index + 1}
-              </span>
-              <span 
-                className="flex-1" 
-                dangerouslySetInnerHTML={{ __html: highlightSyntax(line) }}
+            <div className="text-xs text-muted-foreground">{progress}%</div>
+            <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
               />
             </div>
-          ))}
-          {/* Enhanced blinking cursor */}
-          <div className="inline-flex items-center">
-            <div className="w-2 h-4 bg-primary animate-pulse ml-1 rounded-sm"></div>
+          </div>
+        </div>
+
+        {/* Code Display Area */}
+        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gradient-to-br from-background via-background to-muted/10">
+          <div className="space-y-0">
+            {lines.map((line, index) => (
+              <div 
+                key={index} 
+                className="flex items-start min-h-[24px] animate-fade-in opacity-0"
+                style={{ 
+                  animationDelay: `${index * 50}ms`,
+                  animationFillMode: 'forwards'
+                }}
+              >
+                <span className="w-10 text-xs text-muted-foreground/60 text-right pr-3 select-none flex-shrink-0 pt-0.5">
+                  {index + 1}
+                </span>
+                <span 
+                  className="flex-1 leading-6" 
+                  dangerouslySetInnerHTML={{ __html: highlightSyntax(line || '&nbsp;') }}
+                />
+              </div>
+            ))}
+            
+            {/* Enhanced typing cursor */}
+            <div className="flex items-center mt-1">
+              <span className="w-10 pr-3"></span>
+              <div className="flex items-center">
+                <div className="w-2 h-5 bg-blue-500 animate-pulse rounded-sm shadow-lg"></div>
+                <div className="ml-2 text-xs text-muted-foreground animate-pulse">writing...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom status */}
+        <div className="p-3 border-t border-border bg-muted/30">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span>AI is structuring your prompt for optimal generation quality</span>
+            </div>
+            <div>{lines.length} / {totalLines} lines</div>
           </div>
         </div>
       </div>
