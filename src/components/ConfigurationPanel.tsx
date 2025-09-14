@@ -306,7 +306,7 @@ const PromptComponent = ({
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
 }) => {
   // Height constants to maintain exact same total height
-  const baseEditorHeight = 180; // Increased from 120 to make prompt field bigger
+  const baseEditorHeight = 260; // Increased from 180 to give more space to prompt
   const tabsBarHeight = 40;
   const refinedContentHeight = baseEditorHeight - tabsBarHeight;
   
@@ -1013,8 +1013,8 @@ const ConfigurationPanel = ({
 
       {/* Content */}
       <div className="flex-1 flex flex-col min-h-0 p-6 gap-4">{/* Removed header, adjusted padding */}
-        {/* Prompt Section - Fixed height */}
-        <div className="flex-shrink-0" style={{ height: '240px' }}>
+        {/* Prompt Section - Increased height */}
+        <div className="flex-shrink-0" style={{ height: '320px' }}>
           <PromptComponent
             value={hasGenerated ? refinementPrompt : mainPrompt} 
             onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
@@ -1040,8 +1040,8 @@ const ConfigurationPanel = ({
           />
         </div>
 
-        {/* Structured Prompt Editor - Flexible height that grows */}
-        <div className="flex-1 min-h-0 overflow-hidden">
+        {/* Structured Prompt Editor - Limited height */}
+        <div className="flex-1 min-h-0 max-h-80 overflow-hidden">
           <div className="h-full">
             <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
