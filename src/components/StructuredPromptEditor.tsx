@@ -737,12 +737,39 @@ const StructuredPromptEditor = ({
         </div>
       </div>;
   };
-  const renderEmptyState = () => <div className="absolute inset-0 grid place-items-center p-8">
-      <div className="text-center space-y-3">
-        <h3 className="text-lg font-medium text-muted-foreground">GAIA's Structured Prompt</h3>
-        <p className="text-sm text-muted-foreground/70 max-w-md leading-relaxed">This is the detailed blueprint GAIA follows for generation. It will be populated from your instructions or uploaded assets, giving you predictable, repeatable control without any guesswork.</p>
+  const renderEmptyState = () => (
+    <div className="h-full flex flex-col">
+      <div className="flex items-center justify-between p-3 border-b border-border bg-muted/30">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-foreground">
+            Structured Prompt
+          </span>
+          <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full p-0 text-muted-foreground opacity-50 cursor-not-allowed" disabled>
+            <HelpCircle className="w-3 h-3" />
+          </Button>
+        </div>
+        
+        <TooltipProvider>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-muted-foreground opacity-50 cursor-not-allowed" disabled>
+              <Network className="w-4 h-4" />
+            </Button>
+            
+            <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-muted-foreground opacity-50 cursor-not-allowed" disabled>
+              <Copy className="w-4 h-4" />
+            </Button>
+          </div>
+        </TooltipProvider>
       </div>
-    </div>;
+      
+      <div className="flex-1 grid place-items-center p-8">
+        <div className="text-center space-y-3">
+          <h3 className="text-lg font-medium text-muted-foreground">GAIA's Structured Prompt</h3>
+          <p className="text-sm text-muted-foreground/70 max-w-md leading-relaxed">This is the detailed blueprint GAIA follows for generation. It will be populated from your instructions or uploaded assets, giving you predictable, repeatable control without any guesswork.</p>
+        </div>
+      </div>
+    </div>
+  );
   const renderStructuredView = () => {
     const generalFields = ['short_description', 'background_setting', 'style_medium', 'context', 'artistic_style'];
     const renderGeneralGroup = () => {
