@@ -165,7 +165,7 @@ const LabInterface = () => {
                 </DialogContent>
               </Dialog>
             </div>
-            <p className="text-xs text-lab-text-secondary">Interactive lab for the first open-source structured prompt model</p>
+            <p className="text-xs text-lab-text-secondary">This is the interactive lab for GAIA, the first open-source model that uses long, structured prompts for developer-native precision and professional control.</p>
           </div>
         </div>
 
