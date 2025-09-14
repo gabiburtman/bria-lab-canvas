@@ -167,23 +167,78 @@ const PromptComponent = ({
   const renderViewInput = () => {
     const contentStyle = { minHeight: `${refinedContentHeight}px` };
     
-    if (!initialInput || initialInput.type !== 'text' || !(initialInput.data as string).trim()) {
+    if (!initialInput) {
       return (
         <div 
           className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
           style={contentStyle}
         >
-          <p className="text-sm italic">No original prompt</p>
+          <p className="text-sm italic">No original input</p>
         </div>
       );
     }
     
+    // Handle different input types
+    if (initialInput.type === 'image' && typeof initialInput.data === 'object') {
+      const imageData = initialInput.data as { url: string; name?: string };
+      return (
+        <div 
+          className="p-4 bg-transparent flex flex-col gap-3"
+          style={contentStyle}
+        >
+          <div className="text-sm text-lab-text-muted mb-2">Uploaded Image:</div>
+          <div className="flex items-center gap-3">
+            <img 
+              src={imageData.url} 
+              alt="Uploaded reference" 
+              className="w-16 h-16 object-cover rounded-lg border border-lab-border"
+            />
+            <div className="text-sm text-lab-text-secondary">
+              {imageData.name || 'Uploaded Image'}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    if (initialInput.type === 'brief' && typeof initialInput.data === 'string') {
+      return (
+        <div 
+          className="p-4 bg-transparent flex flex-col gap-3"
+          style={contentStyle}
+        >
+          <div className="text-sm text-lab-text-muted mb-2">Uploaded Brief:</div>
+          <div className="flex items-center gap-3">
+            <div className="w-16 h-16 bg-lab-interactive-hover rounded-lg border border-lab-border flex items-center justify-center">
+              <FileText className="w-8 h-8 text-lab-text-secondary" />
+            </div>
+            <div className="text-sm text-lab-text-secondary">
+              {initialInput.data}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    // Handle text input
+    if (initialInput.type === 'text' && typeof initialInput.data === 'string' && initialInput.data.trim()) {
+      return (
+        <div 
+          className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60"
+          style={contentStyle}
+        >
+          {initialInput.data}
+        </div>
+      );
+    }
+    
+    // Fallback for empty or invalid input
     return (
       <div 
-        className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60"
+        className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
         style={contentStyle}
       >
-        {initialInput.data as string}
+        <p className="text-sm italic">No original input</p>
       </div>
     );
   };
@@ -719,10 +774,21 @@ const ConfigurationPanel = ({
     const imageUrl = URL.createObjectURL(file);
     setUploadedImageUrl(imageUrl);
 
+    // Set initial input and switch to refine mode
+    setInitialInput({ 
+      type: 'image', 
+      data: { url: imageUrl, name: file.name } 
+    });
+
     // Simulate processing the image and extracting experiment spec
     setIsProcessingFile(true);
     setTimeout(() => {
       setIsProcessingFile(false);
+      
+      // Auto-switch to refine mode
+      setHasGenerated(true);
+      
+      // Populate structured prompt
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
         short_description: `Analysis of uploaded image: ${file.name}`,
@@ -768,10 +834,21 @@ const ConfigurationPanel = ({
     // Store the uploaded brief name
     setUploadedBriefName(file.name);
 
+    // Set initial input and switch to refine mode
+    setInitialInput({ 
+      type: 'brief', 
+      data: file.name 
+    });
+
     // Simulate processing the brief and extracting structured prompt
     setIsProcessingFile(true);
     setTimeout(() => {
       setIsProcessingFile(false);
+      
+      // Auto-switch to refine mode
+      setHasGenerated(true);
+      
+      // Populate structured prompt
       setJsonData(JSON.stringify({
         ...mockFilledJSON,
         short_description: `Structured prompt extracted from brief: ${file.name}`,
@@ -787,8 +864,8 @@ const ConfigurationPanel = ({
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
-      <input ref={imageInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-      <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt" onChange={handleDocumentUpload} className="hidden" />
+      <input ref={imageInputRef} type="file" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg" onChange={handleImageUpload} className="hidden" />
+      <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.md,.rtf" onChange={handleDocumentUpload} className="hidden" />
 
       {/* Content */}
       <div className="flex-1 flex flex-col min-h-0 p-6 gap-4">{/* Removed header, adjusted padding */}
