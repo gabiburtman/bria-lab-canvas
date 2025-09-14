@@ -824,15 +824,15 @@ const ConfigurationPanel = ({
           />
         </div>
 
-        {/* Structured Prompt Editor - Fixed height container with internal scrolling */}
-        <div className="flex-shrink-0 overflow-hidden" style={{ height: '200px' }}>
+        {/* Structured Prompt Editor - Flexible height that grows */}
+        <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
             <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={hasGenerated || isGenerating} readOnly={true} />
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="p-4 border-t border-lab-border bg-background">
+        {/* Action Buttons - Fixed at bottom */}
+        <div className="flex-shrink-0 pt-4 border-t border-lab-border">
           <div className="flex gap-3">
             <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : "Generate"}
