@@ -885,9 +885,9 @@ const StructuredPromptEditor = ({
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <div className="text-center">
-                <p>GAIA's blueprint for predictable control.</p>
-                <p>Populated from your input, refined with your instructions.</p>
+              <div className="text-left">
+                <p>Detailed, machine-readable prompt, provides deterministic control.</p>
+                <p>Populated from your input, refined with new instructions, or can be edited directly by a user or an AI agent.</p>
               </div>
             </TooltipContent>
           </Tooltip>
