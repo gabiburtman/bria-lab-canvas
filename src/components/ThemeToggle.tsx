@@ -21,11 +21,9 @@ const ThemeToggle = () => {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="sm" 
+    <div
       onClick={toggleTheme}
-      className="w-full justify-start hover:bg-lab-interactive-hover text-lab-text-primary"
+      className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-lab-interactive-hover focus:bg-lab-interactive-hover data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
     >
       {theme === "dark" ? (
         <>
@@ -38,7 +36,7 @@ const ThemeToggle = () => {
           <span>Dark Mode</span>
         </>
       )}
-    </Button>
+    </div>
   );
 };
 

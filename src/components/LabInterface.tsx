@@ -230,14 +230,7 @@ const LabInterface = () => {
                 <UserCircle className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Account Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-lab-border" />
-              <div className="px-2 py-1">
-                <ThemeToggle />
-              </div>
+              <ThemeToggle />
               <DropdownMenuSeparator className="bg-lab-border" />
               <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
                 <LogOut className="mr-2 h-4 w-4" />
