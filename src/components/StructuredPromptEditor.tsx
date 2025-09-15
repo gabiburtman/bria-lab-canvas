@@ -18,7 +18,7 @@ interface StructuredPromptEditorProps {
   forceStructuredView?: boolean;
   readOnly?: boolean;
 }
-type ViewState = 'empty' | 'loading' | 'structured' | 'source';
+type ViewState = 'empty' | 'structured' | 'source';
 
 const StructuredPromptEditor = ({
   value,
@@ -69,11 +69,7 @@ const StructuredPromptEditor = ({
 
   // Update view state based on generation and data
   useEffect(() => {
-    if (isGenerating) {
-      setViewState('loading');
-      setIsCascading(false);
-      setCascadeRowIndex(0);
-    } else if (forceStructuredView || hasData()) {
+    if (forceStructuredView || hasData()) {
       // Switch to structured view and trigger cascade
       setViewState('structured');
       setIsCascading(true);
@@ -1176,7 +1172,6 @@ const StructuredPromptEditor = ({
         {viewState === 'empty' && renderEmptyState()}
         {viewState === 'structured' && renderStructuredView()}
         {viewState === 'source' && renderSourceView()}
-        {viewState === 'loading' && renderLoadingView()}
       </div>
     </div>;
 };
