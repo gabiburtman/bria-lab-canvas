@@ -1223,9 +1223,6 @@ const StructuredPromptEditor = ({
         
         <TooltipProvider>
           <div className="flex items-center gap-1">
-            <span className="text-xs text-muted-foreground px-2">
-              {wordCount} words
-            </span>
             
             <Tooltip>
               <TooltipTrigger asChild>
@@ -1259,6 +1256,13 @@ const StructuredPromptEditor = ({
         {viewState === 'empty' && renderEmptyState()}
         {viewState === 'structured' && renderStructuredView()}
         {viewState === 'source' && renderSourceView()}
+        
+        {/* Floating word count - only show when not empty */}
+        {viewState !== 'empty' && (
+          <div className="absolute bottom-3 right-3 bg-muted/80 backdrop-blur-sm border border-border rounded-lg px-2 py-1 text-xs text-muted-foreground">
+            {wordCount} words
+          </div>
+        )}
       </div>
     </div>;
 };
