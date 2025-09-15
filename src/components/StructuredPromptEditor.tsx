@@ -595,28 +595,11 @@ const StructuredPromptEditor = ({
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
-              {/* Show lock icon for groups with no updated children */}
-              {shouldShowGroupLock && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                        <Lock className="w-3 h-3 text-muted-foreground/40" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Preserved during refinement</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-              {!shouldShowGroupLock && <div className="w-6 h-6 flex-shrink-0" />}
-
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  {isGroupPreserved(fieldPath) && (
+                  {shouldShowGroupLock && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -684,28 +667,11 @@ const StructuredPromptEditor = ({
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
-              {/* Show lock icon for groups with no updated children */}
-              {shouldShowGroupLock && (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                        <Lock className="w-3 h-3 text-muted-foreground/40" />
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Preserved during refinement</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-              {!shouldShowGroupLock && <div className="w-6 h-6 flex-shrink-0" />}
-
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  {isGroupPreserved(fieldPath) && (
+                  {shouldShowGroupLock && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -748,33 +714,16 @@ const StructuredPromptEditor = ({
                   return <Collapsible key={`${fieldPath}[${index}]-${expandVersion}`} defaultOpen={showExpanded}>
       <div className={cn("relative group/item", isUpdated && "field-updated")}>
                            {renderTreeLines(level + 1, isLastItem, true)}
-                           <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
+                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
                         paddingLeft: `${(level + 1) * 12 + 4}px`
                       }}>
-                             {/* Show lock icon for array items with no updated children */}
-                             {shouldShowGroupLock && (
-                               <TooltipProvider>
-                                 <Tooltip>
-                                   <TooltipTrigger asChild>
-                                     <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                                       <Lock className="w-3 h-3 text-muted-foreground/40" />
-                                     </div>
-                                   </TooltipTrigger>
-                                   <TooltipContent>
-                                     <p>Preserved during refinement</p>
-                                   </TooltipContent>
-                                 </Tooltip>
-                               </TooltipProvider>
-                             )}
-                             {!shouldShowGroupLock && <div className="w-6 h-6 flex-shrink-0" />}
-
                             <CollapsibleTrigger asChild>
                               <div className="flex items-center gap-2 cursor-pointer flex-1">
                                 <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                                 <span className="text-foreground font-medium">
                                   {key === 'objects' ? `Object [${index}]` : `Text Element [${index}]`}
                                 </span>
-                                {isGroupPreserved(`${fieldPath}[${index}]`) && (
+                                {!hasUpdatedChildren(`${fieldPath}[${index}]`, item) && (
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -854,12 +803,15 @@ const StructuredPromptEditor = ({
             )}
           </div>
 
-          {/* Show lock icon for unchanged parameters */}
+          {/* Field Name */}
+          <span className="text-foreground font-medium min-w-0 flex-shrink-0">
+            {key}:
+          </span>
           {shouldShowParameterLock && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                  <div className="ml-1">
                     <Lock className="w-3 h-3 text-muted-foreground/40" />
                   </div>
                 </TooltipTrigger>
@@ -868,17 +820,6 @@ const StructuredPromptEditor = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          )}
-          {!shouldShowParameterLock && <div className="w-6 h-6 flex-shrink-0" />}
-
-          {/* Field Name */}
-          <span className="text-foreground font-medium min-w-0 flex-shrink-0">
-            {key}:
-          </span>
-          {isFieldPreserved(fieldPath) && (
-            <div title="Preserved field - protected during refinement" className="ml-1">
-              <Lock className="w-3 h-3 text-muted-foreground/40" />
-            </div>
           )}
           
           {/* Value Display (read-only) or Input (editable) */}
