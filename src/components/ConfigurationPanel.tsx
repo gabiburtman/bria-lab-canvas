@@ -976,23 +976,28 @@ const ConfigurationPanel = ({
   // Switch to refine mode immediately
   setIsRefinementMode(true);
 
-  // Simulate processing the image and extracting experiment spec
-  setIsProcessingFile(true);
-  setTimeout(() => {
-    setIsProcessingFile(false);
-    
-    // Populate structured prompt with varied data
-    const variedData = generateVariedStructuredPrompt();
-    setJsonData(JSON.stringify({
-      ...variedData,
-      short_description: `Analysis of uploaded image: ${file.name}`,
-      context: "Image analysis and experiment spec extraction",
-      style_medium: "Based on uploaded reference image"
-    }, null, 2));
+    // Simulate processing the image and extracting experiment spec
+    setIsProcessingFile(true);
+    setTimeout(() => {
+      setIsProcessingFile(false);
+      
+      // Populate structured prompt with varied data
+      const variedData = generateVariedStructuredPrompt();
+      const newJsonData = {
+        ...variedData,
+        short_description: `Analysis of uploaded image: ${file.name}`,
+        context: "Image analysis and experiment spec extraction",
+        style_medium: "Based on uploaded reference image"
+      };
+      setJsonData(JSON.stringify(newJsonData, null, 2));
 
-    // Mark fields as updated
-    const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
-    setUpdatedFields(updatedFieldsSet);
+      // Mark fields as updated
+      const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
+      setUpdatedFields(updatedFieldsSet);
+      
+      // Mark all other fields as preserved
+      const preservedFieldsSet = markPreservedFields(newJsonData, updatedFieldsSet, lockedFields);
+      setPreservedFields(preservedFieldsSet);
   }, 2000);
   };
   // Helper function to check if structured prompt has meaningful content
@@ -1037,23 +1042,28 @@ const ConfigurationPanel = ({
   // Switch to refine mode immediately
   setIsRefinementMode(true);
 
-  // Simulate processing the brief and extracting structured prompt
-  setIsProcessingFile(true);
-  setTimeout(() => {
-    setIsProcessingFile(false);
-    
-    // Populate structured prompt with varied data
-    const variedData = generateVariedStructuredPrompt();
-    setJsonData(JSON.stringify({
-      ...variedData,
-      short_description: `Structured prompt extracted from brief: ${file.name}`,
-      context: "Brief-based structured prompt extraction",
-      artistic_style: "Style defined in uploaded brief document"
-    }, null, 2));
+    // Simulate processing the brief and extracting structured prompt
+    setIsProcessingFile(true);
+    setTimeout(() => {
+      setIsProcessingFile(false);
+      
+      // Populate structured prompt with varied data
+      const variedData = generateVariedStructuredPrompt();
+      const newJsonData = {
+        ...variedData,
+        short_description: `Structured prompt extracted from brief: ${file.name}`,
+        context: "Brief-based structured prompt extraction",
+        artistic_style: "Style defined in uploaded brief document"
+      };
+      setJsonData(JSON.stringify(newJsonData, null, 2));
 
-    // Mark fields as updated
-    const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
-    setUpdatedFields(updatedFieldsSet);
+      // Mark fields as updated
+      const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
+      setUpdatedFields(updatedFieldsSet);
+      
+      // Mark all other fields as preserved
+      const preservedFieldsSet = markPreservedFields(newJsonData, updatedFieldsSet, lockedFields);
+      setPreservedFields(preservedFieldsSet);
   }, 2000);
   };
   return (
@@ -1112,5 +1122,74 @@ const ConfigurationPanel = ({
       </div>
     </div>
   );
+  };
+
+// Helper function to mark all preserved fields comprehensively
+const markPreservedFields = (jsonObj: any, updatedFieldsSet: Set<string>, lockedFieldsSet: Set<string>): Set<string> => {
+  const preserved = new Set<string>();
+  
+  const getAllPaths = (obj: any, basePath: string = ''): string[] => {
+    const paths: string[] = [];
+    
+    const traverse = (current: any, currentPath: string) => {
+      if (currentPath) {
+        paths.push(currentPath);
+      }
+      
+      if (typeof current === 'object' && current !== null) {
+        if (Array.isArray(current)) {
+          current.forEach((item, index) => {
+            const itemPath = currentPath ? `${currentPath}[${index}]` : `[${index}]`;
+            traverse(item, itemPath);
+          });
+        } else {
+          Object.entries(current).forEach(([key, value]) => {
+            const keyPath = currentPath ? `${currentPath}.${key}` : key;
+            traverse(value, keyPath);
+          });
+        }
+      }
+    };
+    
+    traverse(obj, basePath);
+    return paths;
+  };
+
+  const isPathPreserved = (path: string): boolean => {
+    // If this exact path was updated, it's not preserved
+    if (updatedFieldsSet.has(path)) {
+      return false;
+    }
+    
+    // Check if any child of this path was updated
+    const allPaths = getAllPaths(jsonObj);
+    const hasUpdatedChildren = allPaths.some(childPath => 
+      childPath.startsWith(path + '.') || 
+      childPath.startsWith(path + '[') ||
+      (path === '' && updatedFieldsSet.has(childPath))
+    );
+    
+    return !hasUpdatedChildren;
+  };
+
+  // Get all possible paths in the JSON structure
+  const allPaths = getAllPaths(jsonObj);
+  
+  // Add the root level fields
+  if (typeof jsonObj === 'object' && jsonObj !== null && !Array.isArray(jsonObj)) {
+    Object.keys(jsonObj).forEach(key => {
+      allPaths.unshift(key);
+    });
+  }
+  
+  // Mark each path as preserved if it and its children weren't updated
+  allPaths.forEach(path => {
+    if (isPathPreserved(path)) {
+      preserved.add(path);
+    }
+  });
+  
+  return preserved;
 };
+
 export default ConfigurationPanel;

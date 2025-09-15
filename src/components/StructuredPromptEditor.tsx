@@ -290,6 +290,25 @@ const StructuredPromptEditor = ({
     return preservedFields.has(path);
   };
 
+  // Helper function to check if a group/object/array is preserved (no updated children)
+  const isGroupPreserved = (path: string, obj: any): boolean => {
+    // Check if this exact path is preserved
+    if (preservedFields.has(path)) {
+      return true;
+    }
+    
+    // For groups like "General", check if all children are preserved
+    if (typeof obj === 'object' && obj !== null) {
+      const childPaths = getChildPaths(obj, path);
+      const allPaths = path ? [path, ...childPaths] : childPaths;
+      
+      // If all paths are preserved, the group is preserved
+      return allPaths.length > 0 && allPaths.every(p => preservedFields.has(p));
+    }
+    
+    return false;
+  };
+
   // Helper function to get all child paths of a parent
   const getChildPaths = (obj: any, basePath: string = ''): string[] => {
     const paths: string[] = [];
@@ -604,10 +623,19 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  {isFieldPreserved(fieldPath) && (
-                    <div title="Preserved field - protected during refinement">
-                      <Lock className="w-3 h-3 text-muted-foreground/40 ml-1" />
-                    </div>
+                  {isGroupPreserved(fieldPath, val) && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="ml-1">
+                            <Lock className="w-3 h-3 text-muted-foreground/40" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Preserved during refinement</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
                     {typeInfo.icon} {typeInfo.count}
@@ -685,10 +713,19 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  {isFieldPreserved(fieldPath) && (
-                    <div title="Preserved field - protected during refinement">
-                      <Lock className="w-3 h-3 text-muted-foreground/40 ml-1" />
-                    </div>
+                  {isGroupPreserved(fieldPath, val) && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="ml-1">
+                            <Lock className="w-3 h-3 text-muted-foreground/40" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Preserved during refinement</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
                     {typeInfo.icon} {typeInfo.count}
@@ -747,6 +784,20 @@ const StructuredPromptEditor = ({
                                 <span className="text-foreground font-medium">
                                   {key === 'objects' ? `Object [${index}]` : `Text Element [${index}]`}
                                 </span>
+                                {isGroupPreserved(`${fieldPath}[${index}]`, item) && (
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <div className="ml-1">
+                                          <Lock className="w-3 h-3 text-muted-foreground/40" />
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Preserved during refinement</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                )}
                                 <span className="px-1.5 py-0.5 text-xs bg-purple-500/10 text-purple-600 rounded border border-purple-200/20">
                                   {'{}'} {Object.keys(item).length}
                                 </span>
@@ -1019,6 +1070,20 @@ const StructuredPromptEditor = ({
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
                           <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                           <span className="text-foreground font-medium">general</span>
+                          {isGroupPreserved('', val) && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="ml-1">
+                                    <Lock className="w-3 h-3 text-muted-foreground/40" />
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Preserved during refinement</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
                           <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
                             {} {Object.keys(val).length}
                           </span>
