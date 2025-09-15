@@ -45,14 +45,18 @@ const LabInterface = () => {
     setActiveHistoryId(item.id);
     setImages(item.images || []);
 
-    // In a real implementation, this would restore the configuration
-    // For now, we'll just set the current config
+    // Switch to refine mode and restore the complete configuration
     setCurrentConfig({
       mainPrompt: item.prompt,
       aspectRatio: item.visualControls.aspectRatio,
       steps: item.visualControls.steps,
       seed: item.visualControls.seed,
-      jsonConfig: item.jsonConfig
+      jsonConfig: item.jsonConfig,
+      // Set refine mode to true when clicking on history items
+      isRefinementMode: true,
+      // Set the original prompt as initial input for the refine mode
+      initialInput: { type: 'text', data: item.prompt },
+      originalPrompt: item.prompt
     });
   }, []);
   const handleUploadImage = useCallback(() => {

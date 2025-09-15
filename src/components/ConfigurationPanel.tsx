@@ -648,6 +648,28 @@ const ConfigurationPanel = ({
   const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [uploadedBriefName, setUploadedBriefName] = useState<string | null>(null);
+  // Update states when initialConfig changes (e.g., from history click)
+  useEffect(() => {
+    if (initialConfig) {
+      setMainPrompt(initialConfig.mainPrompt || "");
+      setAspectRatio(initialConfig.aspectRatio || "1:1");
+      setSteps([initialConfig.steps || 30]);
+      setGuidanceScale([initialConfig.guidanceScale || 5]);
+      setSeed(initialConfig.seed || "");
+      setJsonData(initialConfig.jsonConfig || JSON.stringify(defaultJSON, null, 2));
+      
+      // Handle refine mode activation from history
+      if (initialConfig.isRefinementMode) {
+        setIsRefinementMode(true);
+        setOriginalPrompt(initialConfig.originalPrompt || initialConfig.mainPrompt || "");
+        if (initialConfig.initialInput) {
+          setInitialInput(initialConfig.initialInput);
+        }
+        // Clear refinement prompt to start fresh
+        setRefinementPrompt("");
+      }
+    }
+  }, [initialConfig]);
 
   // File input refs
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -1122,7 +1144,7 @@ const ConfigurationPanel = ({
       </div>
     </div>
   );
-  };
+};
 
 // Helper function to mark all preserved fields comprehensively
 function markPreservedFields(jsonObj: any, updatedFieldsSet: Set<string>, lockedFieldsSet: Set<string>): Set<string> {
