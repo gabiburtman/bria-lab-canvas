@@ -489,7 +489,7 @@ const PromptComponent = ({
 
           {/* Custom clickable placeholder overlay */}
           {!value && (
-            <div className="absolute top-4 left-4 pointer-events-none">
+            <div className="absolute top-4 left-4 right-20 pointer-events-none">
               <p className="text-lab-text-muted text-sm">
                 What's your objective? Describe it here, or start with an image or{" "}
                 <button 
