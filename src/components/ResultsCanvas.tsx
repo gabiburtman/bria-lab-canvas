@@ -74,12 +74,12 @@ const ImageCard = ({
   }: {
     inDialog?: boolean;
   }) => {
-    const shareMessage = "Generated in the Bria GAIA Lab <link to LP> #BRIAAI #GAIA #BRIAGAIA";
+    const shareMessage = "Generated in the Bria GAIA Lab [LINK] #BRIAAI #GAIA #BRIAGAIA";
     const imageUrl = encodeURIComponent(src || '');
     const encodedMessage = encodeURIComponent(shareMessage);
     const handleLinkedInShare = (e: React.MouseEvent) => {
       e.stopPropagation();
-      const linkedinUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedMessage}`;
+      const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${imageUrl}&summary=${encodedMessage}`;
       window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
     };
     const handleXShare = (e: React.MouseEvent) => {
