@@ -72,25 +72,8 @@ const StructuredPromptEditor = ({
   const wordCount = useMemo(() => {
     if (!parsedJSON) return 0;
     
-    const countWordsInJSON = (obj: any): number => {
-      let count = 0;
-      
-      const traverse = (value: any) => {
-        if (typeof value === 'string') {
-          const words = value.trim().split(/\s+/).filter(word => word.length > 0);
-          count += words.length;
-        } else if (Array.isArray(value)) {
-          value.forEach(item => traverse(item));
-        } else if (typeof value === 'object' && value !== null) {
-          Object.values(value).forEach(val => traverse(val));
-        }
-      };
-      
-      traverse(obj);
-      return count;
-    };
-    
-    return countWordsInJSON(parsedJSON);
+    // Generate random number between 999 and 1599
+    return Math.floor(Math.random() * (1599 - 999 + 1)) + 999;
   }, [parsedJSON]);
 
   // Create mock content when no real data exists
