@@ -91,8 +91,8 @@ const extractImageConcepts = (prompt: string): string[] => {
   return foundConcepts.length > 0 ? foundConcepts : ['nature']; // Default to nature if no concepts found
 };
 
-// Function to get concept-based image IDs from picsum.photos
-const getConceptImageIds = (prompt: string): number[] => {
+// Function to get concept-based image ID from picsum.photos
+const getConceptImageId = (prompt: string): number => {
   const concepts = extractImageConcepts(prompt);
   
   // Curated picsum.photos image IDs mapped to concepts
@@ -157,9 +157,10 @@ const getConceptImageIds = (prompt: string): number[] => {
     candle: [734, 740, 757, 775]
   };
   
-  // Get IDs for the first matching concept, or default nature concept
+  // Get a random ID from the first matching concept, or default nature concept
   const primaryConcept = concepts[0];
-  return conceptMap[primaryConcept] || conceptMap.nature;
+  const conceptIds = conceptMap[primaryConcept] || conceptMap.nature;
+  return getRandomItem(conceptIds);
 };
 
 // Function to generate varied structured prompt data
@@ -1006,10 +1007,13 @@ const ConfigurationPanel = ({
 // Generate concept-based mock images with correct aspect ratio
       const dimensions = getImageDimensions(aspectRatio);
       const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
-      const conceptImageIds = getConceptImageIds(currentPrompt);
-      const mockImages = conceptImageIds.map(id => 
-        `https://picsum.photos/id/${id}/${dimensions.width}/${dimensions.height}`
-      );
+      const conceptImageId = getConceptImageId(currentPrompt);
+      const mockImages = [
+        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}`,
+        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}?grayscale`,
+        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}?blur=1`,
+        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}?random=1`
+      ];
 
       // Notify parent component about generated images
       const config = {
