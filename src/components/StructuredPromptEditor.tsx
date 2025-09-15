@@ -100,26 +100,34 @@ const StructuredPromptEditor = ({
 
   // Update view state based on generation and data
   useEffect(() => {
-    if (forceStructuredView || hasData()) {
-      // Only trigger cascade if we're not already in structured view or if generation just finished
-      if (viewState !== 'structured' || (isGenerating && !isCascading)) {
-        setViewState('structured');
-        if (isGenerating && !isCascading) {
-          setIsCascading(true);
-          setShowExpanded(true);
-          setCascadeRowIndex(0);
-        }
-      }
-      // If we have data but no generation, show collapsed view
-      if (!isGenerating && !isCascading && hasData()) {
-        setShowExpanded(false);
-      }
-    } else {
-      // No data and not forcing structured view - show empty state
+    const has = hasData();
+
+    // If there's no data and we're not forcing the structured view, show empty state
+    if (!has && !forceStructuredView) {
       setViewState('empty');
       setIsCascading(false);
       setShowExpanded(false);
       setCascadeRowIndex(0);
+      return;
+    }
+
+    // We have data (or we're forcing structured view). Respect user's manual toggle:
+    // - Only auto-switch to structured when we're in the empty state
+    // - Never override when user selected the JSON source view
+    if (viewState === 'empty') {
+      setViewState('structured');
+    }
+
+    // Handle cascade animation only when in structured view
+    if (isGenerating && !isCascading && viewState === 'structured') {
+      setIsCascading(true);
+      setShowExpanded(true);
+      setCascadeRowIndex(0);
+    }
+
+    // If generation is done and we have data, collapse groups (structured view only)
+    if (!isGenerating && !isCascading && has && viewState === 'structured') {
+      setShowExpanded(false);
     }
   }, [isGenerating, value, hasData, forceStructuredView, viewState, isCascading]);
 
