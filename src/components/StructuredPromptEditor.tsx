@@ -888,7 +888,7 @@ const StructuredPromptEditor = ({
         <TooltipProvider>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-muted-foreground opacity-50 cursor-not-allowed" disabled>
-              <Network className="w-4 h-4" />
+              <Code className="w-4 h-4" />
             </Button>
             
             <Button variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-muted-foreground opacity-50 cursor-not-allowed" disabled>
