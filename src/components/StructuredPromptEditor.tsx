@@ -98,29 +98,30 @@ const StructuredPromptEditor = ({
     };
   };
 
-  // Update view state to always show structured view
+  // Update view state based on generation and data
   useEffect(() => {
-    // Always use structured view
-    setViewState('structured');
-    
-    // Only trigger cascade animation during generation or when new content arrives
-    if (isGenerating && !isCascading) {
-      setIsCascading(true);
-      setShowExpanded(true);
-      setCascadeRowIndex(0);
-    } else if (!isGenerating && isCascading) {
-      // Generation finished, keep current cascade state until animation completes
-    } else if (!isGenerating && !isCascading) {
-      // Not generating and not cascading - show collapsed view
+    if (forceStructuredView || hasData()) {
+      // Only trigger cascade if we're not already in structured view or if generation just finished
+      if (viewState !== 'structured' || (isGenerating && !isCascading)) {
+        setViewState('structured');
+        if (isGenerating && !isCascading) {
+          setIsCascading(true);
+          setShowExpanded(true);
+          setCascadeRowIndex(0);
+        }
+      }
+      // If we have data but no generation, show collapsed view
+      if (!isGenerating && !isCascading && hasData()) {
+        setShowExpanded(false);
+      }
+    } else {
+      // No data and not forcing structured view - show empty state
+      setViewState('empty');
+      setIsCascading(false);
       setShowExpanded(false);
+      setCascadeRowIndex(0);
     }
-    
-    // Ensure we have some content to display (real or mock)
-    if (!hasData() && !isGenerating) {
-      const mockContent = getMockContent();
-      setParsedJSON(mockContent);
-    }
-  }, [isGenerating, value, hasData, forceStructuredView]);
+  }, [isGenerating, value, hasData, forceStructuredView, viewState, isCascading]);
 
   // Remount collapsibles when expand state toggles to apply defaultOpen
   useEffect(() => {
