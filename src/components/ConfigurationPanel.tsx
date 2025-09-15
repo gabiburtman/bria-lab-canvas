@@ -456,7 +456,7 @@ const PromptComponent = ({
             style={{ minHeight: `${baseEditorHeight}px` }}
           />
           
-          {/* Upload Image, Upload Document, and Surprise Me Buttons - positioned inside textarea */}
+          {/* Upload Image and Surprise Me Buttons - positioned inside textarea */}
           <div className="absolute top-2 right-2 flex items-center gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -486,6 +486,15 @@ const PromptComponent = ({
               </TooltipContent>
             </Tooltip>
           </div>
+
+          {/* Upload Brief helper link - bottom right corner */}
+          <button
+            onClick={onUploadDocument}
+            className="absolute bottom-3 right-3 text-xs text-lab-text-muted hover:text-lab-primary transition-colors underline underline-offset-2"
+            disabled={isGenerating}
+          >
+            Upload brief
+          </button>
 
           {/* Custom clickable placeholder overlay */}
           {!value && (
