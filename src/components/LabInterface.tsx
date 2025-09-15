@@ -81,9 +81,7 @@ const LabInterface = () => {
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
                   <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-lab-text-primary">
-                      GAIA: Control-First Image Generation
-                    </DialogTitle>
+                    <DialogTitle className="text-xl font-bold text-lab-text-primary">GAIA: A New Language for Image Generation</DialogTitle>
                     <DialogDescription className="text-lab-text-secondary">
                       Reframing text-to-image from "pretty pictures" to professional control and automation.
                     </DialogDescription>
