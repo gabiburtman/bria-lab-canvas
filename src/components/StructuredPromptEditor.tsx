@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
@@ -67,6 +67,31 @@ const StructuredPromptEditor = ({
       return false;
     }
   }, [value]);
+
+  // Count words in JSON content
+  const wordCount = useMemo(() => {
+    if (!parsedJSON) return 0;
+    
+    const countWordsInJSON = (obj: any): number => {
+      let count = 0;
+      
+      const traverse = (value: any) => {
+        if (typeof value === 'string') {
+          const words = value.trim().split(/\s+/).filter(word => word.length > 0);
+          count += words.length;
+        } else if (Array.isArray(value)) {
+          value.forEach(item => traverse(item));
+        } else if (typeof value === 'object' && value !== null) {
+          Object.values(value).forEach(val => traverse(val));
+        }
+      };
+      
+      traverse(obj);
+      return count;
+    };
+    
+    return countWordsInJSON(parsedJSON);
+  }, [parsedJSON]);
 
   // Create mock content when no real data exists
   const getMockContent = () => {
@@ -1198,6 +1223,9 @@ const StructuredPromptEditor = ({
         
         <TooltipProvider>
           <div className="flex items-center gap-1">
+            <span className="text-xs text-muted-foreground px-2">
+              {wordCount} words
+            </span>
             
             <Tooltip>
               <TooltipTrigger asChild>
