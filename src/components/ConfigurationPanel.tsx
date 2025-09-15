@@ -702,7 +702,18 @@ const ConfigurationPanel = ({
   ];
 
   // Refinement suggestions for when in refinement mode
-  const refinementSuggestions = ["Add more dramatic lighting with stronger shadows", "Make the colors more vibrant and saturated", "Add atmospheric fog or mist for depth", "Include more detailed textures on surfaces", "Enhance the contrast between light and dark areas", "Add subtle motion blur to suggest movement", "Increase the depth of field for better focus", "Add warm golden hour lighting", "Include more intricate details in the foreground", "Make the composition more dynamic with diagonal lines", "Add reflections for more visual interest", "Enhance the mood with cooler or warmer tones", "Add subtle lens flare effects", "Include more environmental storytelling elements", "Make the scene more cinematic with wider framing"];
+  const refinementSuggestions = [
+    "Shift the scene to a dramatic, moonlit night.",
+    "Introduce a sense of tranquility and peace, with soft, diffused morning light.",
+    "Add a mysterious, dense fog to the environment.",
+    "Transform the visual style into a vibrant, impressionist oil painting.",
+    "Re-render the image as a vintage, high-contrast black and white photograph.",
+    "Change the composition to an extreme close-up, focusing on the main subject.",
+    "Reframe this as a cinematic wide shot, revealing more of the surrounding environment.",
+    "Inject a warm, autumnal color palette of reds, oranges, and browns.",
+    "Shift the entire color scheme to be cool and monochromatic.",
+    "Make it more futuristic and add subtle sci-fi elements."
+  ];
 
   // Handle translate prompt to structured prompt
   const handleTranslatePrompt = useCallback(() => {
