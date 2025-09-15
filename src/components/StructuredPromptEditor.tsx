@@ -944,10 +944,26 @@ const StructuredPromptEditor = ({
         allEntries.push(['General', generalData]);
       }
 
-      // Add other fields
-      Object.entries(otherData).forEach(([key, val]) => {
+      // Add other fields with custom ordering - objects last before text_render
+      const otherEntries = Object.entries(otherData);
+      const objectsEntry = otherEntries.find(([key]) => key === 'objects');
+      const textRenderEntry = otherEntries.find(([key]) => key === 'text_render');
+      const remainingEntries = otherEntries.filter(([key]) => key !== 'objects' && key !== 'text_render');
+      
+      // Add remaining entries first
+      remainingEntries.forEach(([key, val]) => {
         allEntries.push([key, val]);
       });
+      
+      // Add objects second to last
+      if (objectsEntry) {
+        allEntries.push(objectsEntry);
+      }
+      
+      // Add text_render last
+      if (textRenderEntry) {
+        allEntries.push(textRenderEntry);
+      }
       return <div className="space-y-1">
           {allEntries.map(([key, val], index, arr) => {
           // Apply cascade animation class
