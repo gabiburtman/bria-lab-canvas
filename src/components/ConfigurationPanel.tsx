@@ -1008,12 +1008,7 @@ const ConfigurationPanel = ({
       const dimensions = getImageDimensions(aspectRatio);
       const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
       const conceptImageId = getConceptImageId(currentPrompt);
-      const mockImages = [
-        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}`,
-        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}?grayscale`,
-        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}?blur=1`,
-        `https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}?random=1`
-      ];
+      const mockImages = Array(4).fill(`https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}`);
 
       // Notify parent component about generated images
       const config = {
