@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import StructuredPromptEditor from "./StructuredPromptEditor";
 import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Image } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AspectRatioIcon from "./AspectRatioIcon";
 const defaultJSON = {
   "short_description": "",
   "objects": [{
@@ -620,9 +621,10 @@ const PromptComponent = ({
                   <p>Aspect Ratio</p>
                 </TooltipContent>
               </Tooltip>
-              <PopoverContent className="w-32 bg-lab-surface border-lab-border shadow-lg" align="start">
+              <PopoverContent className="w-40 bg-lab-surface border-lab-border shadow-lg" align="start">
                 <div className="space-y-1">
-                  {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
+                  {aspectRatios.map(ratio => <button key={ratio.value} onClick={() => setAspectRatio(ratio.value)} className={cn("w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center gap-3", aspectRatio === ratio.value ? "bg-lab-primary text-lab-primary-foreground" : "hover:bg-lab-interactive-hover text-lab-text-secondary")}>
+                      <AspectRatioIcon ratio={ratio.value} />
                       {ratio.label}
                     </button>)}
                 </div>
