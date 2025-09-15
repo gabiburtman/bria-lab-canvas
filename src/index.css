@@ -89,6 +89,81 @@
     --ring: var(--lab-border-focus);
     --radius: var(--lab-radius);
   }
+
+  .light {
+    /* Bria Lab Light Mode Colors */
+    --lab-primary: 261 81% 71%; /* Keep same purple for primary actions */
+    --lab-primary-hover: 261 81% 65%; /* Darker purple for hover states */
+    --lab-primary-foreground: 0 0% 100%; /* White text on purple */
+    --lab-primary-glow: 261 81% 71%; /* Purple glow for focus states */
+    
+    /* Light Mode Background System */
+    --lab-background: 0 0% 100%; /* Pure white background */
+    --lab-surface: 220 14% 96%; /* Light gray for panels and cards */
+    --lab-surface-elevated: 0 0% 100%; /* White for elevated surfaces */
+    
+    /* Light Mode Text Hierarchy */
+    --lab-text-primary: 217 33% 17%; /* Dark gray for high readability */
+    --lab-text-secondary: 220 14% 46%; /* Medium gray for labels and secondary text */
+    --lab-text-muted: 220 14% 66%; /* Lighter gray for muted text */
+    
+    /* Light Mode Border System */
+    --lab-border: 220 14% 86%; /* Light gray borders */
+    --lab-border-focus: 261 81% 71%; /* Purple focus states */
+    --lab-border-hover: 220 14% 76%; /* Darker gray for hover states */
+    
+    /* Status Colors (Light Mode Adjusted) */
+    --lab-success: 142 76% 36%; /* Darker green for light backgrounds */
+    --lab-warning: 38 92% 50%; /* Darker orange for light backgrounds */
+    --lab-error: 0 84% 60%; /* Darker red for light backgrounds */
+    
+    /* Light Mode Interactive States */
+    --lab-interactive-hover: 220 14% 94%; /* Subtle light hover background */
+    --lab-active: 220 14% 91%; /* Slightly darker active state */
+    --lab-disabled: 220 14% 88%; /* Disabled background */
+    --lab-accent: 261 81% 71%; /* Purple accent for interactive elements */
+    
+    /* Light Mode Elevation */
+    --lab-glow-subtle: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --lab-glow-focus: 0 0 0 2px hsl(var(--lab-primary-glow) / 0.2);
+    --lab-glow-primary: 0 4px 12px hsl(var(--lab-primary) / 0.15);
+    
+    /* JSON Editor Light Theme */
+    --lab-code-bg: 220 14% 98%; /* Very light gray background */
+    --lab-code-text: 217 33% 20%; /* Dark text */
+    --lab-code-highlight: 261 81% 66%; /* Purple highlights */
+    --lab-code-line: 220 14% 94%; /* Line number background */
+    --lab-code-border: 220 14% 88%; /* Code editor border */
+    
+    /* Updated Field Indicators - Light Mode */
+    --lab-updated: 142 76% 36%; /* Darker green for updated fields */
+    --lab-updated-bg: 142 76% 36%; /* Updated background with opacity */
+    --lab-updated-border: 142 76% 46%; /* Green border for updated fields */
+    --lab-updated-glow: 142 76% 36%; /* Green glow for updated field animation */
+    --lab-updated-pulse: 142 86% 46%; /* Green for pulse animation */
+    
+    /* Apply Light Mode theme to shadcn variables */
+    --background: var(--lab-background);
+    --foreground: var(--lab-text-primary);
+    --card: var(--lab-surface);
+    --card-foreground: var(--lab-text-primary);
+    --popover: var(--lab-surface);
+    --popover-foreground: var(--lab-text-primary);
+    --primary: var(--lab-primary);
+    --primary-foreground: var(--lab-primary-foreground);
+    --secondary: var(--lab-interactive-hover);
+    --secondary-foreground: var(--lab-text-primary);
+    --muted: var(--lab-interactive-hover);
+    --muted-foreground: var(--lab-text-secondary);
+    --accent: var(--lab-active);
+    --accent-foreground: var(--lab-text-primary);
+    --destructive: var(--lab-error);
+    --destructive-foreground: var(--lab-text-primary);
+    --border: var(--lab-border);
+    --input: var(--lab-border);
+    --ring: var(--lab-border-focus);
+    --radius: var(--lab-radius);
+  }
 }
 
 @layer base {

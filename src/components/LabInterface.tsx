@@ -3,10 +3,11 @@ import ConfigurationPanel from "./ConfigurationPanel";
 import ResultsCanvas from "./ResultsCanvas";
 import HistoryPanel, { HistoryItem } from "./HistoryPanel";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ExternalLink, User, Settings, LogOut, FileText, HelpCircle } from "lucide-react";
+import { ExternalLink, User, Settings, LogOut, FileText, HelpCircle, UserCircle } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 const LabInterface = () => {
   const [images, setImages] = useState<string[]>([]);
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -226,12 +227,21 @@ const LabInterface = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
               <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
+                <UserCircle className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Account Settings</span>
               </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-lab-border" />
+              <div className="px-2 py-1">
+                <ThemeToggle />
+              </div>
+              <DropdownMenuSeparator className="bg-lab-border" />
               <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Logout</span>
+                <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
