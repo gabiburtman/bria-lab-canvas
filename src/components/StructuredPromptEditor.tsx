@@ -36,6 +36,8 @@ const StructuredPromptEditor = ({
   const [parsedJSON, setParsedJSON] = useState<any>(null);
   const [progressiveJSON, setProgressiveJSON] = useState<string>('');
   const [isWritingJSON, setIsWritingJSON] = useState(false);
+  const [isCascading, setIsCascading] = useState(false);
+  const [cascadeRowIndex, setCascadeRowIndex] = useState(0);
   const progressiveContainerRef = useRef<HTMLDivElement>(null);
 
   // Parse JSON and determine if we have data
@@ -71,12 +73,43 @@ const StructuredPromptEditor = ({
   useEffect(() => {
     if (forceStructuredView && viewState === 'empty') {
       setViewState('structured');
+      // Trigger cascade animation
+      setIsCascading(true);
+      setCascadeRowIndex(0);
     } else if (hasData() && viewState === 'empty') {
       setViewState('structured');
+      // Trigger cascade animation
+      setIsCascading(true);
+      setCascadeRowIndex(0);
     } else if (!hasData() && !forceStructuredView && viewState !== 'empty') {
       setViewState('empty');
+      setIsCascading(false);
+      setCascadeRowIndex(0);
     }
   }, [value, viewState, hasData, forceStructuredView]);
+
+  // Cascade reveal animation effect
+  useEffect(() => {
+    if (isCascading && viewState === 'structured') {
+      const totalRows = parsedJSON ? Object.keys(parsedJSON).length : 0;
+      if (totalRows === 0) {
+        setIsCascading(false);
+        return;
+      }
+
+      const interval = setInterval(() => {
+        setCascadeRowIndex((prev) => {
+          if (prev >= totalRows - 1) {
+            setIsCascading(false);
+            return prev;
+          }
+          return prev + 1;
+        });
+      }, 50); // 50ms between each row reveal
+
+      return () => clearInterval(interval);
+    }
+  }, [isCascading, viewState, parsedJSON]);
 
   // Progressive JSON writing effect - AI-style generation
   useEffect(() => {
@@ -514,7 +547,7 @@ const StructuredPromptEditor = ({
   const hasUpdatedGeneralFields = (generalData: Record<string, any>): boolean => {
     return Object.keys(generalData).some(key => updatedFields.has(key));
   };
-  const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false) => {
+  const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false, rowIndex: number = 0) => {
     const fieldPath = path ? `${path}.${key}` : key;
     const isLocked = isFieldLocked(fieldPath);
     const isUpdated = updatedFields.has(fieldPath);
@@ -523,11 +556,23 @@ const StructuredPromptEditor = ({
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
 
+    // Determine cascade animation class
+    const getCascadeClass = () => {
+      if (!isCascading) return '';
+      if (rowIndex <= cascadeRowIndex) {
+        return 'cascade-reveal';
+      }
+      return 'cascade-reveal-hidden';
+    };
+
+    const cascadeClass = getCascadeClass();
+    const animationDelay = isCascading && rowIndex <= cascadeRowIndex ? `${rowIndex * 50}ms` : '0ms';
+
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
       return <Collapsible key={fieldPath} defaultOpen={false}>
-          <div className="relative">
+          <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
             {renderTreeLines(level, isLast, true)}
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
@@ -577,11 +622,11 @@ const StructuredPromptEditor = ({
             
             <CollapsibleContent>
               <div>
-                {Object.entries(val).map(([subKey, subVal], index, arr) => <div key={`${fieldPath}.${subKey}`} className="relative">
-                    {renderFieldValue(subKey, subVal, fieldPath, level + 1, index === arr.length - 1)}
-                    
-                    {/* Delete Property Button - Disabled */}
-                    {false && Object.keys(val).length > 1 && <TooltipProvider>
+                 {Object.entries(val).map(([subKey, subVal], index, arr) => <div key={`${fieldPath}.${subKey}`} className="relative">
+                     {renderFieldValue(subKey, subVal, fieldPath, level + 1, index === arr.length - 1, rowIndex)}
+                     
+                     {/* Delete Property Button - Disabled */}
+                     {false && Object.keys(val).length > 1 && <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button variant="ghost" size="sm" className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteObjectProperty(`${fieldPath}.${subKey}`)} disabled={parentLocked || isGenerating}>
@@ -710,14 +755,14 @@ const StructuredPromptEditor = ({
                           
                           <CollapsibleContent>
                             <div>
-                              {Object.entries(item).map(([subKey, subVal], subIndex, subArr) => renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 2, subIndex === subArr.length - 1))}
+                              {Object.entries(item).map(([subKey, subVal], subIndex, subArr) => renderFieldValue(subKey, subVal, `${fieldPath}[${index}]`, level + 2, subIndex === subArr.length - 1, rowIndex))}
                             </div>
                           </CollapsibleContent>
                         </div>
                       </Collapsible>;
                 }
                 return <div key={`${fieldPath}[${index}]`} className="relative group/item">
-                      {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem)}
+                      {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem, rowIndex)}
                        
                        {/* Delete Array Item Button for primitives - Only for objects and text_render */}
                        {!readOnly && (key === 'objects' || key === 'text_render') && <TooltipProvider>
@@ -741,7 +786,7 @@ const StructuredPromptEditor = ({
     }
 
     // Handle primitive values
-    return <div key={fieldPath} className="relative">
+    return <div key={fieldPath} className={cn("relative", cascadeClass)} style={{ animationDelay }}>
         {renderTreeLines(level, isLast, false)}
         <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", isUpdated && "field-updated-primitive")} style={{
         paddingLeft: `${level * 12 + 4}px`
@@ -1035,14 +1080,14 @@ const StructuredPromptEditor = ({
                     
                     <CollapsibleContent>
                       <div>
-                        {Object.entries(val).map(([fieldKey, fieldVal], fieldIndex, fieldArr) => renderFieldValue(fieldKey, fieldVal, '', 1, fieldIndex === fieldArr.length - 1))}
+                        {Object.entries(val).map(([fieldKey, fieldVal], fieldIndex, fieldArr) => renderFieldValue(fieldKey, fieldVal, '', 1, fieldIndex === fieldArr.length - 1, fieldIndex))}
                       </div>
                     </CollapsibleContent>
                   </div>
                 </Collapsible>;
           } else {
             // Render other fields normally
-            return renderFieldValue(key, val, '', 0, index === arr.length - 1);
+            return renderFieldValue(key, val, '', 0, index === arr.length - 1, index);
           }
         })}
         </div>;
