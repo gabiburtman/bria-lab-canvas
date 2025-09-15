@@ -881,7 +881,21 @@ const ConfigurationPanel = ({
       setPreservedFields(new Set());
 
       // Populate structured prompt with varied data based on the prompt
-      setJsonData(JSON.stringify(generateVariedStructuredPrompt(), null, 2));
+      const generatedJSON = generateVariedStructuredPrompt();
+      const generatedJSONString = JSON.stringify(generatedJSON, null, 2);
+      setJsonData(generatedJSONString);
+
+      // After first generation, switch to refine mode
+      if (wasFirstGeneration) {
+        // Capture the initial input
+        const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
+        if (currentPrompt.trim()) {
+          setInitialInput({ type: 'text', data: currentPrompt });
+          setOriginalPrompt(currentPrompt);
+        }
+        // Switch to refine mode
+        setIsRefinementMode(true);
+      }
 
       // Mark some fields as updated, but exclude locked fields
       const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
@@ -905,7 +919,7 @@ const ConfigurationPanel = ({
         aspectRatio,
         steps: steps[0],
         seed: effectiveSeed, // Use the effective seed (either user-provided or generated)
-        jsonConfig: jsonData,
+        jsonConfig: generatedJSONString, // Use the actual generated JSON string
         prompt: isRefinementMode ? refinementPrompt : mainPrompt
       };
       if (onImagesGenerated) {
