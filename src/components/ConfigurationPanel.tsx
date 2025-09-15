@@ -367,6 +367,8 @@ const PromptComponent = ({
   setGuidanceScale,
   seed,
   setSeed,
+  resultsCount,
+  setResultsCount,
   handleGenerate,
   hasGenerated,
   onUploadDocument,
@@ -392,6 +394,8 @@ const PromptComponent = ({
   setGuidanceScale: (guidanceScale: number[]) => void;
   seed: string;
   setSeed: (seed: string) => void;
+  resultsCount: number;
+  setResultsCount: (count: number) => void;
   handleGenerate: () => void;
   hasGenerated: boolean;
   isGenerating: boolean;
@@ -692,6 +696,46 @@ const PromptComponent = ({
                 </div>
               </PopoverContent>
             </Popover>
+
+            {/* Results Count Button */}
+            <Popover>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
+                      <Target className="w-3 h-3" />
+                      {resultsCount} Result{resultsCount > 1 ? 's' : ''}
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Number of images to generate</p>
+                </TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-48 bg-lab-surface border-lab-border shadow-lg">
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-lab-text-primary mb-2">Results Count</div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={resultsCount === 1 ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setResultsCount(1)}
+                      className={resultsCount === 1 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}
+                    >
+                      1 Result
+                    </Button>
+                    <Button
+                      variant={resultsCount === 4 ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setResultsCount(4)}
+                      className={resultsCount === 4 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}
+                    >
+                      4 Results
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="flex items-center gap-1">
@@ -736,6 +780,7 @@ const ConfigurationPanel = ({
   const [steps, setSteps] = useState([initialConfig?.steps || 30]);
   const [guidanceScale, setGuidanceScale] = useState([initialConfig?.guidanceScale || 5]);
   const [seed, setSeed] = useState(initialConfig?.seed || "");
+  const [resultsCount, setResultsCount] = useState(initialConfig?.resultsCount || 4);
   const [jsonData, setJsonData] = useState(initialConfig?.jsonConfig || JSON.stringify(defaultJSON, null, 2));
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
@@ -753,6 +798,7 @@ const ConfigurationPanel = ({
       setSteps([initialConfig.steps || 30]);
       setGuidanceScale([initialConfig.guidanceScale || 5]);
       setSeed(initialConfig.seed || "");
+      setResultsCount(initialConfig.resultsCount || 4);
       setJsonData(initialConfig.jsonConfig || JSON.stringify(defaultJSON, null, 2));
       
       // Handle refine mode activation from history
@@ -780,6 +826,7 @@ const ConfigurationPanel = ({
       setAspectRatio(initialConfig.aspectRatio || "1:1");
       setSteps([initialConfig.steps || 30]);
       setSeed(initialConfig.seed || "");
+      setResultsCount(initialConfig.resultsCount || 4);
       if (initialConfig.jsonConfig) {
         setJsonData(initialConfig.jsonConfig);
       }
@@ -1008,7 +1055,7 @@ const ConfigurationPanel = ({
       const dimensions = getImageDimensions(aspectRatio);
       const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
       const conceptImageId = getConceptImageId(currentPrompt);
-      const mockImages = Array(4).fill(`https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}`);
+      const mockImages = Array(resultsCount).fill(`https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}`);
 
       // Notify parent component about generated images
       const config = {
@@ -1017,6 +1064,7 @@ const ConfigurationPanel = ({
         aspectRatio,
         steps: steps[0],
         seed: effectiveSeed, // Use the effective seed (either user-provided or generated)
+        resultsCount,
         jsonConfig: generatedJSONString, // Use the actual generated JSON string
         prompt: isRefinementMode ? refinementPrompt : mainPrompt
       };
@@ -1037,6 +1085,7 @@ const ConfigurationPanel = ({
     setAspectRatio("1:1");
     setSteps([30]);
     setSeed("");
+    setResultsCount(4);
     setJsonData(JSON.stringify(defaultJSON, null, 2));
     setLockedFields(new Set());
     setUpdatedFields(new Set());
@@ -1217,13 +1266,15 @@ const ConfigurationPanel = ({
             aspectRatio={aspectRatio} 
             aspectRatios={aspectRatios} 
             setAspectRatio={setAspectRatio} 
-            steps={steps} 
-            setSteps={setSteps} 
-            guidanceScale={guidanceScale}
-            setGuidanceScale={setGuidanceScale}
-            seed={seed}
-            setSeed={setSeed} 
-            handleGenerate={handleGenerate} 
+          steps={steps}
+          setSteps={setSteps}
+          guidanceScale={guidanceScale}
+          setGuidanceScale={setGuidanceScale}
+          seed={seed}
+          setSeed={setSeed}
+          resultsCount={resultsCount}
+          setResultsCount={setResultsCount}
+          handleGenerate={handleGenerate}
             hasGenerated={hasGenerated} 
             isGenerating={isGenerating} 
             onSurpriseMe={handleSurpriseMe} 

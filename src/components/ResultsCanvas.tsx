@@ -191,12 +191,21 @@ const ResultsCanvas = ({
       <div className="mb-4 flex-shrink-0">
         
       </div>
-      <div className="grid grid-cols-2 gap-4 flex-1">
-        {Array.from({
-        length: 4
-      }).map((_, index) => <div key={index} className="flex flex-col">
-            <ImageCard src={images[index]} index={index} />
-          </div>)}
+      <div className={cn(
+        "flex-1",
+        images.length === 1 ? "flex items-center justify-center" : "grid grid-cols-2 gap-4"
+      )}>
+        {images.length === 1 ? (
+          <div className="max-w-lg w-full">
+            <ImageCard src={images[0]} index={0} />
+          </div>
+        ) : (
+          Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="flex flex-col">
+              <ImageCard src={images[index]} index={index} />
+            </div>
+          ))
+        )}
       </div>
     </div>;
 };
