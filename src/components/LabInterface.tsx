@@ -139,7 +139,7 @@ const LabInterface = () => {
               </Dialog>
             </div>
             <p className="text-sm text-lab-text-secondary">
-              Interactive lab for the first open-source text-to-image model, native to structured prompts. | Also available via API & MCP Server
+              Interactive lab for the first open-source text-to-image model, native to structured prompts | Also available via API & MCP Server
             </p>
           </div>
         </div>
