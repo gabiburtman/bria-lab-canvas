@@ -441,7 +441,7 @@ const PromptComponent = ({
       ) : (
         <>
           <Textarea 
-            placeholder={placeholder}
+            placeholder=""
             value={value}
             onChange={e => onChange(e.target.value)}
             onKeyDown={e => {
@@ -468,17 +468,6 @@ const PromptComponent = ({
                 <p>Upload Image</p>
               </TooltipContent>
             </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
-                  <FileText className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Brief</p>
-              </TooltipContent>
-            </Tooltip>
             
             <Tooltip>
               <TooltipTrigger asChild>
@@ -497,6 +486,23 @@ const PromptComponent = ({
               </TooltipContent>
             </Tooltip>
           </div>
+
+          {/* Custom clickable placeholder overlay */}
+          {!value && (
+            <div className="absolute top-4 left-4 pointer-events-none">
+              <p className="text-lab-text-muted text-sm">
+                What's your objective? Describe it here, or start with an image or{" "}
+                <button 
+                  onClick={onUploadDocument}
+                  className="text-lab-primary hover:text-lab-primary/80 underline underline-offset-2 transition-colors pointer-events-auto"
+                  disabled={isGenerating}
+                >
+                  a brief
+                </button>
+                .
+              </p>
+            </div>
+          )}
         </>
       )}
       
@@ -1040,7 +1046,7 @@ const ConfigurationPanel = ({
           <PromptComponent
             value={hasGenerated ? refinementPrompt : mainPrompt} 
             onChange={hasGenerated ? setRefinementPrompt : setMainPrompt} 
-            placeholder={hasGenerated ? "Refine with new instructions..." : "What's your objective? Describe it here, or start with an image or a brief."} 
+            placeholder={hasGenerated ? "Refine with new instructions..." : ""} 
             aspectRatio={aspectRatio} 
             aspectRatios={aspectRatios} 
             setAspectRatio={setAspectRatio} 
@@ -1052,7 +1058,7 @@ const ConfigurationPanel = ({
             setSeed={setSeed} 
             handleGenerate={handleGenerate} 
             hasGenerated={hasGenerated} 
-            isGenerating={isGenerating} 
+            isGenerating={isGenerating}
             onSurpriseMe={handleSurpriseMe} 
             onTranslatePrompt={handleTranslatePrompt} 
             onUploadImage={handleUploadImage}
