@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, LockOpen, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
+import { Copy, Upload, FileText, Lock, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 interface StructuredPromptEditorProps {
   value: string;
@@ -589,7 +589,6 @@ const StructuredPromptEditor = ({
 
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-      const parentLocked = isParentPathLocked(fieldPath);
       return <Collapsible key={`${fieldPath}-${expandVersion}`} defaultOpen={showExpanded}>
           <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
             {renderTreeLines(level, isLast, true)}
@@ -598,28 +597,20 @@ const StructuredPromptEditor = ({
           }}>
               {/* Show lock icon for groups with no updated children */}
               {shouldShowGroupLock && (
-                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                  <Lock className="w-3 h-3 text-muted-foreground/60" />
-                </div>
-              )}
-              
-              {/* Parent Lock Button - only show if not using group lock display */}
-              {!readOnly && !shouldShowGroupLock && <TooltipProvider>
+                <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", parentLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
-                    console.log('Lock button clicked for object:', fieldPath, 'current lock state:', parentLocked);
-                    handleParentLock(fieldPath, val, !parentLocked);
-                  }}>
-                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                      </Button>
+                      <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                        <Lock className="w-3 h-3 text-muted-foreground/40" />
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{parentLocked ? 'Unlock object and all properties' : 'Lock object and all properties'}</p>
+                      <p>Preserved during refinement</p>
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>}
-              {(readOnly || shouldShowGroupLock) && <div className="w-6 h-6 flex-shrink-0" />}
+                </TooltipProvider>
+              )}
+              {!shouldShowGroupLock && <div className="w-6 h-6 flex-shrink-0" />}
 
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -649,7 +640,7 @@ const StructuredPromptEditor = ({
               {false && <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0" onClick={() => addObjectProperty(fieldPath)} disabled={parentLocked || isGenerating}>
+                      <Button variant="ghost" size="sm" className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0" onClick={() => addObjectProperty(fieldPath)} disabled={isGenerating}>
                         <Plus className="w-3 h-3" />
                       </Button>
                     </TooltipTrigger>
@@ -665,19 +656,19 @@ const StructuredPromptEditor = ({
                  {Object.entries(val).map(([subKey, subVal], index, arr) => <div key={`${fieldPath}.${subKey}`} className="relative">
                      {renderFieldValue(subKey, subVal, fieldPath, level + 1, index === arr.length - 1, rowIndex)}
                      
-                     {/* Delete Property Button - Disabled */}
-                     {false && Object.keys(val).length > 1 && <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="ghost" size="sm" className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteObjectProperty(`${fieldPath}.${subKey}`)} disabled={parentLocked || isGenerating}>
-                              <Minus className="w-3 h-3" />
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Delete property</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>}
+                      {/* Delete Property Button - Disabled */}
+                      {false && Object.keys(val).length > 1 && <TooltipProvider>
+                         <Tooltip>
+                           <TooltipTrigger asChild>
+                             <Button variant="ghost" size="sm" className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteObjectProperty(`${fieldPath}.${subKey}`)} disabled={isGenerating}>
+                               <Minus className="w-3 h-3" />
+                             </Button>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                             <p>Delete property</p>
+                           </TooltipContent>
+                         </Tooltip>
+                       </TooltipProvider>}
                   </div>)}
               </div>
             </CollapsibleContent>
@@ -687,7 +678,6 @@ const StructuredPromptEditor = ({
 
     // Handle arrays
     if (Array.isArray(val)) {
-      const parentLocked = isParentPathLocked(fieldPath);
       return <Collapsible key={`${fieldPath}-${expandVersion}`} defaultOpen={showExpanded}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
@@ -696,27 +686,20 @@ const StructuredPromptEditor = ({
           }}>
               {/* Show lock icon for groups with no updated children */}
               {shouldShowGroupLock && (
-                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                  <Lock className="w-3 h-3 text-muted-foreground/60" />
-                </div>
-              )}
-              
-              {/* Parent Lock Button - only show if not using group lock display */}
-              {!readOnly && !shouldShowGroupLock && <TooltipProvider>
+                <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", parentLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
-                    handleParentLock(fieldPath, val, !parentLocked);
-                  }}>
-                        {parentLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                      </Button>
+                      <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                        <Lock className="w-3 h-3 text-muted-foreground/40" />
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>{parentLocked ? 'Unlock array and all items' : 'Lock array and all items'}</p>
+                      <p>Preserved during refinement</p>
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>}
-              {(readOnly || shouldShowGroupLock) && <div className="w-6 h-6 flex-shrink-0" />}
+                </TooltipProvider>
+              )}
+              {!shouldShowGroupLock && <div className="w-6 h-6 flex-shrink-0" />}
 
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -746,7 +729,7 @@ const StructuredPromptEditor = ({
               {!readOnly && (key === 'objects' || key === 'text_render') && <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button variant="ghost" size="sm" className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0" onClick={() => addArrayItem(fieldPath)} disabled={parentLocked || isGenerating}>
+                      <Button variant="ghost" size="sm" className="w-6 h-6 rounded p-0 text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100 transition-all hover:bg-muted flex-shrink-0" onClick={() => addArrayItem(fieldPath)} disabled={isGenerating}>
                         <Plus className="w-3 h-3" />
                       </Button>
                     </TooltipTrigger>
@@ -768,24 +751,22 @@ const StructuredPromptEditor = ({
                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
                         paddingLeft: `${(level + 1) * 12 + 4}px`
                       }}>
-                             {/* Individual Item Lock Button */}
-                             {!readOnly && <TooltipProvider>
+                             {/* Show lock icon for array items with no updated children */}
+                             {shouldShowGroupLock && (
+                               <TooltipProvider>
                                  <Tooltip>
                                    <TooltipTrigger asChild>
-                                     <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", isFieldLocked(`${fieldPath}[${index}]`) ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
-                                const itemPath = `${fieldPath}[${index}]`;
-                                const itemLocked = isFieldLocked(itemPath);
-                                handleParentLock(itemPath, item, !itemLocked);
-                              }}>
-                                       {isFieldLocked(`${fieldPath}[${index}]`) ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                                     </Button>
+                                     <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                                       <Lock className="w-3 h-3 text-muted-foreground/40" />
+                                     </div>
                                    </TooltipTrigger>
                                    <TooltipContent>
-                                     <p>{isFieldLocked(`${fieldPath}[${index}]`) ? `Unlock ${key === 'objects' ? 'object' : 'text element'} and all properties` : `Lock ${key === 'objects' ? 'object' : 'text element'} and all properties`}</p>
+                                     <p>Preserved during refinement</p>
                                    </TooltipContent>
                                  </Tooltip>
-                               </TooltipProvider>}
-                             {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
+                               </TooltipProvider>
+                             )}
+                             {!shouldShowGroupLock && <div className="w-6 h-6 flex-shrink-0" />}
 
                             <CollapsibleTrigger asChild>
                               <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -817,7 +798,7 @@ const StructuredPromptEditor = ({
                              {!readOnly && (key === 'objects' || key === 'text_render') && <TooltipProvider>
                                  <Tooltip>
                                    <TooltipTrigger asChild>
-                                     <Button variant="ghost" size="sm" className="w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteArrayItem(fieldPath, index)} disabled={parentLocked || isGenerating}>
+                                     <Button variant="ghost" size="sm" className="w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-60 group-hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteArrayItem(fieldPath, index)} disabled={isGenerating}>
                                        <Minus className="w-3 h-3" />
                                      </Button>
                                    </TooltipTrigger>
@@ -839,19 +820,19 @@ const StructuredPromptEditor = ({
                 return <div key={`${fieldPath}[${index}]`} className="relative group/item">
                       {renderFieldValue(`[${index}]`, item, fieldPath, level + 1, isLastItem, rowIndex)}
                        
-                       {/* Delete Array Item Button for primitives - Only for objects and text_render */}
-                       {!readOnly && (key === 'objects' || key === 'text_render') && <TooltipProvider>
-                           <Tooltip>
-                             <TooltipTrigger asChild>
-                               <Button variant="ghost" size="sm" className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteArrayItem(fieldPath, index)} disabled={parentLocked || isGenerating}>
-                                 <Minus className="w-3 h-3" />
-                               </Button>
-                             </TooltipTrigger>
-                             <TooltipContent>
-                               <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
-                             </TooltipContent>
-                           </Tooltip>
-                         </TooltipProvider>}
+                        {/* Delete Array Item Button for primitives - Only for objects and text_render */}
+                        {!readOnly && (key === 'objects' || key === 'text_render') && <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button variant="ghost" size="sm" className="absolute right-2 top-1 w-5 h-5 rounded p-0 text-muted-foreground hover:text-red-500 opacity-0 group-hover/item:opacity-60 hover:opacity-100 transition-all hover:bg-red-50 flex-shrink-0" onClick={() => deleteArrayItem(fieldPath, index)} disabled={isGenerating}>
+                                  <Minus className="w-3 h-3" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Delete {key === 'objects' ? 'object' : 'text element'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>}
                     </div>;
               })}
               </div>
@@ -873,27 +854,22 @@ const StructuredPromptEditor = ({
             )}
           </div>
 
-          {/* Show lock icon for unchanged parameters, hide regular lock controls for parameters */}
+          {/* Show lock icon for unchanged parameters */}
           {shouldShowParameterLock && (
-            <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-              <Lock className="w-3 h-3 text-muted-foreground/60" />
-            </div>
-          )}
-          
-          {/* Regular Lock Icon Button - only show if not using parameter lock display */}
-          {!readOnly && !shouldShowParameterLock && <TooltipProvider>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", isLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => onFieldLock(fieldPath, !isLocked)}>
-                    {isLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                  </Button>
+                  <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                    <Lock className="w-3 h-3 text-muted-foreground/40" />
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{isLocked ? 'Unlock field' : 'Lock field'}</p>
+                  <p>Preserved during refinement</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>}
-          {(readOnly || shouldShowParameterLock) && <div className="w-6 h-6 flex-shrink-0" />}
+            </TooltipProvider>
+          )}
+          {!shouldShowParameterLock && <div className="w-6 h-6 flex-shrink-0" />}
 
           {/* Field Name */}
           <span className="text-foreground font-medium min-w-0 flex-shrink-0">
@@ -1058,29 +1034,22 @@ const StructuredPromptEditor = ({
                     <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "field-updated")} style={{
                   paddingLeft: '4px'
                 }}>
-                      {/* General Lock Button */}
-                      {!readOnly && <TooltipProvider>
+                      {/* Show lock icon for general group with no updated children */}
+                      {!isGeneralHighlighted && (
+                        <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", allGeneralLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
-                          const generalFieldsArray = Object.keys(val);
-                          if (onBatchFieldLock) {
-                            onBatchFieldLock(generalFieldsArray, !allGeneralLocked);
-                          } else {
-                            generalFieldsArray.forEach(fieldKey => {
-                              onFieldLock(fieldKey, !allGeneralLocked);
-                            });
-                          }
-                        }}>
-                                {allGeneralLocked ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
-                              </Button>
+                              <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                                <Lock className="w-3 h-3 text-muted-foreground/40" />
+                              </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{allGeneralLocked ? 'Unlock all general fields' : 'Lock all general fields'}</p>
+                              <p>Preserved during refinement</p>
                             </TooltipContent>
                           </Tooltip>
-                        </TooltipProvider>}
-                      {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
+                        </TooltipProvider>
+                      )}
+                      {isGeneralHighlighted && <div className="w-6 h-6 flex-shrink-0" />}
                       
                       <CollapsibleTrigger asChild>
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
