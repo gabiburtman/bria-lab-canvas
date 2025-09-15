@@ -290,23 +290,11 @@ const StructuredPromptEditor = ({
     return preservedFields.has(path);
   };
 
-  // Helper function to check if a group/object/array is preserved (no updated children)
-  const isGroupPreserved = (path: string, obj: any): boolean => {
-    // Check if this exact path is preserved (this is the main criteria)
-    if (preservedFields.has(path)) {
-      return true;
-    }
-    
-    // For empty path (like General group), check if all children are preserved
-    if (!path && typeof obj === 'object' && obj !== null) {
-      const childPaths = getChildPaths(obj, path);
-      const allPaths = childPaths;
-      
-      // If all paths are preserved, the group is preserved
-      return allPaths.length > 0 && allPaths.every(p => preservedFields.has(p));
-    }
-    
-    return false;
+  // Helper function to check if a group/object/array is preserved
+  const isGroupPreserved = (path: string): boolean => {
+    // A group is preserved if it's in the preservedFields set
+    // This means the group itself wasn't updated, regardless of children
+    return preservedFields.has(path);
   };
 
   // Helper function to get all child paths of a parent
@@ -623,7 +611,7 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  {isGroupPreserved(fieldPath, val) && (
+                  {isGroupPreserved(fieldPath) && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -713,7 +701,7 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
-                  {isGroupPreserved(fieldPath, val) && (
+                  {isGroupPreserved(fieldPath) && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -784,7 +772,7 @@ const StructuredPromptEditor = ({
                                 <span className="text-foreground font-medium">
                                   {key === 'objects' ? `Object [${index}]` : `Text Element [${index}]`}
                                 </span>
-                                {isGroupPreserved(`${fieldPath}[${index}]`, item) && (
+                                {isGroupPreserved(`${fieldPath}[${index}]`) && (
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -1070,7 +1058,7 @@ const StructuredPromptEditor = ({
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
                           <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                           <span className="text-foreground font-medium">general</span>
-                          {isGroupPreserved('', val) && (
+                          {isGroupPreserved('') && (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
