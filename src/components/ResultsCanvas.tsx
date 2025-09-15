@@ -74,7 +74,7 @@ const ImageCard = ({
   }: {
     inDialog?: boolean;
   }) => {
-    const shareMessage = "Check out this amazing image generated with Bria AI! 🎨✨ #AIArt #BriaAI #GenerativeAI";
+    const shareMessage = "Generated in the Bria GAIA Lab. #BRIAAI #GAIA #BRIA-GAIA";
     const imageUrl = encodeURIComponent(src || '');
     const encodedMessage = encodeURIComponent(shareMessage);
     const handleLinkedInShare = (e: React.MouseEvent) => {
