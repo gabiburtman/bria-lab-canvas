@@ -141,6 +141,9 @@ const LabInterface = () => {
                       <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources & Next Steps</h3>
                       <div className="flex flex-wrap gap-2 text-sm">
                         <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                          <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Model Card</a>
+                        </Button>
+                        <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                           <a href="#" target="_blank" rel="noopener noreferrer">📄 Read the Research Paper</a>
                         </Button>
                         <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
