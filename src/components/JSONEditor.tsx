@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Copy, Upload, FileText, Lock, Unlock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface JSONEditorProps {
   value: string;
@@ -27,6 +28,7 @@ const JSONEditor = ({
 }: JSONEditorProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [parsedJSON, setParsedJSON] = useState<any>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     try {
@@ -43,8 +45,19 @@ const JSONEditor = ({
   }, [value]);
 
   const copyToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(value);
-  }, [value]);
+    navigator.clipboard.writeText(value).then(() => {
+      toast({
+        title: "JSON copied to clipboard",
+        description: "The JSON configuration has been copied successfully.",
+      });
+    }).catch(() => {
+      toast({
+        title: "Copy failed",
+        description: "Failed to copy JSON to clipboard.",
+        variant: "destructive",
+      });
+    });
+  }, [value, toast]);
 
   const getLineNumbers = () => {
     const lines = value.split('\n');

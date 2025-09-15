@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Copy, Upload, FileText, Lock, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 interface StructuredPromptEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -41,6 +42,7 @@ const StructuredPromptEditor = ({
   const [cascadeRowIndex, setCascadeRowIndex] = useState(0);
   const [showExpanded, setShowExpanded] = useState(false);
   const [expandVersion, setExpandVersion] = useState(0);
+  const { toast } = useToast();
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
     try {
@@ -194,8 +196,19 @@ const StructuredPromptEditor = ({
     }
   }, [isCascading, viewState, parsedJSON]);
   const copyToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(value);
-  }, [value]);
+    navigator.clipboard.writeText(value).then(() => {
+      toast({
+        title: "JSON copied to clipboard",
+        description: "The JSON configuration has been copied successfully.",
+      });
+    }).catch(() => {
+      toast({
+        title: "Copy failed",
+        description: "Failed to copy JSON to clipboard.",
+        variant: "destructive",
+      });
+    });
+  }, [value, toast]);
   const renderTreeLines = (level: number, isLast: boolean, hasChildren: boolean) => {
     const lines = [];
     for (let i = 0; i < level; i++) {
