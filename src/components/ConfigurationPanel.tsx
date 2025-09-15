@@ -569,7 +569,7 @@ const PromptComponent = ({
               <PopoverContent className="w-64 bg-lab-surface border-lab-border shadow-lg">
                 <div>
                   <Slider value={guidanceScale} onValueChange={setGuidanceScale} max={10} min={0} step={0.1} className="w-full" />
-                  <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance: {guidanceScale[0]}</div>
+                  <div className="mt-2 text-center text-sm text-lab-text-secondary">Guidance scale: {guidanceScale[0]}</div>
                 </div>
               </PopoverContent>
             </Popover>
