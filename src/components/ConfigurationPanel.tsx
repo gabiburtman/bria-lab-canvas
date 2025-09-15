@@ -819,7 +819,8 @@ const ConfigurationPanel = ({
       setSeed(effectiveSeed); // Update the UI to show the generated seed
     }
 
-    if (!hasGenerated) {
+    const wasFirstGeneration = !hasGenerated;
+    if (wasFirstGeneration) {
       // Capture the initial input for the first generation
       if (mainPrompt.trim()) {
         setInitialInput({ type: 'text', data: mainPrompt });
@@ -829,7 +830,6 @@ const ConfigurationPanel = ({
       } else if (uploadedBriefName) {
         setInitialInput({ type: 'brief', data: uploadedBriefName });
       }
-      setHasGenerated(true);
     }
     setIsGenerating(true);
     setIsProcessingFile(true);
@@ -840,6 +840,11 @@ const ConfigurationPanel = ({
       setIsGenerating(false);
       setIsProcessingFile(false);
       onGeneratingChange?.(false);
+
+      // Set hasGenerated to true only after successful generation
+      if (wasFirstGeneration) {
+        setHasGenerated(true);
+      }
 
       // Clear previous highlights on new generation
       setUpdatedFields(new Set());
