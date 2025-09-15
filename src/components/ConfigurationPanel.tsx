@@ -491,7 +491,7 @@ const PromptComponent = ({
           {!value && (
             <div className="absolute top-4 left-4 right-20 pointer-events-none">
               <p className="text-lab-text-muted text-sm">
-                What's your objective? Describe it here, or start with an image or{" "}
+                What's your objective? Describe it here, upload an image or even upload{" "}
                 <button 
                   onClick={onUploadDocument}
                   className="text-lab-primary hover:text-lab-primary/80 underline underline-offset-2 transition-colors pointer-events-auto"
