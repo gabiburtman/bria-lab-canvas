@@ -88,8 +88,28 @@ const StructuredPromptEditor = ({
   // Cascade reveal animation effect
   useEffect(() => {
     if (isCascading && viewState === 'structured' && parsedJSON) {
-      const allKeys = ['general', ...Object.keys(parsedJSON)];
-      const totalRows = allKeys.length;
+      const generalFields = ['short_description', 'background_setting', 'style_medium', 'context', 'artistic_style'];
+      const generalData: Record<string, any> = {};
+      const otherData: Record<string, any> = {};
+
+      // Split fields into general and other categories
+      Object.entries(parsedJSON).forEach(([key, val]) => {
+        if (generalFields.includes(key)) {
+          generalData[key] = val;
+        } else {
+          otherData[key] = val;
+        }
+      });
+
+      const allEntries: Array<[string, any]> = [];
+      if (Object.keys(generalData).length > 0) {
+        allEntries.push(['General', generalData]);
+      }
+      Object.entries(otherData).forEach(([key, val]) => {
+        allEntries.push([key, val]);
+      });
+
+      const totalRows = allEntries.length;
       
       if (totalRows === 0) {
         setIsCascading(false);
@@ -862,7 +882,7 @@ const StructuredPromptEditor = ({
           {allEntries.map(([key, val], index, arr) => {
           // Apply cascade animation class
           const getCascadeClass = () => {
-            if (!isCascading) return '';
+            if (!isCascading) return ''; // No classes when not cascading
             if (index <= cascadeRowIndex) {
               return 'cascade-reveal';
             }
