@@ -100,12 +100,13 @@ const LabInterface = () => {
                     <div>
                       <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
                       <div className="bg-lab-surface-elevated rounded-lg p-4 text-sm">
-                        <div className="space-y-3 text-lab-text-secondary">
-                          <div><strong className="text-lab-text-primary">Long, Structured Captions:</strong> Trained on rich descriptions—often over 1,000 words—to capture every detail.</div>
-                          <div><strong className="text-lab-text-primary">Disentangled Representation:</strong> Allows for iterative refinement by targeting specific visual elements (mood, color, etc.) without starting over.</div>
-                          <div><strong className="text-lab-text-primary">LLM-Powered Bridge:</strong> An LLM translates human intent into the detailed, machine-readable prompts GAIA needs. This bridge is model-agnostic, allowing you to integrate any LLM that best fits your technical stack and product requirements.</div>
-                          <div><strong className="text-lab-text-primary">Responsible by Design:</strong> Built entirely on licensed data with full legal liability coverage, ensuring safe commercial use.</div>
-                        </div>
+                         <div className="space-y-3 text-lab-text-secondary">
+                           <div><strong className="text-lab-text-primary">Long, Structured Captions:</strong> Trained on rich descriptions—often over 1,000 words—to capture every detail.</div>
+                           <div><strong className="text-lab-text-primary">Human & Machine Writable:</strong> The structured prompt is not locked. The JSON can be edited directly by a user or by an AI agent for fine-grained control, enabling true dual-mode interaction.</div>
+                           <div><strong className="text-lab-text-primary">Disentangled Representation:</strong> Allows for iterative refinement by targeting specific visual elements (mood, color, etc.) without starting over.</div>
+                           <div><strong className="text-lab-text-primary">LLM-Powered Bridge:</strong> An LLM translates human intent into the detailed, machine-readable prompts GAIA needs. This bridge is model-agnostic, allowing you to integrate any LLM that best fits your technical stack and product requirements.</div>
+                           <div><strong className="text-lab-text-primary">Responsible by Design:</strong> Built entirely on licensed data with full legal liability coverage, ensuring safe commercial use.</div>
+                         </div>
                       </div>
                     </div>
 
