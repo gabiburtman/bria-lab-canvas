@@ -1090,7 +1090,7 @@ const ConfigurationPanel = ({
             <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
               Start Over
             </Button>
-            <Button onClick={handleGenerate} disabled={isGenerating || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
+            <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : hasGenerated ? "Regenerate" : "Generate"}
             </Button>
           </div>
