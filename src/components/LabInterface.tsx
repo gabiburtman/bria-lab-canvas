@@ -63,7 +63,7 @@ const LabInterface = () => {
     // This will be handled by the ConfigurationPanel component
     console.log('Upload document requested');
   }, []);
-    return <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
+  return <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
       {/* Floating Header Elements */}
       <div className="flex items-center justify-between px-4 py-3 flex-none">
         {/* Left Group - Logo & Title */}
@@ -75,10 +75,7 @@ const LabInterface = () => {
               Interactive lab for the first open-source text-to-image model, native to structured prompts. {" "}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button 
-                    variant="link" 
-                    className="h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200 underline-offset-4"
-                  >
+                  <Button variant="link" className="h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200 underline-offset-4">
                     Learn more
                   </Button>
                 </DialogTrigger>
@@ -131,7 +128,7 @@ const LabInterface = () => {
                           </a>
                         </Button>
                         <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                          <a href="#" target="_blank" rel="noopener noreferrer">💡 Explore Use Cases</a>
+                          
                         </Button>
                         <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
                           <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
