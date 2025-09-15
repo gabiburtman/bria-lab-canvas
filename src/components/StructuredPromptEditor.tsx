@@ -975,28 +975,11 @@ const StructuredPromptEditor = ({
                     <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "field-updated")} style={{
                   paddingLeft: '4px'
                 }}>
-                      {/* Show lock icon for general group with no updated children */}
-                      {!isGeneralHighlighted && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                                <Lock className="w-3 h-3 text-muted-foreground/40" />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Preserved during refinement</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      )}
-                      {isGeneralHighlighted && <div className="w-6 h-6 flex-shrink-0" />}
-                      
                       <CollapsibleTrigger asChild>
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
                           <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                           <span className="text-foreground font-medium">general</span>
-                          {isGroupPreserved('') && (
+                          {!isGeneralHighlighted && (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
