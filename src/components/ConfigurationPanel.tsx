@@ -66,6 +66,102 @@ const getRandomItem = <T,>(array: T[]): T => {
   return array[Math.floor(Math.random() * array.length)];
 };
 
+// Function to extract image concepts from prompt
+const extractImageConcepts = (prompt: string): string[] => {
+  const concepts = [
+    'nature', 'landscape', 'forest', 'mountain', 'ocean', 'beach', 'sunset', 'sunrise',
+    'city', 'urban', 'building', 'architecture', 'street', 'road', 'bridge',
+    'person', 'people', 'portrait', 'face', 'woman', 'man', 'child',
+    'animal', 'cat', 'dog', 'bird', 'horse', 'wildlife',
+    'flower', 'plant', 'tree', 'garden', 'park',
+    'food', 'coffee', 'restaurant', 'kitchen',
+    'technology', 'computer', 'phone', 'car', 'vehicle',
+    'art', 'painting', 'music', 'book', 'library',
+    'water', 'river', 'lake', 'rain', 'snow', 'cloud', 'sky',
+    'light', 'shadow', 'fire', 'candle'
+  ];
+  
+  const promptLower = prompt.toLowerCase();
+  const foundConcepts = concepts.filter(concept => 
+    promptLower.includes(concept) || 
+    promptLower.includes(concept + 's') || 
+    promptLower.includes(concept + 'ing')
+  );
+  
+  return foundConcepts.length > 0 ? foundConcepts : ['nature']; // Default to nature if no concepts found
+};
+
+// Function to get concept-based image IDs from picsum.photos
+const getConceptImageIds = (prompt: string): number[] => {
+  const concepts = extractImageConcepts(prompt);
+  
+  // Curated picsum.photos image IDs mapped to concepts
+  const conceptMap: Record<string, number[]> = {
+    nature: [1018, 1025, 1026, 1036],
+    landscape: [1018, 1025, 1026, 1036],
+    forest: [441, 453, 473, 478],
+    mountain: [490, 519, 582, 588],
+    ocean: [147, 167, 200, 212],
+    beach: [147, 167, 200, 212],
+    sunset: [734, 740, 757, 775],
+    sunrise: [734, 740, 757, 775],
+    city: [384, 416, 493, 500],
+    urban: [384, 416, 493, 500],
+    building: [250, 274, 292, 321],
+    architecture: [250, 274, 292, 321],
+    street: [324, 342, 378, 384],
+    road: [324, 342, 378, 384],
+    bridge: [342, 378, 416, 493],
+    person: [91, 177, 338, 415],
+    people: [91, 177, 338, 415],
+    portrait: [91, 177, 338, 415],
+    face: [91, 177, 338, 415],
+    woman: [177, 338, 415, 494],
+    man: [91, 177, 338, 415],
+    child: [177, 338, 415, 494],
+    animal: [237, 433, 659, 718],
+    cat: [237, 433, 659, 718],
+    dog: [237, 433, 659, 718],
+    bird: [433, 659, 718, 790],
+    horse: [237, 433, 659, 718],
+    wildlife: [237, 433, 659, 718],
+    flower: [158, 160, 169, 198],
+    plant: [158, 160, 169, 198],
+    tree: [441, 453, 473, 478],
+    garden: [158, 160, 169, 198],
+    park: [441, 453, 473, 478],
+    food: [312, 326, 431, 439],
+    coffee: [312, 326, 431, 439],
+    restaurant: [312, 326, 431, 439],
+    kitchen: [312, 326, 431, 439],
+    technology: [518, 574, 608, 684],
+    computer: [518, 574, 608, 684],
+    phone: [518, 574, 608, 684],
+    car: [111, 193, 244, 280],
+    vehicle: [111, 193, 244, 280],
+    art: [102, 123, 139, 152],
+    painting: [102, 123, 139, 152],
+    music: [102, 123, 139, 152],
+    book: [102, 123, 139, 152],
+    library: [102, 123, 139, 152],
+    water: [147, 167, 200, 212],
+    river: [147, 167, 200, 212],
+    lake: [147, 167, 200, 212],
+    rain: [734, 740, 757, 775],
+    snow: [734, 740, 757, 775],
+    cloud: [734, 740, 757, 775],
+    sky: [734, 740, 757, 775],
+    light: [734, 740, 757, 775],
+    shadow: [734, 740, 757, 775],
+    fire: [734, 740, 757, 775],
+    candle: [734, 740, 757, 775]
+  };
+  
+  // Get IDs for the first matching concept, or default nature concept
+  const primaryConcept = concepts[0];
+  return conceptMap[primaryConcept] || conceptMap.nature;
+};
+
 // Function to generate varied structured prompt data
 const generateVariedStructuredPrompt = () => {
   const descriptions = [
@@ -907,10 +1003,13 @@ const ConfigurationPanel = ({
       const preservedFields = new Set([...allFields].filter(field => !fieldsToUpdate.has(field) && !lockedFields.has(field)));
       setPreservedFields(preservedFields);
 
-      // Generate new mock images with correct aspect ratio
-      const timestamp = Date.now();
+// Generate concept-based mock images with correct aspect ratio
       const dimensions = getImageDimensions(aspectRatio);
-      const mockImages = [`https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 1}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 2}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 3}`, `https://picsum.photos/${dimensions.width}/${dimensions.height}?random=${timestamp + 4}`];
+      const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
+      const conceptImageIds = getConceptImageIds(currentPrompt);
+      const mockImages = conceptImageIds.map(id => 
+        `https://picsum.photos/id/${id}/${dimensions.width}/${dimensions.height}`
+      );
 
       // Notify parent component about generated images
       const config = {
