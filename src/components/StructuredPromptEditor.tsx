@@ -565,6 +565,13 @@ const StructuredPromptEditor = ({
     const isUpdated = updatedFields.has(fieldPath);
     const hasUpdatedChild = hasUpdatedChildren(fieldPath, val);
     const isHighlighted = isUpdated || hasUpdatedChild;
+    
+    // New logic per user requirements:
+    // For parameters: if changed -> highlight, if not changed -> show lock icon
+    // For groups: if any child changed -> highlight, if no children changed -> show lock icon
+    const shouldShowParameterLock = !isUpdated && !Array.isArray(val) && (typeof val !== 'object' || val === null);
+    const shouldShowGroupLock = !hasUpdatedChild && (Array.isArray(val) || (typeof val === 'object' && val !== null));
+    
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
 
@@ -589,8 +596,15 @@ const StructuredPromptEditor = ({
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
-              {/* Parent Lock Button */}
-              {!readOnly && <TooltipProvider>
+              {/* Show lock icon for groups with no updated children */}
+              {shouldShowGroupLock && (
+                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                  <Lock className="w-3 h-3 text-muted-foreground/60" />
+                </div>
+              )}
+              
+              {/* Parent Lock Button - only show if not using group lock display */}
+              {!readOnly && !shouldShowGroupLock && <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", parentLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
@@ -605,7 +619,7 @@ const StructuredPromptEditor = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>}
-              {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
+              {(readOnly || shouldShowGroupLock) && <div className="w-6 h-6 flex-shrink-0" />}
 
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -680,8 +694,15 @@ const StructuredPromptEditor = ({
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
             paddingLeft: `${level * 12 + 4}px`
           }}>
-              {/* Parent Lock Button */}
-              {!readOnly && <TooltipProvider>
+              {/* Show lock icon for groups with no updated children */}
+              {shouldShowGroupLock && (
+                <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                  <Lock className="w-3 h-3 text-muted-foreground/60" />
+                </div>
+              )}
+              
+              {/* Parent Lock Button - only show if not using group lock display */}
+              {!readOnly && !shouldShowGroupLock && <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", parentLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => {
@@ -695,7 +716,7 @@ const StructuredPromptEditor = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>}
-              {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
+              {(readOnly || shouldShowGroupLock) && <div className="w-6 h-6 flex-shrink-0" />}
 
               <CollapsibleTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
@@ -842,7 +863,7 @@ const StructuredPromptEditor = ({
     // Handle primitive values
     return <div key={fieldPath} className={cn("relative", cascadeClass)} style={{ animationDelay }}>
         {renderTreeLines(level, isLast, false)}
-        <div className={cn("flex items-center gap-2 py-1 px-2 group hover:bg-muted/30 transition-colors rounded font-mono text-sm", isUpdated && "field-updated-primitive")} style={{
+        <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
         paddingLeft: `${level * 12 + 4}px`
       }}>
           {/* Update Indicator - Always reserve space for alignment */}
@@ -851,9 +872,16 @@ const StructuredPromptEditor = ({
               <div className="updated-dot updated-dot-animate" title="Recently updated field" />
             )}
           </div>
+
+          {/* Show lock icon for unchanged parameters, hide regular lock controls for parameters */}
+          {shouldShowParameterLock && (
+            <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+              <Lock className="w-3 h-3 text-muted-foreground/60" />
+            </div>
+          )}
           
-          {/* Lock Icon Button */}
-          {!readOnly && <TooltipProvider>
+          {/* Regular Lock Icon Button - only show if not using parameter lock display */}
+          {!readOnly && !shouldShowParameterLock && <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="sm" className={cn("w-6 h-6 rounded p-0 transition-all hover:bg-muted flex-shrink-0", isLocked ? "text-amber-600 hover:text-amber-600/80" : "text-muted-foreground hover:text-foreground opacity-60 group-hover:opacity-100")} onClick={() => onFieldLock(fieldPath, !isLocked)}>
@@ -865,7 +893,7 @@ const StructuredPromptEditor = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>}
-          {readOnly && <div className="w-6 h-6 flex-shrink-0" />}
+          {(readOnly || shouldShowParameterLock) && <div className="w-6 h-6 flex-shrink-0" />}
 
           {/* Field Name */}
           <span className="text-foreground font-medium min-w-0 flex-shrink-0">
