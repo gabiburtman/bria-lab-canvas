@@ -63,7 +63,7 @@ const LabInterface = () => {
     // This will be handled by the ConfigurationPanel component
     console.log('Upload document requested');
   }, []);
-    return <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
+  return <div className="h-screen flex flex-col bg-lab-background font-roboto overflow-hidden">
       {/* Floating Header Elements */}
       <div className="flex items-center justify-between px-4 py-3 flex-none">
         {/* Left Group - Logo & Title */}
@@ -75,10 +75,7 @@ const LabInterface = () => {
               Interactive lab for the first open-source text-to-image model, native to structured prompts. {" "}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button 
-                    variant="link" 
-                    className="h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200 underline-offset-4"
-                  >
+                  <Button variant="link" className="h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200 underline-offset-4">
                     Learn more
                   </Button>
                 </DialogTrigger>
@@ -115,6 +112,25 @@ const LabInterface = () => {
                       </div>
                     </div>
 
+                    <div>
+                      <h3 className="text-base font-semibold mb-2 text-lab-primary">The GAIA Workflow</h3>
+                      <div className="bg-lab-surface-elevated rounded-lg p-4">
+                        <div className="flex items-center justify-center mb-3 text-sm">
+                          <div className="flex items-center gap-3 text-lab-text-primary">
+                            <span className="px-3 py-1 bg-lab-primary/20 rounded-full">Simple Instruction</span>
+                            <span>→</span>
+                            <span className="px-3 py-1 bg-lab-primary/20 rounded-full text-xs">LLM Bridge</span>
+                            <span>→</span>
+                            <span className="px-3 py-1 bg-lab-primary/20 rounded-full text-xs">Detailed Structured Prompt (JSON)</span>
+                            <span>→</span>
+                            <span className="px-3 py-1 bg-lab-primary/20 rounded-full text-xs">GAIA Model</span>
+                            <span>→</span>
+                            <span className="px-3 py-1 bg-lab-primary/20 rounded-full">High-Fidelity Image</span>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
 
                     <div>
                       <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources & Next Steps</h3>
