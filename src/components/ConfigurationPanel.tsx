@@ -558,7 +558,7 @@ const PromptComponent = ({
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
                       <Zap className="w-3 h-3" />
-                      CFG {guidanceScale[0]}
+                      {guidanceScale[0]}
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
