@@ -18,7 +18,8 @@ interface StructuredPromptEditorProps {
   forceStructuredView?: boolean;
   readOnly?: boolean;
 }
-type ViewState = 'empty' | 'structured' | 'source';
+type ViewState = 'empty' | 'loading' | 'structured' | 'source';
+
 const StructuredPromptEditor = ({
   value,
   onChange,
@@ -34,11 +35,8 @@ const StructuredPromptEditor = ({
 }: StructuredPromptEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
-  const [progressiveJSON, setProgressiveJSON] = useState<string>('');
-  const [isWritingJSON, setIsWritingJSON] = useState(false);
   const [isCascading, setIsCascading] = useState(false);
   const [cascadeRowIndex, setCascadeRowIndex] = useState(0);
-  const progressiveContainerRef = useRef<HTMLDivElement>(null);
 
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
@@ -69,29 +67,30 @@ const StructuredPromptEditor = ({
     }
   }, [value]);
 
-  // Update view state based on data and forceStructuredView
+  // Update view state based on generation and data
   useEffect(() => {
-    if (forceStructuredView && viewState === 'empty') {
+    if (isGenerating) {
+      setViewState('loading');
+      setIsCascading(false);
+      setCascadeRowIndex(0);
+    } else if (forceStructuredView || hasData()) {
+      // Switch to structured view and trigger cascade
       setViewState('structured');
-      // Trigger cascade animation
       setIsCascading(true);
       setCascadeRowIndex(0);
-    } else if (hasData() && viewState === 'empty') {
-      setViewState('structured');
-      // Trigger cascade animation
-      setIsCascading(true);
-      setCascadeRowIndex(0);
-    } else if (!hasData() && !forceStructuredView && viewState !== 'empty') {
+    } else {
       setViewState('empty');
       setIsCascading(false);
       setCascadeRowIndex(0);
     }
-  }, [value, viewState, hasData, forceStructuredView]);
+  }, [isGenerating, value, hasData, forceStructuredView]);
 
   // Cascade reveal animation effect
   useEffect(() => {
-    if (isCascading && viewState === 'structured') {
-      const totalRows = parsedJSON ? Object.keys(parsedJSON).length : 0;
+    if (isCascading && viewState === 'structured' && parsedJSON) {
+      const allKeys = ['general', ...Object.keys(parsedJSON)];
+      const totalRows = allKeys.length;
+      
       if (totalRows === 0) {
         setIsCascading(false);
         return;
@@ -105,94 +104,11 @@ const StructuredPromptEditor = ({
           }
           return prev + 1;
         });
-      }, 50); // 50ms between each row reveal
+      }, 80); // 80ms between each row reveal for smooth cascade
 
       return () => clearInterval(interval);
     }
   }, [isCascading, viewState, parsedJSON]);
-
-  // Progressive JSON writing effect - AI-style generation
-  useEffect(() => {
-    if (isGenerating && value) {
-      setIsWritingJSON(true);
-      setProgressiveJSON('');
-      
-      const targetJSON = value;
-      const lines = targetJSON.split('\n');
-      let currentLineIndex = 0;
-      let currentCharIndex = 0;
-      let accumulatedText = '';
-      let timeoutId: ReturnType<typeof setTimeout>;
-      
-      const writeContent = () => {
-        if (currentLineIndex >= lines.length) {
-          // Writing complete
-          setIsWritingJSON(false);
-          timeoutId = setTimeout(() => {
-            setViewState('structured');
-          }, 600);
-          return;
-        }
-        
-        const currentLine = lines[currentLineIndex];
-        const isStructuralLine = /^\s*[{}\[\],]\s*$/.test(currentLine) || currentLine.trim() === '';
-        
-        if (isStructuralLine || currentCharIndex >= currentLine.length) {
-          // Complete the current line and move to next
-          if (currentLineIndex < lines.length) {
-            accumulatedText += currentLine + (currentLineIndex < lines.length - 1 ? '\n' : '');
-            setProgressiveJSON(accumulatedText);
-            currentLineIndex++;
-            currentCharIndex = 0;
-            
-            // Pause between lines
-            const delay = isStructuralLine ? 120 : Math.random() * 200 + 120;
-            timeoutId = setTimeout(writeContent, delay);
-          }
-        } else {
-          // Write chunks for content lines
-          const remaining = currentLine.slice(currentCharIndex);
-          // Prefer writing a small word or token chunk for realism
-          const wordMatch = remaining.match(/^\w{1,6}/);
-          let take = 1;
-          if (wordMatch && Math.random() < 0.5) {
-            take = wordMatch[0].length;
-          } else {
-            // Otherwise take 1-3 chars
-            take = Math.min(remaining.length, 1 + Math.floor(Math.random() * 3));
-          }
-          const chunk = remaining.slice(0, take);
-          accumulatedText += chunk;
-          setProgressiveJSON(accumulatedText);
-          currentCharIndex += take;
-          
-          // Variable typing speed based on last char of chunk
-          const last = chunk[chunk.length - 1];
-          let delay = 35;
-          if (last === '"') delay = 110;
-          else if (last === ':') delay = 140;
-          else if (last === ',') delay = 130;
-          else if (/\s/.test(last)) delay = 20;
-          else if (/[a-zA-Z]/.test(last)) delay = 40 + Math.random() * 40;
-          
-          timeoutId = setTimeout(writeContent, delay);
-        }
-      };
-      
-      // Start writing after initial delay
-      timeoutId = setTimeout(writeContent, 500);
-      
-      return () => {
-        if (timeoutId) clearTimeout(timeoutId);
-      };
-    }
-  }, [isGenerating, value]);
-  // Auto-scroll while writing
-  useEffect(() => {
-    if (isWritingJSON && progressiveContainerRef.current) {
-      progressiveContainerRef.current.scrollTop = progressiveContainerRef.current.scrollHeight;
-    }
-  }, [progressiveJSON, isWritingJSON]);
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(value);
   }, [value]);
@@ -944,6 +860,18 @@ const StructuredPromptEditor = ({
       });
       return <div className="space-y-1">
           {allEntries.map(([key, val], index, arr) => {
+          // Apply cascade animation class
+          const getCascadeClass = () => {
+            if (!isCascading) return '';
+            if (index <= cascadeRowIndex) {
+              return 'cascade-reveal';
+            }
+            return 'cascade-reveal-hidden';
+          };
+          
+          const cascadeClass = getCascadeClass();
+          const animationDelay = isCascading && index <= cascadeRowIndex ? `${index * 80}ms` : '0ms';
+          
           if (key === 'General') {
             // Render General as a virtual object with same hierarchy as others
             const isLast = index === arr.length - 1;
@@ -952,7 +880,7 @@ const StructuredPromptEditor = ({
             const allGeneralLocked = generalFieldKeys.length > 0 && generalFieldKeys.every(fieldKey => isFieldLocked(fieldKey));
             const isGeneralHighlighted = hasUpdatedGeneralFields(val);
             return <Collapsible key="general" defaultOpen={false}>
-                  <div className="relative">
+                  <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
                     {renderTreeLines(0, isLast, true)}
                     <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "field-updated")} style={{
                   paddingLeft: '4px'
@@ -1000,8 +928,10 @@ const StructuredPromptEditor = ({
                   </div>
                 </Collapsible>;
           } else {
-            // Render other fields normally
-            return renderFieldValue(key, val, '', 0, index === arr.length - 1, index);
+            // Render other fields normally with cascade animation
+            return <div key={key} className={cn(cascadeClass)} style={{ animationDelay }}>
+              {renderFieldValue(key, val, '', 0, index === arr.length - 1, index)}
+            </div>;
           }
         })}
         </div>;
@@ -1012,89 +942,23 @@ const StructuredPromptEditor = ({
         </div>
       </div>;
   };
-  const renderProgressiveJSONView = () => {
-    const lines = progressiveJSON.split('\n');
-    const totalLines = value?.split('\n').length || 1;
-    const progress = Math.round((lines.length / totalLines) * 100);
-    
-    const highlightSyntax = (text: string) => {
-      return text
-        .replace(/"([^"]+)":/g, '<span class="text-blue-400 font-medium">"$1":</span>')
-        .replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
-        .replace(/:\s*(\d+(\.\d+)?)/g, ': <span class="text-orange-400">$1</span>')
-        .replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>')
-        .replace(/:\s*(null)/g, ': <span class="text-gray-400">$1</span>')
-        .replace(/([{}[\],])/g, '<span class="text-gray-300">$1</span>');
-    };
-
+  const renderLoadingView = () => {
     return (
-      <div className="absolute inset-0 bg-background flex flex-col z-20">
-        {/* AI Generation Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border bg-gradient-to-r from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20">
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-              <div className="absolute inset-0 w-3 h-3 bg-blue-500 rounded-full animate-ping opacity-20"></div>
-            </div>
-            <div>
-              <div className="text-sm font-medium text-foreground">GAIA is generating your structured prompt</div>
-              <div className="text-xs text-muted-foreground">Analyzing your requirements and creating detailed specifications...</div>
-            </div>
+      <div className="absolute inset-0 bg-background flex flex-col items-center justify-center z-20">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="relative">
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 w-3 h-3 bg-blue-500 rounded-full animate-ping opacity-20"></div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="text-xs text-muted-foreground">{progress}%</div>
-            <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
+          <div className="text-sm font-medium text-foreground">GAIA is generating your structured prompt</div>
         </div>
-
-        {/* Code Display Area */}
-        <div ref={progressiveContainerRef} className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gradient-to-br from-background via-background to-muted/10">
-          <div className="space-y-0">
-            {lines.map((line, index) => {
-              const isCurrent = index === lines.length - 1;
-              return (
-                <div 
-                  key={index} 
-                  className={`flex items-start min-h-[24px] animate-fade-in ${isCurrent ? 'bg-muted/20 rounded' : 'opacity-0'}`}
-                  style={{ 
-                    animationDelay: `${index * 50}ms`,
-                    animationFillMode: 'forwards'
-                  }}
-                >
-                  <span className="w-10 text-xs text-muted-foreground/60 text-right pr-3 select-none flex-shrink-0 pt-0.5">
-                    {index + 1}
-                  </span>
-                  <span 
-                    className="flex-1 leading-6" 
-                    dangerouslySetInnerHTML={{ __html: highlightSyntax(line || '&nbsp;') }}
-                  />
-                  {isCurrent && (
-                    <span className="inline-block w-2 h-5 bg-blue-500 animate-pulse rounded-sm ml-1" />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Bottom status */}
-        <div className="p-3 border-t border-border bg-muted/30">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              <span>AI is structuring your prompt for optimal generation quality</span>
-            </div>
-            <div>{lines.length} / {totalLines} lines</div>
-          </div>
+        <div className="text-xs text-muted-foreground text-center max-w-md">
+          Analyzing your requirements and creating detailed specifications...
         </div>
       </div>
     );
   };
+  
   const renderSourceView = () => {
     const lines = value.split('\n');
     const highlightSyntax = (text: string) => {
@@ -1292,8 +1156,7 @@ const StructuredPromptEditor = ({
         {viewState === 'empty' && renderEmptyState()}
         {viewState === 'structured' && renderStructuredView()}
         {viewState === 'source' && renderSourceView()}
-        
-        {(isGenerating && isWritingJSON) && renderProgressiveJSONView()}
+        {viewState === 'loading' && renderLoadingView()}
       </div>
     </div>;
 };

@@ -185,7 +185,7 @@
 @keyframes cascade-reveal {
   0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   100% {
     opacity: 1;
@@ -194,10 +194,10 @@
 }
 
 .cascade-reveal {
-  animation: cascade-reveal 0.3s ease-out forwards;
+  animation: cascade-reveal 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .cascade-reveal-hidden {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(6px);
 }
