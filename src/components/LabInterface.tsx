@@ -70,9 +70,8 @@ const LabInterface = () => {
         <div className="flex items-center gap-3">
           <img src="/lovable-uploads/41e99d95-4105-4ece-b06b-475e0b2e8f10.png" alt="Bria Logo" className="h-8 w-auto" />
           <div className="flex flex-col">
-            <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">GAIA Lab</h1>
-            <p className="text-sm text-lab-text-secondary">
-              Interactive lab for the first open-source text-to-image model, native to structured prompts. | Also available via API & MCP Server {" "}
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">GAIA Lab</h1>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button variant="link" className="h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200 underline-offset-4">
@@ -138,6 +137,9 @@ const LabInterface = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+            </div>
+            <p className="text-sm text-lab-text-secondary">
+              Interactive lab for the first open-source text-to-image model, native to structured prompts. | Also available via API & MCP Server
             </p>
           </div>
         </div>
