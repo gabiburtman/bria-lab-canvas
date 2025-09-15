@@ -79,7 +79,7 @@ const ImageCard = ({
     const encodedMessage = encodeURIComponent(shareMessage);
     const handleLinkedInShare = (e: React.MouseEvent) => {
       e.stopPropagation();
-      const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${imageUrl}&title=${encodedMessage}`;
+      const linkedinUrl = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedMessage}`;
       window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
     };
     const handleXShare = (e: React.MouseEvent) => {
