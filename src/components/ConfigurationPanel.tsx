@@ -487,14 +487,6 @@ const PromptComponent = ({
             </Tooltip>
           </div>
 
-          {/* Upload Brief helper link - bottom right corner */}
-          <button
-            onClick={onUploadDocument}
-            className="absolute bottom-3 right-3 text-xs text-lab-text-muted hover:text-lab-primary transition-colors underline underline-offset-2"
-            disabled={isGenerating}
-          >
-            Upload brief
-          </button>
 
           {/* Custom clickable placeholder overlay */}
           {!value && (
@@ -513,6 +505,17 @@ const PromptComponent = ({
             </div>
           )}
         </>
+      )}
+      
+      {/* Upload Brief button - positioned above controls, bottom right */}
+      {!hasGenerated && (
+        <button
+          onClick={onUploadDocument}
+          className="absolute bottom-14 right-3 text-xs text-lab-text-muted hover:text-lab-primary transition-colors underline underline-offset-2"
+          disabled={isGenerating}
+        >
+          Upload Brief
+        </button>
       )}
       
       {/* Controls Bar */}
