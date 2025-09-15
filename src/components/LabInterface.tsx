@@ -72,7 +72,7 @@ const LabInterface = () => {
           <div className="flex flex-col">
             <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">GAIA Lab</h1>
             <p className="text-sm text-lab-text-secondary">
-              Interactive lab for the first open-source structured prompt model. {" "}
+              Interactive lab for the first open-source text-to-image model, native to structured prompts. {" "}
               <Dialog>
                 <DialogTrigger asChild>
                   <Button 
