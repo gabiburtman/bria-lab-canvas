@@ -837,9 +837,16 @@ const StructuredPromptEditor = ({
           </span>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                <HelpCircle className="w-3 h-3" />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full p-0 text-muted-foreground hover:text-foreground">
+                    <HelpCircle className="w-3 h-3" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>GAIA's blueprint for predictable control. Populated from your input, refined with your instructions.</p>
+                </TooltipContent>
+              </Tooltip>
             </DialogTrigger>
             <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
               <DialogHeader>
