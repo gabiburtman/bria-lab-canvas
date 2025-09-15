@@ -15,6 +15,7 @@ interface StructuredPromptEditorProps {
   onUploadImage: () => void;
   onUploadDocument: () => void;
   updatedFields?: Set<string>;
+  preservedFields?: Set<string>;
   forceStructuredView?: boolean;
   readOnly?: boolean;
 }
@@ -30,6 +31,7 @@ const StructuredPromptEditor = ({
   onUploadImage,
   onUploadDocument,
   updatedFields = new Set(),
+  preservedFields = new Set(),
   forceStructuredView = false,
   readOnly = false
 }: StructuredPromptEditorProps) => {
@@ -281,6 +283,11 @@ const StructuredPromptEditor = ({
   // Helper function to check if THIS specific path is locked (for parent objects/arrays)
   const isParentPathLocked = (path: string) => {
     return lockedFields.has(path);
+  };
+
+  // Helper function to check if a field is preserved (automatically protected by system)
+  const isFieldPreserved = (path: string): boolean => {
+    return preservedFields.has(path);
   };
 
   // Helper function to get all child paths of a parent
@@ -597,6 +604,11 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
+                  {isFieldPreserved(fieldPath) && (
+                    <div title="Preserved field - protected during refinement">
+                      <Lock className="w-3 h-3 text-muted-foreground/40 ml-1" />
+                    </div>
+                  )}
                   <span className="px-1.5 py-0.5 text-xs bg-blue-500/10 text-blue-600 rounded border border-blue-200/20 font-mono">
                     {typeInfo.icon} {typeInfo.count}
                   </span>
@@ -673,6 +685,11 @@ const StructuredPromptEditor = ({
                 <div className="flex items-center gap-2 cursor-pointer flex-1">
                   <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                   <span className="text-foreground font-medium">{key}</span>
+                  {isFieldPreserved(fieldPath) && (
+                    <div title="Preserved field - protected during refinement">
+                      <Lock className="w-3 h-3 text-muted-foreground/40 ml-1" />
+                    </div>
+                  )}
                   <span className="px-1.5 py-0.5 text-xs bg-green-500/10 text-green-600 rounded border border-green-200/20 font-mono">
                     {typeInfo.icon} {typeInfo.count}
                   </span>
@@ -815,6 +832,11 @@ const StructuredPromptEditor = ({
           <span className="text-foreground font-medium min-w-0 flex-shrink-0">
             {key}:
           </span>
+          {isFieldPreserved(fieldPath) && (
+            <div title="Preserved field - protected during refinement" className="ml-1">
+              <Lock className="w-3 h-3 text-muted-foreground/40" />
+            </div>
+          )}
           
           {/* Value Display (read-only) or Input (editable) */}
           <TooltipProvider>

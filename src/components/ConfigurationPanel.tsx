@@ -642,6 +642,7 @@ const ConfigurationPanel = ({
   const [jsonData, setJsonData] = useState(initialConfig?.jsonConfig || JSON.stringify(defaultJSON, null, 2));
   const [lockedFields, setLockedFields] = useState<Set<string>>(new Set());
   const [updatedFields, setUpdatedFields] = useState<Set<string>>(new Set());
+  const [preservedFields, setPreservedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
@@ -733,6 +734,7 @@ const ConfigurationPanel = ({
 
     // Clear previous highlights
     setUpdatedFields(new Set());
+    setPreservedFields(new Set());
 
     // Show loading state in structured prompt area
     setIsProcessingFile(true);
@@ -746,6 +748,11 @@ const ConfigurationPanel = ({
       const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
+
+      // Mark preserved fields (fields that weren't updated)
+      const allFields = new Set(['short_description', 'objects', 'background_setting', 'lighting.conditions', 'lighting.direction', 'lighting.shadows', 'aesthetics.composition', 'aesthetics.color_scheme', 'aesthetics.mood_atmosphere', 'photographic_characteristics.depth_of_field', 'photographic_characteristics.camera_angle', 'style_medium', 'context']);
+      const preservedFields = new Set([...allFields].filter(field => !fieldsToUpdate.has(field) && !lockedFields.has(field)));
+      setPreservedFields(preservedFields);
 
       // Clear the refinement prompt if in refine mode
       if (isRefinementMode) {
@@ -849,6 +856,7 @@ const ConfigurationPanel = ({
 
       // Clear previous highlights on new generation
       setUpdatedFields(new Set());
+      setPreservedFields(new Set());
 
       // Populate structured prompt with varied data based on the prompt
       setJsonData(JSON.stringify(generateVariedStructuredPrompt(), null, 2));
@@ -857,6 +865,11 @@ const ConfigurationPanel = ({
       const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
       const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
       setUpdatedFields(fieldsToUpdate);
+
+      // Mark preserved fields (fields that weren't updated)
+      const allFields = new Set(['short_description', 'objects', 'background_setting', 'lighting.conditions', 'lighting.direction', 'lighting.shadows', 'aesthetics.composition', 'aesthetics.color_scheme', 'aesthetics.mood_atmosphere', 'photographic_characteristics.depth_of_field', 'photographic_characteristics.camera_angle', 'style_medium', 'context']);
+      const preservedFields = new Set([...allFields].filter(field => !fieldsToUpdate.has(field) && !lockedFields.has(field)));
+      setPreservedFields(preservedFields);
 
       // Generate new mock images with correct aspect ratio
       const timestamp = Date.now();
@@ -893,6 +906,7 @@ const ConfigurationPanel = ({
     setJsonData(JSON.stringify(defaultJSON, null, 2));
     setLockedFields(new Set());
     setUpdatedFields(new Set());
+    setPreservedFields(new Set());
     setIsGenerating(false);
     setInitialInput(null);
     
@@ -1080,7 +1094,7 @@ const ConfigurationPanel = ({
         {/* Structured Prompt Editor - Flexible height that grows */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} forceStructuredView={isRefinementMode || isGenerating} readOnly={true} />
+            <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} preservedFields={preservedFields} forceStructuredView={isRefinementMode || isGenerating} readOnly={true} />
           </div>
         </div>
 
