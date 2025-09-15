@@ -37,6 +37,7 @@ const StructuredPromptEditor = ({
   const [parsedJSON, setParsedJSON] = useState<any>(null);
   const [isCascading, setIsCascading] = useState(false);
   const [cascadeRowIndex, setCascadeRowIndex] = useState(0);
+  const [showExpanded, setShowExpanded] = useState(false);
 
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
@@ -70,13 +71,17 @@ const StructuredPromptEditor = ({
   // Update view state based on generation and data
   useEffect(() => {
     if (forceStructuredView || hasData()) {
-      // Switch to structured view and trigger cascade
-      setViewState('structured');
-      setIsCascading(true);
-      setCascadeRowIndex(0);
+      // Only trigger cascade if we're not already in structured view or if generation just finished
+      if (viewState !== 'structured' || isGenerating) {
+        setViewState('structured');
+        setIsCascading(true);
+        setShowExpanded(true);
+        setCascadeRowIndex(0);
+      }
     } else {
       setViewState('empty');
       setIsCascading(false);
+      setShowExpanded(false);
       setCascadeRowIndex(0);
     }
   }, [isGenerating, value, hasData, forceStructuredView]);
@@ -116,6 +121,10 @@ const StructuredPromptEditor = ({
         setCascadeRowIndex((prev) => {
           if (prev >= totalRows - 1) {
             setIsCascading(false);
+            // Delay before collapsing to show final state briefly
+            setTimeout(() => {
+              setShowExpanded(false);
+            }, 500);
             return prev;
           }
           return prev + 1;
@@ -503,7 +512,7 @@ const StructuredPromptEditor = ({
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
-      return <Collapsible key={fieldPath} defaultOpen={false}>
+      return <Collapsible key={fieldPath} defaultOpen={showExpanded}>
           <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
             {renderTreeLines(level, isLast, true)}
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
@@ -580,7 +589,7 @@ const StructuredPromptEditor = ({
     // Handle arrays
     if (Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
-      return <Collapsible key={fieldPath} defaultOpen={false}>
+      return <Collapsible key={fieldPath} defaultOpen={showExpanded}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
@@ -633,7 +642,7 @@ const StructuredPromptEditor = ({
                 {val.map((item, index) => {
                 const isLastItem = index === val.length - 1;
                 if (typeof item === 'object' && item !== null) {
-                  return <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={false}>
+                  return <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={showExpanded}>
       <div className={cn("relative group/item", isUpdated && "field-updated")}>
                            {renderTreeLines(level + 1, isLastItem, true)}
                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
@@ -895,7 +904,7 @@ const StructuredPromptEditor = ({
             const generalLocked = generalFieldKeys.some(fieldKey => isFieldLocked(fieldKey));
             const allGeneralLocked = generalFieldKeys.length > 0 && generalFieldKeys.every(fieldKey => isFieldLocked(fieldKey));
             const isGeneralHighlighted = hasUpdatedGeneralFields(val);
-            return <Collapsible key="general" defaultOpen={false}>
+            return <Collapsible key="general" defaultOpen={showExpanded}>
                   <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
                     {renderTreeLines(0, isLast, true)}
                     <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "field-updated")} style={{
