@@ -688,7 +688,18 @@ const ConfigurationPanel = ({
   }];
 
   // Random prompts for the "Surprise Me" feature
-  const randomPrompts = ["A majestic mountain landscape at sunrise with golden light", "A cozy coffee shop in a bustling city street during autumn", "A futuristic cityscape with flying cars and neon lights", "A peaceful forest clearing with sunbeams filtering through trees", "A vintage bookstore filled with antique books and warm lighting", "A modern architectural marvel reflecting in still water", "A vibrant market scene with colorful fruits and busy vendors", "A serene beach at sunset with gentle waves and palm trees", "A snow-covered village with twinkling lights and smoke from chimneys", "A mysterious cave entrance with glowing crystals inside"];
+  const randomPrompts = [
+    "A social media ad for a new line of sustainable, handcrafted leather boots, with an adventurous and rugged feel.",
+    "A product shot for an e-commerce store, showcasing a minimalist Scandinavian oak coffee table. The setting is a bright, airy living room with soft morning light and elegant props.",
+    "Explore the concept of 'serenity in chaos'.",
+    "A storyboard visualization for a key scene in a sci-fi film. A weary space explorer stands on a Martian ridge, looking out at a vast, alien canyon under two moons. The mood should be one of quiet solitude and awe.",
+    "A photorealistic architectural rendering of a modern glass-and-steel cabin nestled in a snowy pine forest. The time is dusk, with warm light glowing from inside, contrasting with the cool blue of the snow.",
+    "A hero shot for a recipe featuring a rustic, freshly baked apple pie. Key details: visible steam and a golden-brown crust.",
+    "Objective: Test the model's compositional accuracy. Generate an image with a red cube on top of a blue sphere, to the left of a yellow pyramid, with the scene lit from the top right.",
+    "Generate brand mascot concepts for 'Evergreen,' a new eco-friendly cleaning product company. The mascot must be friendly, trustworthy, and inspired by nature.",
+    "An inspirational image for a hotel lobby design. The aesthetic is 'modern art deco,' featuring plush velvet armchairs, geometric brass fixtures, and a dark, moody color palette of deep greens and gold.",
+    "Concept art of an ancient, moss-covered stone golem, glowing with faint magical runes. The golem is standing guard in an enchanted forest, with sunbeams filtering through the dense canopy and illuminating dust motes in the air."
+  ];
 
   // Refinement suggestions for when in refinement mode
   const refinementSuggestions = ["Add more dramatic lighting with stronger shadows", "Make the colors more vibrant and saturated", "Add atmospheric fog or mist for depth", "Include more detailed textures on surfaces", "Enhance the contrast between light and dark areas", "Add subtle motion blur to suggest movement", "Increase the depth of field for better focus", "Add warm golden hour lighting", "Include more intricate details in the foreground", "Make the composition more dynamic with diagonal lines", "Add reflections for more visual interest", "Enhance the mood with cooler or warmer tones", "Add subtle lens flare effects", "Include more environmental storytelling elements", "Make the scene more cinematic with wider framing"];
