@@ -73,97 +73,71 @@ const LabInterface = () => {
             <h1 className="text-xl font-google-sans font-medium text-lab-text-primary">GAIA Lab</h1>
             <p className="text-sm text-lab-text-secondary">
               Interactive lab for the first open-source text-to-image model, native to structured prompts. {" "}
-              <span className="inline-flex items-center gap-2 ml-1">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-6 px-3 rounded-full bg-lab-surface-elevated text-lab-text-secondary hover:bg-lab-border-hover hover:text-lab-text-primary transition-all duration-200 text-xs font-medium"
-                  asChild
-                >
-                  <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
-                    API Docs
-                  </a>
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-6 px-3 rounded-full bg-lab-surface-elevated text-lab-text-secondary hover:bg-lab-border-hover hover:text-lab-text-primary transition-all duration-200 text-xs font-medium"
-                  asChild
-                >
-                  <a href="https://github.com/modelcontextprotocol/servers/tree/main/src/bria" target="_blank" rel="noopener noreferrer">
-                    MCP Server
-                  </a>
-                </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-6 px-3 rounded-full bg-lab-surface-elevated text-lab-text-secondary hover:bg-lab-border-hover hover:text-lab-text-primary transition-all duration-200 text-xs font-medium"
-                    >
-                      Learn more
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
-                    <DialogHeader>
-                      <DialogTitle className="text-xl font-bold text-lab-text-primary">GAIA: A New Language for Image Generation</DialogTitle>
-                      <DialogDescription className="text-lab-text-secondary">
-                        Reframing text-to-image from "pretty pictures" to professional control and automation.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 text-lab-text-primary">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-lab-surface-elevated rounded-lg p-3">
-                          <div className="font-semibold text-lab-primary mb-2">Built for Builders</div>
-                          <div className="text-lab-text-secondary text-sm">GAIA's structured JSON prompts make it a natural tool for agentic systems, creative automation, and repeatable workflows.</div>
-                        </div>
-                        <div className="bg-lab-surface-elevated rounded-lg p-3">
-                          <div className="font-semibold text-lab-primary mb-2">Designed for Professionals</div>
-                          <div className="text-lab-text-secondary text-sm">Move beyond prompt guesswork. Achieve your exact vision with granular control over aesthetics, composition, and lighting.</div>
-                        </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="link" className="h-auto p-0 text-sm text-lab-primary hover:text-lab-primary/80 transition-colors duration-200 underline-offset-4">
+                    Learn more
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-bold text-lab-text-primary">GAIA: A New Language for Image Generation</DialogTitle>
+                    <DialogDescription className="text-lab-text-secondary">
+                      Reframing text-to-image from "pretty pictures" to professional control and automation.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 text-lab-text-primary">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-lab-surface-elevated rounded-lg p-3">
+                        <div className="font-semibold text-lab-primary mb-2">Built for Builders</div>
+                        <div className="text-lab-text-secondary text-sm">GAIA's structured JSON prompts make it a natural tool for agentic systems, creative automation, and repeatable workflows.</div>
                       </div>
-
-                      <div>
-                        <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
-                        <div className="bg-lab-surface-elevated rounded-lg p-4 text-sm">
-                          <div className="space-y-3 text-lab-text-secondary">
-                            <div><strong className="text-lab-text-primary">Long, Structured Captions:</strong> Trained on rich descriptions—often over 1,000 words—to capture every detail.</div>
-                            <div><strong className="text-lab-text-primary">Disentangled Representation:</strong> Allows for iterative refinement by targeting specific visual elements (mood, color, etc.) without starting over.</div>
-                            <div><strong className="text-lab-text-primary">LLM-Powered Bridge:</strong> An LLM translates simple human intent into the detailed, machine-readable prompts GAIA needs.</div>
-                            <div><strong className="text-lab-text-primary">Responsible by Design:</strong> Built entirely on licensed data with full legal liability coverage, ensuring safe commercial use.</div>
-                          </div>
-                        </div>
+                      <div className="bg-lab-surface-elevated rounded-lg p-3">
+                        <div className="font-semibold text-lab-primary mb-2">Designed for Professionals</div>
+                        <div className="text-lab-text-secondary text-sm">Move beyond prompt guesswork. Achieve your exact vision with granular control over aesthetics, composition, and lighting.</div>
                       </div>
+                    </div>
 
-
-                      <div>
-                        <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
-                        <div className="flex flex-wrap gap-2 text-sm">
-                          <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                            <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Model Card</a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                            <a href="#" target="_blank" rel="noopener noreferrer">📄 Research Paper</a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                            <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
-                              📚 View API Docs
-                            </a>
-                          </Button>
-                          <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                            
-                          </Button>
-                          <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                            <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
-                              🚀 Bria Platform
-                            </a>
-                          </Button>
+                    <div>
+                      <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
+                      <div className="bg-lab-surface-elevated rounded-lg p-4 text-sm">
+                        <div className="space-y-3 text-lab-text-secondary">
+                          <div><strong className="text-lab-text-primary">Long, Structured Captions:</strong> Trained on rich descriptions—often over 1,000 words—to capture every detail.</div>
+                          <div><strong className="text-lab-text-primary">Disentangled Representation:</strong> Allows for iterative refinement by targeting specific visual elements (mood, color, etc.) without starting over.</div>
+                          <div><strong className="text-lab-text-primary">LLM-Powered Bridge:</strong> An LLM translates simple human intent into the detailed, machine-readable prompts GAIA needs.</div>
+                          <div><strong className="text-lab-text-primary">Responsible by Design:</strong> Built entirely on licensed data with full legal liability coverage, ensuring safe commercial use.</div>
                         </div>
                       </div>
                     </div>
-                  </DialogContent>
-                </Dialog>
-              </span>
+
+
+                    <div>
+                      <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
+                      <div className="flex flex-wrap gap-2 text-sm">
+                        <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                          <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Model Card</a>
+                        </Button>
+                        <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                          <a href="#" target="_blank" rel="noopener noreferrer">📄 Research Paper</a>
+                        </Button>
+                        <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                          <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
+                            📚 View API Docs
+                          </a>
+                        </Button>
+                        <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                          
+                        </Button>
+                        <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
+                          <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
+                            🚀 Bria Platform
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </p>
           </div>
         </div>
