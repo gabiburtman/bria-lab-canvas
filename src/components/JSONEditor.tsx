@@ -47,13 +47,11 @@ const JSONEditor = ({
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(value).then(() => {
       toast({
-        title: "JSON copied to clipboard",
-        description: "The JSON configuration has been copied successfully.",
+        description: "JSON copied",
       });
     }).catch(() => {
       toast({
-        title: "Copy failed",
-        description: "Failed to copy JSON to clipboard.",
+        description: "Copy failed",
         variant: "destructive",
       });
     });
