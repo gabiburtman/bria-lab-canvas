@@ -103,7 +103,7 @@ const LabInterface = () => {
                         <div className="space-y-3 text-lab-text-secondary">
                           <div><strong className="text-lab-text-primary">Long, Structured Captions:</strong> Trained on rich descriptions—often over 1,000 words—to capture every detail.</div>
                           <div><strong className="text-lab-text-primary">Disentangled Representation:</strong> Allows for iterative refinement by targeting specific visual elements (mood, color, etc.) without starting over.</div>
-                          <div><strong className="text-lab-text-primary">LLM-Powered Bridge:</strong> An LLM translates simple human intent into the detailed, machine-readable prompts GAIA needs.</div>
+                          <div><strong className="text-lab-text-primary">LLM-Powered Bridge:</strong> An LLM translates human intent into the detailed, machine-readable prompts GAIA needs. This bridge is model-agnostic, allowing you to integrate any LLM that best fits your technical stack and product requirements.</div>
                           <div><strong className="text-lab-text-primary">Responsible by Design:</strong> Built entirely on licensed data with full legal liability coverage, ensuring safe commercial use.</div>
                         </div>
                       </div>
