@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
+import { Download, Share, ThumbsUp, ThumbsDown, Code, Image, Badge, HelpCircle, Sparkles, Zap, Shield } from "lucide-react";
 import { FaReddit, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { ApiReferenceDialog } from "@/components/ApiReferenceDialog";
@@ -180,7 +180,7 @@ const ResultsCanvas = ({
     return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex items-center justify-center">
         <div className="text-center max-w-sm px-6">
           <div className="w-16 h-16 mx-auto mb-4 bg-lab-interactive-hover rounded-lg flex items-center justify-center">
-            <Grid3X3 className="w-8 h-8 text-lab-text-muted" />
+            <Image className="w-8 h-8 text-lab-text-muted" />
           </div>
           <h3 className="text-lg font-medium text-lab-text-primary mb-2">From Artistry to Craftsmanship</h3>
           <p className="text-sm text-lab-text-secondary">Build with confidence. GAIA’s language provides the control for predictable, scalable results your users will trust. Start your experiment on the left.</p>
