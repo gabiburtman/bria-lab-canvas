@@ -198,7 +198,7 @@ const StructuredPromptEditor = ({
   const copyToClipboard = useCallback(() => {
     navigator.clipboard.writeText(value).then(() => {
       toast({
-        description: "JSON copied",
+        description: "Copied to Clipboard",
       });
     }).catch(() => {
       toast({
