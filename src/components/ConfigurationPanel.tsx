@@ -811,6 +811,14 @@ const ConfigurationPanel = ({
     }
   };
   const handleGenerate = () => {
+    // Determine the effective seed to use for generation
+    let effectiveSeed = seed;
+    if (!seed.trim()) {
+      // Generate a random seed if none is provided
+      effectiveSeed = Math.floor(Math.random() * 1000000).toString();
+      setSeed(effectiveSeed); // Update the UI to show the generated seed
+    }
+
     if (!hasGenerated) {
       // Capture the initial input for the first generation
       if (mainPrompt.trim()) {
@@ -855,7 +863,7 @@ const ConfigurationPanel = ({
         refinementPrompt,
         aspectRatio,
         steps: steps[0],
-        seed,
+        seed: effectiveSeed, // Use the effective seed (either user-provided or generated)
         jsonConfig: jsonData,
         prompt: hasGenerated ? refinementPrompt : mainPrompt
       };
