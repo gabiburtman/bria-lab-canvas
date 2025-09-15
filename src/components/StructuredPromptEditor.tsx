@@ -38,7 +38,7 @@ const StructuredPromptEditor = ({
   const [isCascading, setIsCascading] = useState(false);
   const [cascadeRowIndex, setCascadeRowIndex] = useState(0);
   const [showExpanded, setShowExpanded] = useState(false);
-
+  const [expandVersion, setExpandVersion] = useState(0);
   // Parse JSON and determine if we have data
   const hasData = useCallback(() => {
     try {
@@ -122,6 +122,10 @@ const StructuredPromptEditor = ({
     }
   }, [isGenerating, value, hasData, forceStructuredView]);
 
+  // Remount collapsibles when expand state toggles to apply defaultOpen
+  useEffect(() => {
+    setExpandVersion((v) => v + 1);
+  }, [showExpanded]);
   // Cascade reveal animation effect
   useEffect(() => {
     if (isCascading && viewState === 'structured' && parsedJSON) {
@@ -548,7 +552,7 @@ const StructuredPromptEditor = ({
     // Handle nested objects as collapsible sections
     if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
-      return <Collapsible key={fieldPath} defaultOpen={showExpanded}>
+      return <Collapsible key={`${fieldPath}-${expandVersion}`} defaultOpen={showExpanded}>
           <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
             {renderTreeLines(level, isLast, true)}
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
@@ -625,7 +629,7 @@ const StructuredPromptEditor = ({
     // Handle arrays
     if (Array.isArray(val)) {
       const parentLocked = isParentPathLocked(fieldPath);
-      return <Collapsible key={fieldPath} defaultOpen={showExpanded}>
+      return <Collapsible key={`${fieldPath}-${expandVersion}`} defaultOpen={showExpanded}>
           <div className="relative">
             {renderTreeLines(level, isLast, true)}
             <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isHighlighted && "field-updated")} style={{
@@ -678,7 +682,7 @@ const StructuredPromptEditor = ({
                 {val.map((item, index) => {
                 const isLastItem = index === val.length - 1;
                 if (typeof item === 'object' && item !== null) {
-                  return <Collapsible key={`${fieldPath}[${index}]`} defaultOpen={showExpanded}>
+                  return <Collapsible key={`${fieldPath}[${index}]-${expandVersion}`} defaultOpen={showExpanded}>
       <div className={cn("relative group/item", isUpdated && "field-updated")}>
                            {renderTreeLines(level + 1, isLastItem, true)}
                            <div className="flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm" style={{
@@ -941,7 +945,7 @@ const StructuredPromptEditor = ({
             const generalLocked = generalFieldKeys.some(fieldKey => isFieldLocked(fieldKey));
             const allGeneralLocked = generalFieldKeys.length > 0 && generalFieldKeys.every(fieldKey => isFieldLocked(fieldKey));
             const isGeneralHighlighted = hasUpdatedGeneralFields(val);
-            return <Collapsible key="general" defaultOpen={showExpanded}>
+            return <Collapsible key={`general-${expandVersion}`} defaultOpen={showExpanded}>
                   <div className={cn("relative", cascadeClass)} style={{ animationDelay }}>
                     {renderTreeLines(0, isLast, true)}
                     <div className={cn("flex items-center gap-2 py-1 px-2 hover:bg-muted/30 rounded group font-mono text-sm", isGeneralHighlighted && "field-updated")} style={{
