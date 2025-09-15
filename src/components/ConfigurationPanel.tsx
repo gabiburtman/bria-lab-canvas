@@ -704,7 +704,7 @@ const PromptComponent = ({
                   <PopoverTrigger asChild>
                     <Button variant="outline" size="sm" className="h-8 px-3 text-xs border-lab-border hover:bg-lab-interactive-hover text-lab-text-secondary hover:text-lab-text-primary flex items-center gap-1">
                       <Target className="w-3 h-3" />
-                      {resultsCount} Result{resultsCount > 1 ? 's' : ''}
+                      {resultsCount} Image{resultsCount > 1 ? 's' : ''}
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
@@ -714,7 +714,7 @@ const PromptComponent = ({
               </Tooltip>
               <PopoverContent className="w-48 bg-lab-surface border-lab-border shadow-lg">
                 <div className="space-y-2">
-                  <div className="text-sm font-medium text-lab-text-primary mb-2">Results Count</div>
+                  <div className="text-sm font-medium text-lab-text-primary mb-2">Image Count</div>
                   <div className="flex gap-2">
                     <Button
                       variant={resultsCount === 1 ? "default" : "outline"}
@@ -722,7 +722,7 @@ const PromptComponent = ({
                       onClick={() => setResultsCount(1)}
                       className={resultsCount === 1 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}
                     >
-                      1 Result
+                      1 Image
                     </Button>
                     <Button
                       variant={resultsCount === 4 ? "default" : "outline"}
@@ -730,7 +730,7 @@ const PromptComponent = ({
                       onClick={() => setResultsCount(4)}
                       className={resultsCount === 4 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}
                     >
-                      4 Results
+                      4 Images
                     </Button>
                   </div>
                 </div>
