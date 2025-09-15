@@ -292,15 +292,15 @@ const StructuredPromptEditor = ({
 
   // Helper function to check if a group/object/array is preserved (no updated children)
   const isGroupPreserved = (path: string, obj: any): boolean => {
-    // Check if this exact path is preserved
+    // Check if this exact path is preserved (this is the main criteria)
     if (preservedFields.has(path)) {
       return true;
     }
     
-    // For groups like "General", check if all children are preserved
-    if (typeof obj === 'object' && obj !== null) {
+    // For empty path (like General group), check if all children are preserved
+    if (!path && typeof obj === 'object' && obj !== null) {
       const childPaths = getChildPaths(obj, path);
-      const allPaths = path ? [path, ...childPaths] : childPaths;
+      const allPaths = childPaths;
       
       // If all paths are preserved, the group is preserved
       return allPaths.length > 0 && allPaths.every(p => preservedFields.has(p));
