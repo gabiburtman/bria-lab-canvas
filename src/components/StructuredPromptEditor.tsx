@@ -887,7 +887,8 @@ const StructuredPromptEditor = ({
             <TooltipContent>
               <div className="text-left">
                 <p>Detailed, machine-readable prompt, provides deterministic control.</p>
-                <p>Populated from your input, refined with new instructions, or can be edited directly by a user or an AI agent.</p>
+                <p>Populated from your input, refined with new instructions,</p>
+                <p>or can be edited directly by a user or an AI agent.</p>
               </div>
             </TooltipContent>
           </Tooltip>
