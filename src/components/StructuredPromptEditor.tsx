@@ -68,21 +68,57 @@ const StructuredPromptEditor = ({
     }
   }, [value]);
 
-  // Update view state based on generation and data
+  // Create mock content when no real data exists
+  const getMockContent = () => {
+    return {
+      short_description: "A serene mountain landscape at golden hour",
+      background_setting: "Mountain valley with a calm lake reflecting the sky",
+      style_medium: "Digital photography with warm color grading",
+      context: "Peaceful nature scene captured during the golden hour",
+      artistic_style: "Contemporary landscape photography with cinematic feel",
+      objects: [
+        {
+          description: "Snow-capped mountain peak",
+          location: "Background, center-left of composition",
+          relationship: "Dominant element framing the scene",
+          relative_size: "Large, occupying upper third of image",
+          shape_and_color: "Triangular mountain silhouette with white snow cap",
+          texture: "Rough rocky surface with smooth snow",
+          appearance_details: "Majestic peak illuminated by warm light",
+          pose: "Static natural formation",
+          expression: "N/A",
+          clothing: "N/A",
+          action: "Standing majestically",
+          gender: "N/A",
+          skin_tone_and_texture: "N/A",
+          orientation: "Vertical peak pointing skyward",
+          number_of_objects: "1"
+        }
+      ]
+    };
+  };
+
+  // Update view state to always show structured view
   useEffect(() => {
-    if (forceStructuredView || hasData()) {
-      // Only trigger cascade if we're not already in structured view or if generation just finished
-      if (viewState !== 'structured' || isGenerating) {
-        setViewState('structured');
-        setIsCascading(true);
-        setShowExpanded(true);
-        setCascadeRowIndex(0);
-      }
-    } else {
-      setViewState('empty');
-      setIsCascading(false);
-      setShowExpanded(false);
+    // Always use structured view
+    setViewState('structured');
+    
+    // Only trigger cascade animation during generation or when new content arrives
+    if (isGenerating && !isCascading) {
+      setIsCascading(true);
+      setShowExpanded(true);
       setCascadeRowIndex(0);
+    } else if (!isGenerating && isCascading) {
+      // Generation finished, keep current cascade state until animation completes
+    } else if (!isGenerating && !isCascading) {
+      // Not generating and not cascading - show collapsed view
+      setShowExpanded(false);
+    }
+    
+    // Ensure we have some content to display (real or mock)
+    if (!hasData() && !isGenerating) {
+      const mockContent = getMockContent();
+      setParsedJSON(mockContent);
     }
   }, [isGenerating, value, hasData, forceStructuredView]);
 
@@ -863,8 +899,9 @@ const StructuredPromptEditor = ({
       const otherData: Record<string, any> = {};
 
       // Split fields into general and other categories
-      if (parsedJSON) {
-        Object.entries(parsedJSON).forEach(([key, val]) => {
+      const currentData = parsedJSON || getMockContent();
+      if (currentData) {
+        Object.entries(currentData).forEach(([key, val]) => {
           if (generalFields.includes(key)) {
             generalData[key] = val;
           } else {
