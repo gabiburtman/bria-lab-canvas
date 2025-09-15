@@ -1125,7 +1125,7 @@ const ConfigurationPanel = ({
   };
 
 // Helper function to mark all preserved fields comprehensively
-const markPreservedFields = (jsonObj: any, updatedFieldsSet: Set<string>, lockedFieldsSet: Set<string>): Set<string> => {
+function markPreservedFields(jsonObj: any, updatedFieldsSet: Set<string>, lockedFieldsSet: Set<string>): Set<string> {
   const preserved = new Set<string>();
   
   const getAllPaths = (obj: any, basePath: string = ''): string[] => {
