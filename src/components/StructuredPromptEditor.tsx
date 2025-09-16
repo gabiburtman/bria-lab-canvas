@@ -1107,25 +1107,25 @@ const StructuredPromptEditor = ({
           </TooltipProvider>
         </div>
         
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="w-9 h-9"
-                onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
-              >
-                {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{viewState === 'structured' ? 'Switch to JSON Source view' : 'Switch to Structured view'}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        
         <div className="flex items-center gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-9 h-9"
+                  onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
+                >
+                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{viewState === 'structured' ? 'Switch to JSON Source view' : 'Switch to Structured view'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
