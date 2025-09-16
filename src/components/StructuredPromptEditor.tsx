@@ -1138,7 +1138,6 @@ const StructuredPromptEditor = ({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          <ThemeToggle />
         </div>
       </div>
   };
