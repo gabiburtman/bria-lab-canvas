@@ -1091,171 +1091,18 @@ const StructuredPromptEditor = ({
           <span className="text-sm font-medium text-foreground">
             Structured Prompt
           </span>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="w-6 h-6 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                <HelpCircle className="w-3 h-3" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl bg-lab-surface border-lab-border">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold text-lab-text-primary">
-                  Bria 4.0: Control-First Image Generation
-                </DialogTitle>
-                <DialogDescription className="text-lab-text-secondary">
-                  Reframing text-to-image from "pretty images" to professional control and automation
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 text-lab-text-primary">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Native for Automation</div>
-                    <div className="text-lab-text-secondary text-xs">LLM interpretation layer for structured, scalable workflows</div>
-                  </div>
-                  <div className="bg-lab-surface-elevated rounded-lg p-3">
-                    <div className="font-semibold text-lab-primary mb-2">Professional Control</div>
-                    <div className="text-lab-text-secondary text-xs">Granular control over aesthetics, composition, and positioning</div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Architecture & Capabilities</h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
-                      <div className="font-medium text-lab-text-primary mb-2">Technical Foundation</div>
-                      <div className="space-y-1 text-xs text-lab-text-secondary">
-                        <div>• 8B Parameters optimized</div>
-                        <div>• SmolLM Text Encoder</div>
-                        <div>• WAN 2.2 VAE for quality</div>
-                        <div>• LLM-to-pixel connection</div>
-                      </div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded-lg p-3 text-sm">
-                      <div className="font-medium text-lab-text-primary mb-2">Workflow</div>
-                      <div className="text-xs text-lab-text-secondary">
-                        <div className="flex items-center justify-between mb-2">
-                          <span>Prompt</span><span>→</span><span>LLM</span><span>→</span><span>Image</span>
-                        </div>
-                        <div>• Generate from natural language</div>
-                        <div>• Refine with instructions</div>
-                        <div>• Inspire from existing images</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Advanced Control</h3>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Aesthetics</div>
-                      <div className="text-lab-text-secondary">Composition, color, mood</div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Photography</div>
-                      <div className="text-lab-text-secondary">Focus, angles, lighting</div>
-                    </div>
-                    <div className="bg-lab-surface-elevated rounded p-2">
-                      <div className="font-medium text-lab-text-primary mb-1">Objects</div>
-                      <div className="text-lab-text-secondary">Position, size, texture</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-semibold mb-2 text-lab-primary">Resources</h3>
-                  <div className="flex flex-wrap gap-2 text-sm">
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://huggingface.co/briaai/BRIA-2.3" target="_blank" rel="noopener noreferrer">🤗 Bria 4</a>
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://docs.bria.ai/" target="_blank" rel="noopener noreferrer">
-                        📚 API Docs
-                      </a>
-                    </Button>
-                    <Button variant="outline" size="sm" className="bg-lab-surface hover:bg-lab-interactive-hover border-lab-border text-lab-text-primary h-8" asChild>
-                      <a href="https://platform.bria.ai/" target="_blank" rel="noopener noreferrer">
-                        🚀 Bria Platform
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Dialog>
-                <DialogTrigger asChild>
-                  
-                </DialogTrigger>
-                <DialogContent className="max-w-6xl w-full h-[90vh] flex flex-col">
-                  <DialogHeader>
-                    <DialogTitle>Structured Prompt - Expanded View</DialogTitle>
-                  </DialogHeader>
-                  <div className="flex-1 overflow-hidden">
-                    <div className="h-full border border-border rounded-lg bg-background overflow-hidden flex flex-col">
-                      <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-                        <span className="text-sm font-medium text-foreground">
-                          Structured Prompt
-                        </span>
-                         <div className="flex items-center gap-1">
-                           <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                              <Code className="w-4 h-4" />
-                           </Button>
-                           <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                             <Image className="w-4 h-4" />
-                           </Button>
-                           <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                             <FileText className="w-4 h-4" />
-                           </Button>
-                           <Button variant="ghost" size="sm" onClick={copyToClipboard} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                             <Copy className="w-4 h-4" />
-                           </Button>
-                         </div>
-                      </div>
-                      <div className="flex-1 overflow-auto h-full">
-                        {viewState === 'structured' ? renderStructuredView() : renderSourceView()}
-                      </div>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Expand to fullscreen view</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-        
-        <TooltipProvider>
-          <div className="flex items-center gap-1">
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Network className="w-4 h-4" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{viewState === 'structured' ? 'View JSON' : 'Config Explorer'}</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={copyToClipboard} className="w-8 h-8 rounded-full p-0 text-muted-foreground hover:text-foreground">
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Copy JSON</p>
-              </TooltipContent>
-            </Tooltip>
+          <div className="w-6 h-6 rounded-full p-0 text-muted-foreground flex items-center justify-center">
+            <HelpCircle className="w-3 h-3" />
           </div>
-        </TooltipProvider>
-      </div>;
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="sm" className="w-9 h-9" onClick={copyToClipboard}>
+            <Copy className="w-4 h-4" />
+          </Button>
+          <ThemeToggle />
+        </div>
   };
+
   return <div className={cn("relative rounded-lg border border-border overflow-hidden h-full flex flex-col", isGenerating && "opacity-50 pointer-events-none")}>
       {renderHeader()}
       
@@ -1273,4 +1120,5 @@ const StructuredPromptEditor = ({
       </div>
     </div>;
 };
+
 export default StructuredPromptEditor;
