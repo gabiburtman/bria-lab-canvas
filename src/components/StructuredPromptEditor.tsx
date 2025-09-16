@@ -1107,45 +1107,23 @@ const StructuredPromptEditor = ({
           </TooltipProvider>
         </div>
         
-        <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant={viewState === 'structured' ? 'secondary' : 'ghost'} 
-                  size="sm" 
-                  className="h-7 px-2 text-xs"
-                  onClick={() => setViewState('structured')}
-                >
-                  <Grid3X3 className="w-3 h-3 mr-1" />
-                  Structured
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Hierarchical view with collapsible sections</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant={viewState === 'source' ? 'secondary' : 'ghost'} 
-                  size="sm" 
-                  className="h-7 px-2 text-xs"
-                  onClick={() => setViewState('source')}
-                >
-                  <Code className="w-3 h-3 mr-1" />
-                  JSON Source
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Raw JSON with syntax highlighting</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-9 h-9"
+                onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
+              >
+                {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{viewState === 'structured' ? 'Switch to JSON Source view' : 'Switch to Structured view'}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         
         <div className="flex items-center gap-2">
           <TooltipProvider>
