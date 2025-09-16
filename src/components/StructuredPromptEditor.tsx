@@ -1089,14 +1089,77 @@ const StructuredPromptEditor = ({
           <span className="text-sm font-medium text-foreground">
             Structured Prompt
           </span>
-          <div className="w-6 h-6 rounded-full p-0 text-muted-foreground flex items-center justify-center">
-            <HelpCircle className="w-3 h-3" />
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="w-6 h-6 rounded-full p-0 text-muted-foreground flex items-center justify-center">
+                  <HelpCircle className="w-3 h-3" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <div className="text-left">
+                  <p>Detailed, machine-readable prompt, provides deterministic control.</p>
+                  <p>Populated from your input, refined with new instructions,</p>
+                  <p>or can be edited directly by a user or an AI agent.</p>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
+        
+        <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant={viewState === 'structured' ? 'secondary' : 'ghost'} 
+                  size="sm" 
+                  className="h-7 px-2 text-xs"
+                  onClick={() => setViewState('structured')}
+                >
+                  <Grid3X3 className="w-3 h-3 mr-1" />
+                  Structured
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Hierarchical view with collapsible sections</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  variant={viewState === 'source' ? 'secondary' : 'ghost'} 
+                  size="sm" 
+                  className="h-7 px-2 text-xs"
+                  onClick={() => setViewState('source')}
+                >
+                  <Code className="w-3 h-3 mr-1" />
+                  JSON Source
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Raw JSON with syntax highlighting</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="w-9 h-9" onClick={copyToClipboard}>
-            <Copy className="w-4 h-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-9 h-9" onClick={copyToClipboard}>
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Copy to clipboard</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <ThemeToggle />
         </div>
       </div>
