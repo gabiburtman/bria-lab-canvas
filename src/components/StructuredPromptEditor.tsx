@@ -1117,7 +1117,7 @@ const StructuredPromptEditor = ({
                   className="w-9 h-9"
                   onClick={() => setViewState(viewState === 'structured' ? 'source' : 'structured')}
                 >
-                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Grid3X3 className="w-4 h-4" />}
+                  {viewState === 'structured' ? <Code className="w-4 h-4" /> : <Network className="w-4 h-4" />}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
