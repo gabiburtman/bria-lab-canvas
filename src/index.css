@@ -246,16 +246,6 @@
   animation: updated-pulse 2s ease-in-out infinite;
 }
 
-/* Updated field dot indicator */
-.updated-dot {
-  @apply w-2 h-2 bg-emerald-400 rounded-full;
-  box-shadow: 0 0 4px hsl(var(--lab-updated-pulse) / 0.6);
-}
-
-.updated-dot-animate {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
 /* Cascade reveal animation */
 @keyframes cascade-reveal {
   0% {

@@ -810,9 +810,6 @@ const StructuredPromptEditor = ({
       }}>
           {/* Update Indicator - Always reserve space for alignment */}
           <div className="w-2 h-2 flex-shrink-0">
-            {isUpdated && (
-              <div className="updated-dot updated-dot-animate" title="Recently updated field" />
-            )}
           </div>
 
           {/* Field Name */}
