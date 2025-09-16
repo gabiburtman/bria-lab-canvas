@@ -6,6 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Copy, Upload, FileText, Lock, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import ThemeToggle from "@/components/ThemeToggle";
 interface StructuredPromptEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -615,7 +616,7 @@ const StructuredPromptEditor = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="ml-1">
-                            <Lock className="w-3 h-3 text-muted-foreground/40" />
+                            <Shield className="w-3 h-3 text-muted-foreground/40" />
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -687,7 +688,7 @@ const StructuredPromptEditor = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div className="ml-1">
-                            <Lock className="w-3 h-3 text-muted-foreground/40" />
+                            <Shield className="w-3 h-3 text-muted-foreground/40" />
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -739,7 +740,7 @@ const StructuredPromptEditor = ({
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <div className="ml-1">
-                                          <Lock className="w-3 h-3 text-muted-foreground/40" />
+                                          <Shield className="w-3 h-3 text-muted-foreground/40" />
                                         </div>
                                       </TooltipTrigger>
                                       <TooltipContent>
@@ -823,7 +824,7 @@ const StructuredPromptEditor = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="ml-1">
-                    <Lock className="w-3 h-3 text-muted-foreground/40" />
+                    <Shield className="w-3 h-3 text-muted-foreground/40" />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -1011,7 +1012,7 @@ const StructuredPromptEditor = ({
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <div className="ml-1">
-                                    <Lock className="w-3 h-3 text-muted-foreground/40" />
+                                    <Shield className="w-3 h-3 text-muted-foreground/40" />
                                   </div>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -1101,6 +1102,7 @@ const StructuredPromptEditor = ({
           </Button>
           <ThemeToggle />
         </div>
+      </div>
   };
 
   return <div className={cn("relative rounded-lg border border-border overflow-hidden h-full flex flex-col", isGenerating && "opacity-50 pointer-events-none")}>
