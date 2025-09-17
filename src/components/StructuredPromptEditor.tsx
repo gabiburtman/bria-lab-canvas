@@ -1065,20 +1065,55 @@ const StructuredPromptEditor = ({
   };
   
   const renderSourceView = () => {
-    const lines = value.split('\n');
+    // Format JSON properly with consistent indentation
+    let formattedJSON = value;
+    try {
+      const parsed = JSON.parse(value);
+      formattedJSON = JSON.stringify(parsed, null, 2);
+    } catch (error) {
+      // If JSON is invalid, use original value
+      console.warn('Invalid JSON, displaying raw value:', error);
+    }
+    
+    const lines = formattedJSON.split('\n');
+    
     const highlightSyntax = (text: string) => {
-      return text.replace(/"([^"]+)":/g, '<span class="text-blue-400 font-medium">"$1":</span>').replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>').replace(/:\s*(\d+)/g, ': <span class="text-orange-400">$1</span>').replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>').replace(/:\s*(null)/g, ': <span class="text-gray-400">$1</span>').replace(/([{}[\],])/g, '<span class="text-gray-300">$1</span>');
+      return text
+        // Property keys (blue)
+        .replace(/"([^"]+)"(\s*):/g, '<span class="text-blue-400 font-medium">"$1"</span>$2<span class="text-muted-foreground">:</span>')
+        // String values (green)
+        .replace(/:\s*"([^"]*)"/g, ': <span class="text-green-400">"$1"</span>')
+        // Numbers (orange)
+        .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="text-orange-400">$1</span>')
+        // Booleans (purple)
+        .replace(/:\s*(true|false)/g, ': <span class="text-purple-400">$1</span>')
+        // Null values (gray)
+        .replace(/:\s*(null)/g, ': <span class="text-muted-foreground">$1</span>')
+        // Brackets, braces, and commas (muted)
+        .replace(/([{}[\],])/g, '<span class="text-muted-foreground">$1</span>');
     };
+    
     return <div className="h-full overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-y-auto overscroll-contain p-4 font-mono text-sm">
-          {lines.map((line, index) => <div key={index} className="flex items-center min-h-[24px]">
-              <span className="w-8 text-xs text-muted-foreground text-right pr-2 select-none flex-shrink-0">
-                {index + 1}
-              </span>
-              <span className="flex-1" dangerouslySetInnerHTML={{
-            __html: highlightSyntax(line)
-          }} />
-            </div>)}
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 font-mono text-sm leading-relaxed">
+          {lines.map((line, index) => {
+            const trimmedLine = line.trimEnd();
+            const indentLevel = line.length - line.trimStart().length;
+            
+            return (
+              <div key={index} className="flex items-start min-h-[20px] hover:bg-muted/20 rounded px-1 -mx-1">
+                <span className="w-10 text-xs text-muted-foreground text-right pr-3 select-none flex-shrink-0 mt-0.5">
+                  {trimmedLine ? index + 1 : ''}
+                </span>
+                <div 
+                  className="flex-1 whitespace-pre"
+                  style={{ paddingLeft: `${indentLevel * 0.5}rem` }}
+                  dangerouslySetInnerHTML={{
+                    __html: highlightSyntax(trimmedLine)
+                  }} 
+                />
+              </div>
+            );
+          })}
         </div>
       </div>;
   };
