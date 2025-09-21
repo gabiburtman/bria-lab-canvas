@@ -524,7 +524,7 @@ const PromptComponent = ({
       />
       
       {/* Action buttons row */}
-      <div className="absolute bottom-3 right-3 flex gap-2 items-center">
+      <div className="absolute top-3 right-3 flex gap-2 items-center">
         {/* Upload buttons - only show in generate mode */}
         {panelMode === 'generate' && (
           <div className="flex gap-1">
