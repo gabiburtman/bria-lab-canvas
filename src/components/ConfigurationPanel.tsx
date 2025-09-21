@@ -493,114 +493,95 @@ const PromptComponent = ({
 
   return (
     <div className="rounded-lg bg-background overflow-hidden relative">
-      {panelMode === 'refine' ? (
-        <Tabs defaultValue="refine" className="w-full">
-          <TabsList className="w-full justify-start rounded-none bg-lab-surface h-10">
-            <TabsTrigger value="refine" className="text-sm">Refine</TabsTrigger>
-            <TabsTrigger value="input" className="text-sm">View input</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="refine" className="mt-0 relative">
-            <Textarea 
-              placeholder="Refine a specific visual element. Instruct on a change to the mood, colors, or details."
-              value={value}
-              onChange={e => onChange(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                if (value.trim() || panelMode === 'refine') {
-                    handleGenerate();
-                  }
-                }
-              }}
-              className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36"
-              style={{ minHeight: `${refinedContentHeight}px` }}
-            />
-            
-            {/* Surprise Me Button - positioned inside textarea */}
+      {panelMode === 'refine' && initialInput ? (
+        <div className="w-full bg-lab-surface border-b border-lab-border p-3">
+          <div className="text-xs text-lab-text-secondary uppercase tracking-wide mb-2">Original Input:</div>
+          <div className="text-sm text-lab-text-muted">
+            {initialInput.type === 'text' && typeof initialInput.data === 'string' ? 
+              initialInput.data.slice(0, 100) + (initialInput.data.length > 100 ? '...' : '') :
+              initialInput.type === 'image' ? 'Uploaded Image' :
+              initialInput.type === 'brief' ? 'Uploaded Brief' : 'Unknown input'
+            }
+          </div>
+        </div>
+      ) : null}
+      
+      {/* Single textarea for both modes */}
+      <Textarea 
+        placeholder={placeholder}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (value.trim()) {
+              handleGenerate();
+            }
+          }
+        }}
+        className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36"
+        style={{ minHeight: `${baseEditorHeight}px` }}
+      />
+      
+      {/* Action buttons row */}
+      <div className="absolute bottom-3 right-3 flex gap-2 items-center">
+        {/* Upload buttons - only show in generate mode */}
+        {panelMode === 'generate' && (
+          <div className="flex gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
-                  onClick={onSurpriseMe} 
+                  onClick={onUploadImage} 
                   disabled={isGenerating} 
                   variant="ghost" 
                   size="sm" 
-                  className="absolute top-2 right-2 w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
                 >
-                  <Wand2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Surprise me with a random prompt</p>
-              </TooltipContent>
-            </Tooltip>
-          </TabsContent>
-          
-          <TabsContent value="input" className="mt-0">
-            {renderViewInput()}
-          </TabsContent>
-        </Tabs>
-      ) : (
-        <>
-          <Textarea 
-            placeholder={placeholder}
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                if (value.trim()) {
-                  handleGenerate();
-                }
-              }
-            }}
-            className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36"
-            style={{ minHeight: `${baseEditorHeight}px` }}
-          />
-          
-          {/* Upload Image, Upload Document, and Surprise Me Buttons - positioned inside textarea */}
-          <div className="absolute top-2 right-2 flex items-center gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadImage} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
                   <Image className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Upload Image</p>
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="sm" onClick={onUploadDocument} className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200" disabled={isGenerating}>
-                  <FileText className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Brief</p>
+                <p>Upload image for analysis</p>
               </TooltipContent>
             </Tooltip>
             
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button 
-                  onClick={onSurpriseMe} 
+                  onClick={onUploadDocument} 
                   disabled={isGenerating} 
                   variant="ghost" 
-                  size="sm"
+                  size="sm" 
                   className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
                 >
-                  <Wand2 className="w-4 h-4" />
+                  <FileText className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Surprise me with a random prompt</p>
+                <p>Upload brief document</p>
               </TooltipContent>
             </Tooltip>
           </div>
-        </>
-      )}
+        )}
+         
+        {/* Surprise Me button */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button 
+              onClick={onSurpriseMe} 
+              disabled={isGenerating} 
+              variant="ghost" 
+              size="sm" 
+              className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
+            >
+              <Wand2 className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Surprise me with a random prompt</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
       
       {/* Controls Bar */}
       <TooltipProvider>
@@ -1038,16 +1019,15 @@ const ConfigurationPanel = ({
       const generatedJSONString = JSON.stringify(generatedJSON, null, 2);
       setJsonData(generatedJSONString);
 
-      // After first generation, switch to refine mode
+      // After first generation, capture initial input but stay in generate mode
       if (wasFirstGeneration) {
-        // Capture the initial input
+        // Just capture the initial input for potential future refine mode
         const currentPrompt = panelMode === 'refine' ? refinementPrompt : mainPrompt;
         if (currentPrompt.trim()) {
           setInitialInput({ type: 'text', data: currentPrompt });
           setOriginalPrompt(currentPrompt);
         }
-        // Switch to refine mode
-        setPanelMode('refine');
+        // Don't auto-switch to refine mode - user must manually click the Refine tab
       }
 
       // Mark some fields as updated, but exclude locked fields
@@ -1086,36 +1066,6 @@ const ConfigurationPanel = ({
         setRefinementPrompt("");
       }
     }, 3000);
-  };
-  const handleStartOver = () => {
-    setHasGenerated(false);
-    setPanelMode('generate');
-    setOriginalPrompt("");
-    setMainPrompt("");
-    setRefinementPrompt("");
-    setLastGeneratedSeed("");
-    setAspectRatio("1:1");
-    setSteps([30]);
-    setSeed("");
-    setResultsCount(4);
-    setJsonData(JSON.stringify(defaultJSON, null, 2));
-    setLockedFields(new Set());
-    setUpdatedFields(new Set());
-    setPreservedFields(new Set());
-    setIsGenerating(false);
-    setInitialInput(null);
-    
-    // Clean up uploaded file URLs to prevent memory leaks
-    if (uploadedImageUrl) {
-      URL.revokeObjectURL(uploadedImageUrl);
-      setUploadedImageUrl(null);
-    }
-    setUploadedBriefName(null);
-
-    // Clear the results panel without adding to history
-    if (onClearResults) {
-      onClearResults();
-    }
   };
   const handleFieldLock = (field: string, locked: boolean) => {
     const newLockedFields = new Set(lockedFields);
@@ -1334,11 +1284,8 @@ const ConfigurationPanel = ({
 
         {/* Action Buttons - Fixed at bottom */}
         <div className="flex-shrink-0 pt-4 border-t border-lab-border">
-          <div className="flex gap-3">
-            <Button onClick={handleStartOver} disabled={!hasGenerated} variant="outline" className="text-lab-text-secondary hover:text-lab-text-primary border-lab-border hover:border-lab-border-hover disabled:opacity-50 disabled:cursor-not-allowed">
-              Start Over
-            </Button>
-            <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
+          <div className="flex justify-center">
+            <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="w-full bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : panelMode === 'refine' ? "Refine" : hasGenerated ? "Regenerate" : "Generate"}
             </Button>
           </div>
