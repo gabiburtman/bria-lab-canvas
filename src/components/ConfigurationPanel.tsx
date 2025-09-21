@@ -493,19 +493,6 @@ const PromptComponent = ({
 
   return (
     <div className="rounded-lg bg-background overflow-hidden relative">
-      {panelMode === 'refine' && initialInput ? (
-        <div className="w-full bg-lab-surface border-b border-lab-border p-3">
-          <div className="text-xs text-lab-text-secondary uppercase tracking-wide mb-2">Original Input:</div>
-          <div className="text-sm text-lab-text-muted">
-            {initialInput.type === 'text' && typeof initialInput.data === 'string' ? 
-              initialInput.data.slice(0, 100) + (initialInput.data.length > 100 ? '...' : '') :
-              initialInput.type === 'image' ? 'Uploaded Image' :
-              initialInput.type === 'brief' ? 'Uploaded Brief' : 'Unknown input'
-            }
-          </div>
-        </div>
-      ) : null}
-      
       {/* Single textarea for both modes */}
       <Textarea 
         placeholder={placeholder}
