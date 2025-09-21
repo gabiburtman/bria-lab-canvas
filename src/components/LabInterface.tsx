@@ -53,11 +53,12 @@ const LabInterface = () => {
       steps: item.visualControls.steps,
       seed: item.visualControls.seed,
       jsonConfig: item.jsonConfig,
-      // Set refine mode to true when clicking on history items
-      isRefinementMode: true,
+      // Set panel mode to refine when clicking on history items
+      panelMode: 'refine',
       // Set the original prompt as initial input for the refine mode
       initialInput: { type: 'text', data: item.prompt },
-      originalPrompt: item.prompt
+      originalPrompt: item.prompt,
+      lastGeneratedSeed: item.visualControls.seed
     });
   }, []);
   const handleUploadImage = useCallback(() => {

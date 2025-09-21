@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Copy, Upload, FileText, Lock, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3 } from "lucide-react";
+import { Copy, Upload, FileText, Lock, Code, ArrowLeft, Image, ChevronDown, ChevronRight, Plus, Minus, Expand, Network, HelpCircle, Sparkles, Zap, Shield, Grid3X3, Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -20,6 +20,7 @@ interface StructuredPromptEditorProps {
   preservedFields?: Set<string>;
   forceStructuredView?: boolean;
   readOnly?: boolean;
+  onRefineClick?: () => void;
 }
 type ViewState = 'empty' | 'structured' | 'source';
 
@@ -35,7 +36,8 @@ const StructuredPromptEditor = ({
   updatedFields = new Set(),
   preservedFields = new Set(),
   forceStructuredView = false,
-  readOnly = false
+  readOnly = false,
+  onRefineClick
 }: StructuredPromptEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
@@ -1143,6 +1145,28 @@ const StructuredPromptEditor = ({
         </div>
         
         <div className="flex items-center gap-2">
+          {/* Refine button - only show if callback is provided */}
+          {onRefineClick && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="h-8 px-3 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground"
+                    onClick={onRefineClick}
+                  >
+                    <Edit className="w-3 h-3 mr-1" />
+                    Refine
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Switch to Refine mode to iterate on this prompt</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
