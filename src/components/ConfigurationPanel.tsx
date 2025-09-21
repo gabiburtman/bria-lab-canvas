@@ -1274,7 +1274,7 @@ const ConfigurationPanel = ({
         <div className="flex-shrink-0 pt-4 border-t border-lab-border">
           <div className="flex justify-center">
             <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="w-full bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
-              {isGenerating ? "Generating..." : panelMode === 'refine' ? "Refine" : hasGenerated ? "Regenerate" : "Generate"}
+              {isGenerating ? "Generating..." : panelMode === 'refine' ? "Refine" : "Generate"}
             </Button>
           </div>
         </div>
