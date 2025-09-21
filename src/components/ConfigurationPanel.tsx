@@ -377,7 +377,7 @@ const PromptComponent = ({
   onSurpriseMe,
   onTranslatePrompt,
   onUploadImage,
-  isRefinementMode = false,
+  panelMode = 'generate',
   initialInput
 }: {
   value: string;
@@ -404,7 +404,7 @@ const PromptComponent = ({
   onTranslatePrompt: () => void;
   onUploadImage: () => void;
   onUploadDocument: () => void;
-  isRefinementMode?: boolean;
+  panelMode?: 'generate' | 'refine';
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
 }) => {
   // Height constants to maintain exact same total height
@@ -493,7 +493,7 @@ const PromptComponent = ({
 
   return (
     <div className="rounded-lg bg-background overflow-hidden relative">
-      {isRefinementMode ? (
+      {panelMode === 'refine' ? (
         <Tabs defaultValue="refine" className="w-full">
           <TabsList className="w-full justify-start rounded-none bg-lab-surface h-10">
             <TabsTrigger value="refine" className="text-sm">Refine</TabsTrigger>
@@ -508,7 +508,7 @@ const PromptComponent = ({
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
-                if (value.trim() || isRefinementMode) {
+                if (value.trim() || panelMode === 'refine') {
                     handleGenerate();
                   }
                 }
@@ -549,7 +549,7 @@ const PromptComponent = ({
             onKeyDown={e => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (value.trim() || isRefinementMode) {
+                if (value.trim()) {
                   handleGenerate();
                 }
               }
@@ -744,8 +744,8 @@ const PromptComponent = ({
             {/* Show Structured Prompt Button */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button onClick={onTranslatePrompt} disabled={isGenerating || !isRefinementMode && !value.trim() || isRefinementMode && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
-                  Show Structured Prompt
+                <Button onClick={onTranslatePrompt} disabled={isGenerating || panelMode !== 'refine' && !value.trim() || panelMode === 'refine' && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
+                  {panelMode === 'refine' ? 'Update Structured Prompt' : 'Show Structured Prompt'}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -774,10 +774,11 @@ const ConfigurationPanel = ({
   onUploadDocument?: () => void;
 }) => {
   const [hasGenerated, setHasGenerated] = useState(false);
-  const [isRefinementMode, setIsRefinementMode] = useState(false);
+  const [panelMode, setPanelMode] = useState<'generate' | 'refine'>('generate');
   const [originalPrompt, setOriginalPrompt] = useState(initialConfig?.mainPrompt || "");
   const [mainPrompt, setMainPrompt] = useState(initialConfig?.mainPrompt || "");
   const [refinementPrompt, setRefinementPrompt] = useState("");
+  const [lastGeneratedSeed, setLastGeneratedSeed] = useState("");
   const [aspectRatio, setAspectRatio] = useState(initialConfig?.aspectRatio || "1:1");
   const [steps, setSteps] = useState([initialConfig?.steps || 30]);
   const [guidanceScale, setGuidanceScale] = useState([initialConfig?.guidanceScale || 5]);
@@ -804,11 +805,14 @@ const ConfigurationPanel = ({
       setJsonData(initialConfig.jsonConfig || JSON.stringify(defaultJSON, null, 2));
       
       // Handle refine mode activation from history
-      if (initialConfig.isRefinementMode) {
-        setIsRefinementMode(true);
+      if (initialConfig.panelMode === 'refine') {
+        setPanelMode('refine');
         setOriginalPrompt(initialConfig.originalPrompt || initialConfig.mainPrompt || "");
         if (initialConfig.initialInput) {
           setInitialInput(initialConfig.initialInput);
+        }
+        if (initialConfig.lastGeneratedSeed) {
+          setLastGeneratedSeed(initialConfig.lastGeneratedSeed);
         }
         // Clear refinement prompt to start fresh
         setRefinementPrompt("");
@@ -831,6 +835,9 @@ const ConfigurationPanel = ({
       setResultsCount(initialConfig.resultsCount || 4);
       if (initialConfig.jsonConfig) {
         setJsonData(initialConfig.jsonConfig);
+      }
+      if (initialConfig.lastGeneratedSeed) {
+        setLastGeneratedSeed(initialConfig.lastGeneratedSeed);
       }
     }
   }, [initialConfig]);
@@ -887,17 +894,17 @@ const ConfigurationPanel = ({
 
   // Handle translate prompt to structured prompt
   const handleTranslatePrompt = useCallback(() => {
-    const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
+    const currentPrompt = panelMode === 'refine' ? refinementPrompt : mainPrompt;
     if (!currentPrompt.trim()) return;
 
     // Capture the initial input if not already done
-    if (!isRefinementMode) {
+    if (panelMode === 'generate') {
       if (mainPrompt.trim()) {
         setInitialInput({ type: 'text', data: mainPrompt });
         setOriginalPrompt(mainPrompt);
       }
-      // Switch to refine mode by setting isRefinementMode to true
-      setIsRefinementMode(true);
+      // Switch to refine mode by setting panelMode to 'refine'
+      setPanelMode('refine');
     }
 
     // Clear previous highlights
@@ -923,18 +930,18 @@ const ConfigurationPanel = ({
       setPreservedFields(preservedFields);
 
       // Clear the refinement prompt if in refine mode
-      if (isRefinementMode) {
+      if (panelMode === 'refine') {
         setRefinementPrompt("");
       }
 
       // Hide loading state
       setIsProcessingFile(false);
     }, 1500); // 1.5 second delay to simulate processing
-  }, [isRefinementMode, refinementPrompt, mainPrompt, lockedFields]);
+  }, [panelMode, refinementPrompt, mainPrompt, lockedFields]);
 
   // Handle surprise me functionality
   const handleSurpriseMe = useCallback(() => {
-    if (isRefinementMode) {
+    if (panelMode === 'refine') {
       // In refinement mode - use refinement suggestions
       const randomRefinement = refinementSuggestions[Math.floor(Math.random() * refinementSuggestions.length)];
       setRefinementPrompt(randomRefinement);
@@ -943,7 +950,7 @@ const ConfigurationPanel = ({
       const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
       setMainPrompt(randomPrompt);
     }
-  }, [isRefinementMode]);
+  }, [panelMode]);
 
   // Helper function to get image dimensions based on aspect ratio
   const getImageDimensions = (aspectRatio: string) => {
@@ -1034,13 +1041,13 @@ const ConfigurationPanel = ({
       // After first generation, switch to refine mode
       if (wasFirstGeneration) {
         // Capture the initial input
-        const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
+        const currentPrompt = panelMode === 'refine' ? refinementPrompt : mainPrompt;
         if (currentPrompt.trim()) {
           setInitialInput({ type: 'text', data: currentPrompt });
           setOriginalPrompt(currentPrompt);
         }
         // Switch to refine mode
-        setIsRefinementMode(true);
+        setPanelMode('refine');
       }
 
       // Mark some fields as updated, but exclude locked fields
@@ -1055,7 +1062,7 @@ const ConfigurationPanel = ({
 
 // Generate concept-based mock images with correct aspect ratio
       const dimensions = getImageDimensions(aspectRatio);
-      const currentPrompt = isRefinementMode ? refinementPrompt : mainPrompt;
+      const currentPrompt = panelMode === 'refine' ? refinementPrompt : mainPrompt;
       const conceptImageId = getConceptImageId(currentPrompt);
       const mockImages = Array(resultsCount).fill(`https://picsum.photos/id/${conceptImageId}/${dimensions.width}/${dimensions.height}`);
 
@@ -1066,9 +1073,11 @@ const ConfigurationPanel = ({
         aspectRatio,
         steps: steps[0],
         seed: effectiveSeed, // Use the effective seed (either user-provided or generated)
+        lastGeneratedSeed: effectiveSeed,
         resultsCount,
         jsonConfig: generatedJSONString, // Use the actual generated JSON string
-        prompt: isRefinementMode ? refinementPrompt : mainPrompt
+        prompt: panelMode === 'refine' ? refinementPrompt : mainPrompt,
+        panelMode
       };
       if (onImagesGenerated) {
         onImagesGenerated(mockImages, config);
@@ -1080,10 +1089,11 @@ const ConfigurationPanel = ({
   };
   const handleStartOver = () => {
     setHasGenerated(false);
-    setIsRefinementMode(false);
+    setPanelMode('generate');
     setOriginalPrompt("");
     setMainPrompt("");
     setRefinementPrompt("");
+    setLastGeneratedSeed("");
     setAspectRatio("1:1");
     setSteps([30]);
     setSeed("");
@@ -1159,7 +1169,7 @@ const ConfigurationPanel = ({
     });
 
   // Switch to refine mode immediately
-  setIsRefinementMode(true);
+  setPanelMode('refine');
 
     // Simulate processing the image and extracting experiment spec
     setIsProcessingFile(true);
@@ -1225,7 +1235,7 @@ const ConfigurationPanel = ({
     });
 
   // Switch to refine mode immediately
-  setIsRefinementMode(true);
+  setPanelMode('refine');
 
     // Simulate processing the brief and extracting structured prompt
     setIsProcessingFile(true);
@@ -1257,14 +1267,28 @@ const ConfigurationPanel = ({
       <input ref={imageInputRef} type="file" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg" onChange={handleImageUpload} className="hidden" />
       <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.md,.rtf" onChange={handleDocumentUpload} className="hidden" />
 
+      {/* Mode Tabs - affects whole panel */}
+      <div className="flex-shrink-0 bg-lab-surface border-b border-lab-border">
+        <Tabs value={panelMode} onValueChange={(value) => setPanelMode(value as 'generate' | 'refine')} className="w-full">
+          <TabsList className="w-full justify-start rounded-none bg-lab-surface h-12 px-6">
+            <TabsTrigger value="generate" className="text-sm" disabled={!hasGenerated && panelMode === 'refine'}>
+              Generate
+            </TabsTrigger>
+            <TabsTrigger value="refine" className="text-sm" disabled={!hasGenerated}>
+              Refine
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       {/* Content */}
-      <div className="flex-1 flex flex-col min-h-0 p-6 gap-4">{/* Removed header, adjusted padding */}
+      <div className="flex-1 flex flex-col min-h-0 p-6 gap-4">
         {/* Prompt Section - Fixed height */}
         <div className="flex-shrink-0" style={{ height: '240px' }}>
           <PromptComponent
-            value={isRefinementMode ? refinementPrompt : mainPrompt} 
-            onChange={isRefinementMode ? setRefinementPrompt : setMainPrompt} 
-            placeholder={isRefinementMode ? "Refine with new instructions..." : "What's your objective? Describe it here, or start with an image or a brief."}
+            value={panelMode === 'refine' ? refinementPrompt : mainPrompt} 
+            onChange={panelMode === 'refine' ? setRefinementPrompt : setMainPrompt} 
+            placeholder={panelMode === 'refine' ? "Refine with new instructions..." : "What's your objective? Describe it here, or start with an image or a brief."}
             aspectRatio={aspectRatio} 
             aspectRatios={aspectRatios} 
             setAspectRatio={setAspectRatio} 
@@ -1283,7 +1307,7 @@ const ConfigurationPanel = ({
             onTranslatePrompt={handleTranslatePrompt} 
             onUploadImage={handleUploadImage}
             onUploadDocument={handleUploadDocument}
-            isRefinementMode={isRefinementMode}
+            panelMode={panelMode}
             initialInput={initialInput}
           />
         </div>
@@ -1291,7 +1315,20 @@ const ConfigurationPanel = ({
         {/* Structured Prompt Editor - Flexible height that grows */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} preservedFields={preservedFields} forceStructuredView={isRefinementMode || isGenerating} readOnly={true} />
+            <StructuredPromptEditor 
+              value={jsonData} 
+              onChange={setJsonData} 
+              isGenerating={isProcessingFile} 
+              lockedFields={lockedFields} 
+              onFieldLock={handleFieldLock} 
+              onBatchFieldLock={handleBatchFieldLock} 
+              onUploadImage={handleUploadImage} 
+              onUploadDocument={handleUploadDocument} 
+              updatedFields={updatedFields} 
+              preservedFields={preservedFields} 
+              forceStructuredView={panelMode === 'refine' || isGenerating} 
+              readOnly={true}
+            />
           </div>
         </div>
 
@@ -1302,7 +1339,7 @@ const ConfigurationPanel = ({
               Start Over
             </Button>
             <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="flex-1 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
-              {isGenerating ? "Generating..." : hasGenerated ? "Regenerate" : "Generate"}
+              {isGenerating ? "Generating..." : panelMode === 'refine' ? "Refine" : hasGenerated ? "Regenerate" : "Generate"}
             </Button>
           </div>
         </div>
