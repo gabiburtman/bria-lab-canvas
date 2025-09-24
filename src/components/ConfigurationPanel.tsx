@@ -957,6 +957,7 @@ const ConfigurationPanel = ({
     }
   };
   const handleGenerate = () => {
+    console.log('[ConfigurationPanel] handleGenerate', { mode: panelMode, hasGenerated, refinementPrompt });
     // Determine the effective seed to use for generation
     let effectiveSeed = seed;
     if (!seed.trim()) {
@@ -1046,6 +1047,7 @@ const ConfigurationPanel = ({
       }
       // Do not clear refinement prompt in refine mode
       if (hasGenerated && panelMode === 'generate') {
+        console.log('[ConfigurationPanel] Clearing refinement prompt after Generate run');
         setRefinementPrompt("");
       }
     }, 3000);
@@ -1208,6 +1210,7 @@ const ConfigurationPanel = ({
           
           // When switching to refine mode, clear the refinement prompt
           if (newMode === 'refine' && panelMode === 'generate') {
+            console.log('[ConfigurationPanel] Switched to Refine tab: clearing refinementPrompt');
             setRefinementPrompt(""); // Clear the prompt box only
           }
           
