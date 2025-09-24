@@ -56,7 +56,10 @@ const LabInterface = () => {
       // Set panel mode to refine when clicking on history items
       panelMode: 'refine',
       // Set the original prompt as initial input for the refine mode
-      initialInput: { type: 'text', data: item.prompt },
+      initialInput: {
+        type: 'text',
+        data: item.prompt
+      },
       originalPrompt: item.prompt,
       lastGeneratedSeed: item.visualControls.seed
     });
@@ -227,10 +230,7 @@ const LabInterface = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
-              <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
-                <UserCircle className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
+              
               <ThemeToggle />
               <DropdownMenuSeparator className="bg-lab-border" />
               <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
@@ -253,12 +253,7 @@ const LabInterface = () => {
           
           {/* Results Canvas with History Panel */}
           <div className="w-[48.5%] min-w-0 relative">
-            <ResultsCanvas 
-              images={images} 
-              isGenerating={isGenerating} 
-              structuredPromptUrl={currentConfig?.structuredPromptUrl}
-              seed={currentConfig?.seed || currentConfig?.lastGeneratedSeed}
-            />
+            <ResultsCanvas images={images} isGenerating={isGenerating} structuredPromptUrl={currentConfig?.structuredPromptUrl} seed={currentConfig?.seed || currentConfig?.lastGeneratedSeed} />
           </div>
           
           {/* History Panel - Normal layout when collapsed, overlay when expanded */}
