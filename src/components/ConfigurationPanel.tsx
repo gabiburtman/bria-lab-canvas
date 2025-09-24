@@ -1044,7 +1044,8 @@ const ConfigurationPanel = ({
       if (onImagesGenerated) {
         onImagesGenerated(mockImages, config);
       }
-      if (hasGenerated) {
+      // Do not clear refinement prompt in refine mode
+      if (hasGenerated && panelMode === 'generate') {
         setRefinementPrompt("");
       }
     }, 3000);
