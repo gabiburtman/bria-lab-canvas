@@ -404,7 +404,7 @@ const PromptComponent = ({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Upload image for analysis</p>
+                <p>Formats: .jpg, .jpeg, .png, .webp</p>
               </TooltipContent>
             </Tooltip>
             
