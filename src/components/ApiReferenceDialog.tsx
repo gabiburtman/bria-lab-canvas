@@ -325,7 +325,7 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
           <div className="w-80 flex-shrink-0 flex flex-col">
             <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-4 h-full flex flex-col">
               <h3 className="text-sm font-semibold text-gray-200 mb-4 uppercase tracking-wide">Examples</h3>
-              <div className="flex-1 space-y-2 flex flex-col">
+              <div className="space-y-2">
                 {Object.entries(examples).map(([key, example]) => {
                   const Icon = example.icon;
                   const isSelected = selectedExample === key;
