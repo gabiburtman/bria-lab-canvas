@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Copy, ExternalLink, Code, Wand2, RotateCcw, Edit } from "lucide-react";
@@ -305,24 +304,27 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-6xl h-[85vh] p-0 gap-0">
-        <div className="flex h-full">
-          {/* Sidebar */}
-          <div className="w-80 border-r border-border bg-muted/30">
-            <div className="p-6 border-b border-border">
-              <DialogTitle className="text-xl font-semibold mb-3">API Reference</DialogTitle>
+      <DialogContent className="max-w-6xl h-[85vh] bg-gray-900 border-gray-700 text-white">
+        <DialogHeader className="border-b border-gray-700 pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="text-2xl font-semibold text-white flex items-center gap-3 mb-2">
+                <Code className="w-6 h-6" />
+                API Reference
+              </DialogTitle>
               <div className="flex items-center gap-3">
-                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-300 dark:border-green-800 font-mono text-xs px-2 py-1">
-                  POST
-                </Badge>
-                <code className="text-sm text-muted-foreground font-mono">/v2/image/generate</code>
+                <span className="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-mono">POST</span>
+                <span className="font-mono text-gray-300">/v2/image/generate</span>
               </div>
             </div>
-            
-            <div className="p-6">
-              <h3 className="font-medium mb-4 text-sm uppercase tracking-wider text-muted-foreground">
-                Examples
-              </h3>
+          </div>
+        </DialogHeader>
+        
+        <div className="flex-1 overflow-hidden flex gap-6">
+          {/* Sidebar - Example Selection */}
+          <div className="w-80 flex-shrink-0">
+            <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-4">
+              <h3 className="text-sm font-semibold text-gray-200 mb-4 uppercase tracking-wide">Examples</h3>
               <div className="space-y-2">
                 {Object.entries(examples).map(([key, example]) => {
                   const Icon = example.icon;
@@ -333,15 +335,15 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
                       onClick={() => setSelectedExample(key as ExampleType)}
                       className={`w-full text-left p-4 rounded-lg border transition-all duration-200 ${
                         isSelected 
-                          ? 'bg-primary/10 border-primary/30 text-primary shadow-sm' 
-                          : 'bg-background border-border hover:bg-muted/50 hover:border-muted-foreground/20'
+                          ? 'bg-blue-600/20 border-blue-500/50 text-white' 
+                          : 'bg-gray-800/30 border-gray-600 text-gray-300 hover:bg-gray-700/50 hover:border-gray-500'
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${isSelected ? 'text-primary' : 'text-muted-foreground'}`} />
-                        <div className="min-w-0 flex-1">
-                          <div className="font-medium text-sm mb-1">{example.name}</div>
-                          <div className="text-xs text-muted-foreground leading-relaxed">
+                        <Icon className={`w-5 h-5 mt-0.5 ${isSelected ? 'text-blue-400' : 'text-gray-400'}`} />
+                        <div>
+                          <div className="font-medium text-sm">{example.name}</div>
+                          <div className="text-xs text-gray-400 mt-1 leading-relaxed">
                             {example.description}
                           </div>
                         </div>
@@ -352,27 +354,33 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
               </div>
             </div>
           </div>
-
-          {/* Main Content */}
-          <div className="flex-1 flex flex-col">
-            {/* Code Block Header */}
-            <div className="p-4 border-b border-border bg-muted/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium">Code Example</span>
-                  <div className="w-px h-4 bg-border"></div>
-                  <span className="text-xs text-muted-foreground capitalize">{examples[selectedExample].name}</span>
-                </div>
-                <div className="flex items-center gap-3">
+          
+          {/* Main Content - Code Area */}
+          <div className="flex-1 flex flex-col min-w-0">
+            {/* Code Block */}
+            <div className="flex-1 bg-gray-950 rounded-lg border border-gray-700 overflow-hidden">
+              {/* Code Header */}
+              <div className="flex items-center justify-between px-6 py-4 bg-gray-800/80 border-b border-gray-700">
+                <div className="flex items-center gap-4">
+                  <div className="flex space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="h-4 w-px bg-gray-600"></div>
                   <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                    <SelectTrigger className="w-36 h-9">
+                    <SelectTrigger className="w-36 bg-gray-700 border-gray-600 text-white h-8">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-gray-800 border-gray-600">
                       {Object.entries(languages).map(([key, lang]) => {
                         const Icon = lang.icon;
                         return (
-                          <SelectItem key={key} value={key}>
+                          <SelectItem 
+                            key={key} 
+                            value={key}
+                            className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                          >
                             <div className="flex items-center gap-2">
                               <Icon className="w-4 h-4" />
                               {lang.name}
@@ -382,52 +390,51 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
                       })}
                     </SelectContent>
                   </Select>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={copyToClipboard}
-                    className="h-9 px-3"
-                  >
-                    <Copy className="w-4 h-4 mr-2" />
-                    {copied ? "Copied!" : "Copy"}
-                  </Button>
                 </div>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={copyToClipboard}
+                  className="text-gray-300 hover:text-white hover:bg-gray-700 h-8"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  {copied ? "Copied!" : "Copy"}
+                </Button>
+              </div>
+              
+              {/* Code Content */}
+              <div className="overflow-auto">
+                <pre className="p-6 text-sm text-gray-100 leading-relaxed">
+                  <code className={`language-${selectedLanguage}`}>
+                    {currentCode}
+                  </code>
+                </pre>
               </div>
             </div>
             
-            {/* Code Content */}
-            <div className="flex-1 bg-muted/10 rounded-none overflow-auto">
-              <pre className="p-6 text-sm leading-relaxed font-mono">
-                <code className={`language-${selectedLanguage}`}>
-                  {currentCode}
-                </code>
-              </pre>
-            </div>
-            
             {/* Footer */}
-            <div className="p-4 border-t border-border bg-muted/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <Button
-                    variant="link"
-                    className="p-0 h-auto text-sm text-primary hover:text-primary/80"
-                    onClick={() => window.open('https://docs.bria.ai/', '_blank')}
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    API Documentation
-                  </Button>
-                  <Button
-                    variant="link"
-                    className="p-0 h-auto text-sm text-primary hover:text-primary/80"
-                    onClick={() => window.open('https://platform.bria.ai/', '_blank')}
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Get API Key
-                  </Button>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Need help? Check our documentation or contact support.
-                </div>
+            <div className="flex items-center justify-between pt-6 mt-4">
+              <div className="flex items-center gap-6">
+                <Button
+                  variant="link"
+                  className="text-blue-400 hover:text-blue-300 p-0 h-auto text-sm"
+                  onClick={() => window.open('https://docs.bria.ai/', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  API Documentation
+                </Button>
+                <Button
+                  variant="link"
+                  className="text-blue-400 hover:text-blue-300 p-0 h-auto text-sm"
+                  onClick={() => window.open('https://platform.bria.ai/', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Get API Key
+                </Button>
+              </div>
+              <div className="text-xs text-gray-500">
+                Need help? Check our documentation or contact support.
               </div>
             </div>
           </div>
