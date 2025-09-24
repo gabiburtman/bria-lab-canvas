@@ -544,11 +544,11 @@ const PromptComponent = ({
         </div>
       )}
       
-      {/* Single textarea for both modes */}
+      {/* Single textarea for both modes - disabled when files are uploaded */}
       <Textarea 
         placeholder={
           panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief')
-            ? "Add additional instructions or descriptions for your uploaded content..."
+            ? "Remove the uploaded content above to add text instructions..."
             : placeholder
         }
         value={value}
@@ -561,7 +561,8 @@ const PromptComponent = ({
             }
           }
         }}
-        className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36"
+        disabled={panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief')}
+        className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36 disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ minHeight: `${baseEditorHeight}px` }}
       />
       
