@@ -3,9 +3,10 @@ import ConfigurationPanel from "./ConfigurationPanel";
 import ResultsCanvas from "./ResultsCanvas";
 import HistoryPanel, { HistoryItem } from "./HistoryPanel";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ExternalLink, FileText, HelpCircle } from "lucide-react";
+import { ExternalLink, User, Settings, LogOut, FileText, HelpCircle, UserCircle } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 const LabInterface = () => {
   const [images, setImages] = useState<string[]>([]);
@@ -218,6 +219,26 @@ const LabInterface = () => {
             </Tooltip>
           </div>
 
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-9 h-9 rounded-full bg-transparent hover:bg-lab-border text-lab-text-secondary hover:text-lab-text-primary ml-2 transition-all duration-200">
+                <User className="w-4 h-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-lab-surface border-lab-border shadow-lab-glow-subtle">
+              <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
+                <UserCircle className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <ThemeToggle />
+              <DropdownMenuSeparator className="bg-lab-border" />
+              <DropdownMenuItem className="cursor-pointer hover:bg-lab-interactive-hover">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
