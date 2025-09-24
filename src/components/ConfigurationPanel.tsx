@@ -967,7 +967,7 @@ const ConfigurationPanel = ({
     if (!seed.trim()) {
       // Generate a random seed if none is provided
       effectiveSeed = Math.floor(Math.random() * 1000000).toString();
-      setSeed(effectiveSeed); // Update the UI to show the generated seed
+      // Don't update the UI seed field - keep it clean/random for next generation
     }
 
     const wasFirstGeneration = !hasGenerated;
@@ -1206,7 +1206,19 @@ const ConfigurationPanel = ({
 
       {/* Mode Tabs - affects whole panel */}
       <div className="flex-shrink-0 bg-lab-surface border-b border-lab-border">
-        <Tabs value={panelMode} onValueChange={(value) => setPanelMode(value as 'generate' | 'refine')} className="w-full">
+        <Tabs value={panelMode} onValueChange={(value) => {
+          const newMode = value as 'generate' | 'refine';
+          setPanelMode(newMode);
+          
+          // Seed management based on mode changes
+          if (newMode === 'refine' && lastGeneratedSeed && !seed.trim()) {
+            // When switching to refine mode after generation, preserve the last generated seed
+            setSeed(lastGeneratedSeed);
+          } else if (newMode === 'generate' && !seed.trim()) {
+            // When switching back to generate mode, clear seed to keep it random (unless user defined)
+            setSeed('');
+          }
+        }} className="w-full">
           <TabsList className="w-full justify-start rounded-none bg-lab-surface h-12 px-6">
             <TabsTrigger value="generate" className="text-sm" disabled={!hasGenerated && panelMode === 'refine'}>
               Generate
@@ -1265,7 +1277,13 @@ const ConfigurationPanel = ({
               preservedFields={preservedFields} 
               forceStructuredView={panelMode === 'refine' || isGenerating} 
               readOnly={true}
-              onRefineClick={() => setPanelMode('refine')}
+              onRefineClick={() => {
+                setPanelMode('refine');
+                // When switching to refine mode after generation, preserve the last generated seed
+                if (lastGeneratedSeed && !seed.trim()) {
+                  setSeed(lastGeneratedSeed);
+                }
+              }}
               currentMode={panelMode}
             />
           </div>
