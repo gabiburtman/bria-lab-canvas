@@ -500,71 +500,66 @@ const PromptComponent = ({
 
   return (
     <div className="rounded-lg bg-background overflow-hidden relative">
-      {/* Show uploaded files in generate mode */}
-      {panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') && (
-        <div className="p-3 border-b border-border bg-muted/30">
-          <div className="flex items-center gap-3">
-            {initialInput.type === 'image' && typeof initialInput.data === 'object' && (
-              <>
-                <img 
-                  src={initialInput.data.url} 
-                  alt="Uploaded reference" 
-                  className="w-12 h-12 object-cover rounded-md border border-border"
-                />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">
-                    {initialInput.data.name || 'Uploaded Image'}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Image uploaded</div>
+      {/* Show uploaded files directly in textarea area or regular textarea */}
+      {panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? (
+        <div 
+          className="flex items-center gap-3 p-4 bg-transparent border-none text-lab-text-primary"
+          style={{ minHeight: `${baseEditorHeight}px` }}
+        >
+          {initialInput.type === 'image' && typeof initialInput.data === 'object' && (
+            <>
+              <img 
+                src={initialInput.data.url} 
+                alt="Uploaded reference" 
+                className="w-16 h-16 object-cover rounded-md border border-border"
+              />
+              <div className="flex-1">
+                <div className="text-sm font-medium text-foreground">
+                  {initialInput.data.name || 'Uploaded Image'}
                 </div>
-              </>
-            )}
-            {initialInput.type === 'brief' && typeof initialInput.data === 'string' && (
-              <>
-                <div className="w-12 h-12 bg-muted rounded-md border border-border flex items-center justify-center">
-                  <FileText className="w-6 h-6 text-muted-foreground" />
+                <div className="text-xs text-muted-foreground">Image uploaded</div>
+              </div>
+            </>
+          )}
+          {initialInput.type === 'brief' && typeof initialInput.data === 'string' && (
+            <>
+              <div className="w-16 h-16 bg-muted rounded-md border border-border flex items-center justify-center">
+                <FileText className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-foreground">
+                  {initialInput.data}
                 </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">
-                    {initialInput.data}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Document uploaded</div>
-                </div>
-              </>
-            )}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={removeUpload}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+                <div className="text-xs text-muted-foreground">Document uploaded</div>
+              </div>
+            </>
+          )}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={removeUpload}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <X className="w-4 h-4" />
+          </Button>
         </div>
-      )}
-      
-      {/* Single textarea for both modes - disabled when files are uploaded */}
-      <Textarea 
-        placeholder={
-          panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief')
-            ? "Remove the uploaded content above to add text instructions..."
-            : placeholder
-        }
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        onKeyDown={e => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (value.trim() || (initialInput && (initialInput.type === 'image' || initialInput.type === 'brief'))) {
-              handleGenerate();
+      ) : (
+        <Textarea 
+          placeholder={placeholder}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              if (value.trim()) {
+                handleGenerate();
+              }
             }
-          }
-        }}
-        disabled={panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief')}
-        className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36 disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{ minHeight: `${baseEditorHeight}px` }}
-      />
+          }}
+          className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36"
+          style={{ minHeight: `${baseEditorHeight}px` }}
+        />
+      )}
       
       {/* Action buttons row */}
       <div className="absolute top-3 right-3 flex gap-2 items-center">
