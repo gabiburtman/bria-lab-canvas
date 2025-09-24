@@ -304,135 +304,138 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-5xl h-[85vh] bg-gray-900 border-gray-700 text-white">
-        <DialogHeader className="border-b border-gray-700 pb-4">
-          <DialogTitle className="text-xl font-semibold text-white flex items-center gap-2">
-            <Code className="w-5 h-5" />
-            API Reference - GAIA Image Generation
-          </DialogTitle>
-          <div className="text-sm text-gray-400 mt-2">
-            <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-mono mr-3">POST</span>
-            <span className="font-mono">/v2/image/generate</span>
+      <DialogContent className="max-w-6xl h-[85vh] bg-gray-900 border-gray-700 text-white">
+        <DialogHeader className="border-b border-gray-700 pb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="text-2xl font-semibold text-white flex items-center gap-3 mb-2">
+                <Code className="w-6 h-6" />
+                API Reference
+              </DialogTitle>
+              <div className="flex items-center gap-3">
+                <span className="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-mono">POST</span>
+                <span className="font-mono text-gray-300">/v2/image/generate</span>
+              </div>
+            </div>
           </div>
         </DialogHeader>
         
-        <div className="flex-1 overflow-hidden flex flex-col">
-          {/* Example Type and Language Selectors */}
-          <div className="flex items-center justify-between mb-4 gap-4">
-            <div className="flex items-center gap-4">
-              <label className="text-sm font-medium text-gray-300">Example:</label>
-              <Select value={selectedExample} onValueChange={(value) => setSelectedExample(value as ExampleType)}>
-                <SelectTrigger className="w-64 bg-gray-800 border-gray-600 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
-                  {Object.entries(examples).map(([key, example]) => {
-                    const Icon = example.icon;
-                    return (
-                      <SelectItem 
-                        key={key} 
-                        value={key}
-                        className="text-white hover:bg-gray-700 focus:bg-gray-700"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon className="w-4 h-4" />
-                          {example.name}
+        <div className="flex-1 overflow-hidden flex gap-6">
+          {/* Sidebar - Example Selection */}
+          <div className="w-80 flex-shrink-0">
+            <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-4">
+              <h3 className="text-sm font-semibold text-gray-200 mb-4 uppercase tracking-wide">Examples</h3>
+              <div className="space-y-2">
+                {Object.entries(examples).map(([key, example]) => {
+                  const Icon = example.icon;
+                  const isSelected = selectedExample === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setSelectedExample(key as ExampleType)}
+                      className={`w-full text-left p-4 rounded-lg border transition-all duration-200 ${
+                        isSelected 
+                          ? 'bg-blue-600/20 border-blue-500/50 text-white' 
+                          : 'bg-gray-800/30 border-gray-600 text-gray-300 hover:bg-gray-700/50 hover:border-gray-500'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Icon className={`w-5 h-5 mt-0.5 ${isSelected ? 'text-blue-400' : 'text-gray-400'}`} />
+                        <div>
+                          <div className="font-medium text-sm">{example.name}</div>
+                          <div className="text-xs text-gray-400 mt-1 leading-relaxed">
+                            {example.description}
+                          </div>
                         </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          
+          {/* Main Content - Code Area */}
+          <div className="flex-1 flex flex-col min-w-0">
+            {/* Code Block */}
+            <div className="flex-1 bg-gray-950 rounded-lg border border-gray-700 overflow-hidden">
+              {/* Code Header */}
+              <div className="flex items-center justify-between px-6 py-4 bg-gray-800/80 border-b border-gray-700">
+                <div className="flex items-center gap-4">
+                  <div className="flex space-x-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="h-4 w-px bg-gray-600"></div>
+                  <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+                    <SelectTrigger className="w-36 bg-gray-700 border-gray-600 text-white h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-800 border-gray-600">
+                      {Object.entries(languages).map(([key, lang]) => {
+                        const Icon = lang.icon;
+                        return (
+                          <SelectItem 
+                            key={key} 
+                            value={key}
+                            className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Icon className="w-4 h-4" />
+                              {lang.name}
+                            </div>
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={copyToClipboard}
+                  className="text-gray-300 hover:text-white hover:bg-gray-700 h-8"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  {copied ? "Copied!" : "Copy"}
+                </Button>
+              </div>
               
-              <label className="text-sm font-medium text-gray-300">Language:</label>
-              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger className="w-40 bg-gray-800 border-gray-600 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-800 border-gray-600">
-                  {Object.entries(languages).map(([key, lang]) => {
-                    const Icon = lang.icon;
-                    return (
-                      <SelectItem 
-                        key={key} 
-                        value={key}
-                        className="text-white hover:bg-gray-700 focus:bg-gray-700"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon className="w-4 h-4" />
-                          {lang.name}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
+              {/* Code Content */}
+              <div className="overflow-auto">
+                <pre className="p-6 text-sm text-gray-100 leading-relaxed">
+                  <code className={`language-${selectedLanguage}`}>
+                    {currentCode}
+                  </code>
+                </pre>
+              </div>
             </div>
             
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={copyToClipboard}
-              className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {copied ? "Copied!" : "Copy"}
-            </Button>
-          </div>
-
-          {/* Example Description */}
-          <div className="mb-4 p-3 bg-gray-800 rounded-lg border border-gray-700">
-            <div className="flex items-center gap-2 mb-1">
-              <ExampleIcon className="w-4 h-4 text-blue-400" />
-              <span className="font-medium text-white">{currentExample.name}</span>
-            </div>
-            <p className="text-sm text-gray-400">{currentExample.description}</p>
-          </div>
-          
-          {/* Code Block */}
-          <div className="flex-1 overflow-auto">
-            <div className="bg-gray-950 rounded-lg border border-gray-700 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700">
-                <div className="flex items-center gap-2">
-                  <IconComp className="w-4 h-4" />
-                  <span className="text-sm font-medium">{currentLanguage.name}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                </div>
+            {/* Footer */}
+            <div className="flex items-center justify-between pt-6 mt-4">
+              <div className="flex items-center gap-6">
+                <Button
+                  variant="link"
+                  className="text-blue-400 hover:text-blue-300 p-0 h-auto text-sm"
+                  onClick={() => window.open('https://docs.bria.ai/', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  API Documentation
+                </Button>
+                <Button
+                  variant="link"
+                  className="text-blue-400 hover:text-blue-300 p-0 h-auto text-sm"
+                  onClick={() => window.open('https://platform.bria.ai/', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Get API Key
+                </Button>
               </div>
-              <pre className="p-4 text-sm text-gray-100 overflow-auto leading-relaxed">
-                <code className={`language-${selectedLanguage}`}>
-                  {currentCode}
-                </code>
-              </pre>
-            </div>
-          </div>
-          
-          {/* Footer Links */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-4">
-            <div className="flex items-center gap-4 text-sm">
-              <Button
-                variant="link"
-                className="text-blue-400 hover:text-blue-300 p-0 h-auto"
-                onClick={() => window.open('https://docs.bria.ai/', '_blank')}
-              >
-                <ExternalLink className="w-4 h-4 mr-1" />
-                API Documentation
-              </Button>
-              <Button
-                variant="link"
-                className="text-blue-400 hover:text-blue-300 p-0 h-auto"
-                onClick={() => window.open('https://platform.bria.ai/', '_blank')}
-              >
-                <ExternalLink className="w-4 h-4 mr-1" />
-                Get API Key
-              </Button>
-            </div>
-            <div className="text-xs text-gray-500">
-              Need help? Check our documentation or contact support.
+              <div className="text-xs text-gray-500">
+                Need help? Check our documentation or contact support.
+              </div>
             </div>
           </div>
         </div>
