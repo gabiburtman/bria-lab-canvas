@@ -69,33 +69,16 @@ const getRandomItem = <T,>(array: T[]): T => {
 
 // Function to extract image concepts from prompt
 const extractImageConcepts = (prompt: string): string[] => {
-  const concepts = [
-    'nature', 'landscape', 'forest', 'mountain', 'ocean', 'beach', 'sunset', 'sunrise',
-    'city', 'urban', 'building', 'architecture', 'street', 'road', 'bridge',
-    'person', 'people', 'portrait', 'face', 'woman', 'man', 'child',
-    'animal', 'cat', 'dog', 'bird', 'horse', 'wildlife',
-    'flower', 'plant', 'tree', 'garden', 'park',
-    'food', 'coffee', 'restaurant', 'kitchen',
-    'technology', 'computer', 'phone', 'car', 'vehicle',
-    'art', 'painting', 'music', 'book', 'library',
-    'water', 'river', 'lake', 'rain', 'snow', 'cloud', 'sky',
-    'light', 'shadow', 'fire', 'candle'
-  ];
-  
+  const concepts = ['nature', 'landscape', 'forest', 'mountain', 'ocean', 'beach', 'sunset', 'sunrise', 'city', 'urban', 'building', 'architecture', 'street', 'road', 'bridge', 'person', 'people', 'portrait', 'face', 'woman', 'man', 'child', 'animal', 'cat', 'dog', 'bird', 'horse', 'wildlife', 'flower', 'plant', 'tree', 'garden', 'park', 'food', 'coffee', 'restaurant', 'kitchen', 'technology', 'computer', 'phone', 'car', 'vehicle', 'art', 'painting', 'music', 'book', 'library', 'water', 'river', 'lake', 'rain', 'snow', 'cloud', 'sky', 'light', 'shadow', 'fire', 'candle'];
   const promptLower = prompt.toLowerCase();
-  const foundConcepts = concepts.filter(concept => 
-    promptLower.includes(concept) || 
-    promptLower.includes(concept + 's') || 
-    promptLower.includes(concept + 'ing')
-  );
-  
+  const foundConcepts = concepts.filter(concept => promptLower.includes(concept) || promptLower.includes(concept + 's') || promptLower.includes(concept + 'ing'));
   return foundConcepts.length > 0 ? foundConcepts : ['nature']; // Default to nature if no concepts found
 };
 
 // Function to get concept-based image ID from picsum.photos
 const getConceptImageId = (prompt: string): number => {
   const concepts = extractImageConcepts(prompt);
-  
+
   // Curated picsum.photos image IDs mapped to concepts
   const conceptMap: Record<string, number[]> = {
     nature: [1018, 1025, 1026, 1036],
@@ -157,7 +140,7 @@ const getConceptImageId = (prompt: string): number => {
     fire: [734, 740, 757, 775],
     candle: [734, 740, 757, 775]
   };
-  
+
   // Get a random ID from the first matching concept, or default nature concept
   const primaryConcept = concepts[0];
   const conceptIds = conceptMap[primaryConcept] || conceptMap.nature;
@@ -166,160 +149,48 @@ const getConceptImageId = (prompt: string): number => {
 
 // Function to generate varied structured prompt data
 const generateVariedStructuredPrompt = () => {
-  const descriptions = [
-    "A serene mountain landscape at sunrise with vibrant colors",
-    "A bustling city street at night with neon reflections",
-    "A mystical forest clearing with ethereal lighting",
-    "A cozy café interior with warm ambient lighting",
-    "A futuristic laboratory with holographic displays",
-    "A vintage library filled with ancient books",
-    "A tranquil beach scene with crystal clear waters",
-    "A dramatic stormy sky over rolling hills",
-    "A modern architectural marvel with geometric patterns",
-    "A whimsical garden with exotic flowers"
-  ];
-
-  const objects = [
-    {
-      "description": "Majestic snow-capped mountain peak",
-      "location": "Center background of the image",
-      "relationship": "Dominates the skyline",
-      "relative_size": "Large, occupying 60% of the frame",
-      "shape_and_color": "Triangular peak with white snow and gray rock faces",
-      "texture": "Rocky with smooth snow patches",
-      "appearance_details": "Sharp edges with dramatic shadows",
-      "pose": "Static mountain formation",
-      "expression": "N/A",
-      "clothing": "N/A",
-      "action": "Standing majestically",
-      "gender": "N/A",
-      "skin_tone_and_texture": "N/A",
-      "orientation": "Vertical peak pointing upward",
-      "number_of_objects": "1 main peak with 2 smaller peaks"
-    },
-    {
-      "description": "Elegant figure walking through the scene",
-      "location": "Center-left of the composition",
-      "relationship": "Main focal point of the image",
-      "relative_size": "Medium, about 30% of frame height",
-      "shape_and_color": "Graceful silhouette in flowing garments",
-      "texture": "Soft fabric with subtle wrinkles",
-      "appearance_details": "Confident posture with natural movement",
-      "pose": "Mid-stride walking pose",
-      "expression": "Serene and contemplative",
-      "clothing": "Flowing coat in earth tones",
-      "action": "Walking purposefully",
-      "gender": "Androgynous",
-      "skin_tone_and_texture": "Warm medium tone with natural highlights",
-      "orientation": "Profile view facing right",
-      "number_of_objects": "1 person with subtle shadow"
-    }
-  ];
-
-  const backgrounds = [
-    "Alpine mountain range during golden hour with clear sky",
-    "Urban cityscape with towering skyscrapers and busy streets",
-    "Dense forest with shafts of sunlight filtering through leaves",
-    "Minimalist interior with clean lines and natural materials",
-    "Futuristic environment with glowing panels and sleek surfaces",
-    "Classic library setting with wooden shelves and vintage furniture",
-    "Tropical paradise with palm trees and turquoise water",
-    "Dramatic landscape with rolling clouds and open fields",
-    "Modern architectural space with glass and steel elements",
-    "Enchanted garden with lush vegetation and magical atmosphere"
-  ];
-
-  const lightingConditions = [
-    "Golden hour sunrise lighting",
-    "Dramatic studio lighting with key and fill",
-    "Soft natural window lighting",
-    "Moody evening twilight",
-    "Bright midday sun with harsh shadows",
-    "Warm candlelight ambiance",
-    "Cool blue moonlight",
-    "Colorful neon lighting",
-    "Soft overcast daylight",
-    "Dramatic rim lighting"
-  ];
-
-  const lightingDirections = [
-    "Side lighting from the left",
-    "Backlighting creating silhouettes",
-    "Top-down overhead lighting",
-    "Front lighting with even illumination",
-    "Three-quarter lighting for dimension",
-    "Rim lighting from behind",
-    "Window lighting from the right",
-    "Multiple light sources",
-    "Bounced soft lighting",
-    "Directional spotlight"
-  ];
-
-  const colorSchemes = [
-    "Warm oranges and yellows contrasting with cool blues",
-    "Monochromatic blues with subtle variations",
-    "High contrast black and white with red accents",
-    "Earthy browns and greens with gold highlights",
-    "Vibrant purples and magentas",
-    "Muted pastels with soft transitions",
-    "Bold primary colors with strong saturation",
-    "Vintage sepia tones with cream highlights",
-    "Cool grays and silvers with blue undertones",
-    "Rich jewel tones with deep shadows"
-  ];
-
-  const moods = [
-    "Peaceful, inspiring, and majestic",
-    "Dynamic, energetic, and urban",
-    "Mysterious, ethereal, and contemplative",
-    "Cozy, intimate, and welcoming",
-    "Futuristic, sleek, and innovative",
-    "Nostalgic, scholarly, and timeless",
-    "Relaxing, tropical, and carefree",
-    "Dramatic, powerful, and emotional",
-    "Clean, modern, and sophisticated",
-    "Whimsical, magical, and enchanting"
-  ];
-
-  const cameraAngles = [
-    "Low angle looking up at the mountain",
-    "High angle bird's eye view",
-    "Eye level straight on perspective",
-    "Dutch angle for dynamic tension",
-    "Extreme close-up detail shot",
-    "Wide establishing shot",
-    "Medium shot with balanced framing",
-    "Over-the-shoulder perspective",
-    "Worm's eye view from below",
-    "Aerial drone perspective"
-  ];
-
-  const styleMediums = [
-    "Photorealistic digital photography",
-    "Oil painting with visible brushstrokes",
-    "Watercolor with soft bleeding effects",
-    "Digital art with clean vector lines",
-    "Charcoal sketch with textural elements",
-    "Acrylic painting with bold colors",
-    "Vintage film photography",
-    "Modern digital illustration",
-    "Mixed media collage",
-    "Hyperrealistic rendering"
-  ];
-
-  const contexts = [
-    "Nature photography showcasing the beauty of mountain landscapes",
-    "Street photography capturing urban life and energy",
-    "Fine art photography exploring light and shadow",
-    "Portrait photography emphasizing human emotion",
-    "Architectural photography highlighting design elements",
-    "Travel photography documenting cultural experiences",
-    "Commercial photography for advertising purposes",
-    "Editorial photography telling a story",
-    "Documentary photography capturing real moments",
-    "Conceptual photography expressing abstract ideas"
-  ];
-
+  const descriptions = ["A serene mountain landscape at sunrise with vibrant colors", "A bustling city street at night with neon reflections", "A mystical forest clearing with ethereal lighting", "A cozy café interior with warm ambient lighting", "A futuristic laboratory with holographic displays", "A vintage library filled with ancient books", "A tranquil beach scene with crystal clear waters", "A dramatic stormy sky over rolling hills", "A modern architectural marvel with geometric patterns", "A whimsical garden with exotic flowers"];
+  const objects = [{
+    "description": "Majestic snow-capped mountain peak",
+    "location": "Center background of the image",
+    "relationship": "Dominates the skyline",
+    "relative_size": "Large, occupying 60% of the frame",
+    "shape_and_color": "Triangular peak with white snow and gray rock faces",
+    "texture": "Rocky with smooth snow patches",
+    "appearance_details": "Sharp edges with dramatic shadows",
+    "pose": "Static mountain formation",
+    "expression": "N/A",
+    "clothing": "N/A",
+    "action": "Standing majestically",
+    "gender": "N/A",
+    "skin_tone_and_texture": "N/A",
+    "orientation": "Vertical peak pointing upward",
+    "number_of_objects": "1 main peak with 2 smaller peaks"
+  }, {
+    "description": "Elegant figure walking through the scene",
+    "location": "Center-left of the composition",
+    "relationship": "Main focal point of the image",
+    "relative_size": "Medium, about 30% of frame height",
+    "shape_and_color": "Graceful silhouette in flowing garments",
+    "texture": "Soft fabric with subtle wrinkles",
+    "appearance_details": "Confident posture with natural movement",
+    "pose": "Mid-stride walking pose",
+    "expression": "Serene and contemplative",
+    "clothing": "Flowing coat in earth tones",
+    "action": "Walking purposefully",
+    "gender": "Androgynous",
+    "skin_tone_and_texture": "Warm medium tone with natural highlights",
+    "orientation": "Profile view facing right",
+    "number_of_objects": "1 person with subtle shadow"
+  }];
+  const backgrounds = ["Alpine mountain range during golden hour with clear sky", "Urban cityscape with towering skyscrapers and busy streets", "Dense forest with shafts of sunlight filtering through leaves", "Minimalist interior with clean lines and natural materials", "Futuristic environment with glowing panels and sleek surfaces", "Classic library setting with wooden shelves and vintage furniture", "Tropical paradise with palm trees and turquoise water", "Dramatic landscape with rolling clouds and open fields", "Modern architectural space with glass and steel elements", "Enchanted garden with lush vegetation and magical atmosphere"];
+  const lightingConditions = ["Golden hour sunrise lighting", "Dramatic studio lighting with key and fill", "Soft natural window lighting", "Moody evening twilight", "Bright midday sun with harsh shadows", "Warm candlelight ambiance", "Cool blue moonlight", "Colorful neon lighting", "Soft overcast daylight", "Dramatic rim lighting"];
+  const lightingDirections = ["Side lighting from the left", "Backlighting creating silhouettes", "Top-down overhead lighting", "Front lighting with even illumination", "Three-quarter lighting for dimension", "Rim lighting from behind", "Window lighting from the right", "Multiple light sources", "Bounced soft lighting", "Directional spotlight"];
+  const colorSchemes = ["Warm oranges and yellows contrasting with cool blues", "Monochromatic blues with subtle variations", "High contrast black and white with red accents", "Earthy browns and greens with gold highlights", "Vibrant purples and magentas", "Muted pastels with soft transitions", "Bold primary colors with strong saturation", "Vintage sepia tones with cream highlights", "Cool grays and silvers with blue undertones", "Rich jewel tones with deep shadows"];
+  const moods = ["Peaceful, inspiring, and majestic", "Dynamic, energetic, and urban", "Mysterious, ethereal, and contemplative", "Cozy, intimate, and welcoming", "Futuristic, sleek, and innovative", "Nostalgic, scholarly, and timeless", "Relaxing, tropical, and carefree", "Dramatic, powerful, and emotional", "Clean, modern, and sophisticated", "Whimsical, magical, and enchanting"];
+  const cameraAngles = ["Low angle looking up at the mountain", "High angle bird's eye view", "Eye level straight on perspective", "Dutch angle for dynamic tension", "Extreme close-up detail shot", "Wide establishing shot", "Medium shot with balanced framing", "Over-the-shoulder perspective", "Worm's eye view from below", "Aerial drone perspective"];
+  const styleMediums = ["Photorealistic digital photography", "Oil painting with visible brushstrokes", "Watercolor with soft bleeding effects", "Digital art with clean vector lines", "Charcoal sketch with textural elements", "Acrylic painting with bold colors", "Vintage film photography", "Modern digital illustration", "Mixed media collage", "Hyperrealistic rendering"];
+  const contexts = ["Nature photography showcasing the beauty of mountain landscapes", "Street photography capturing urban life and energy", "Fine art photography exploring light and shadow", "Portrait photography emphasizing human emotion", "Architectural photography highlighting design elements", "Travel photography documenting cultural experiences", "Commercial photography for advertising purposes", "Editorial photography telling a story", "Documentary photography capturing real moments", "Conceptual photography expressing abstract ideas"];
   return {
     "short_description": getRandomItem(descriptions),
     "objects": [getRandomItem(objects)],
@@ -407,7 +278,13 @@ const PromptComponent = ({
   onUploadImage: () => void;
   onUploadDocument: () => void;
   panelMode?: 'generate' | 'refine';
-  initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
+  initialInput?: {
+    type: 'text' | 'image' | 'brief';
+    data: string | {
+      url: string;
+      name?: string;
+    };
+  } | null;
   onRemoveUpload?: () => void;
   isProcessingFile?: boolean;
 }) => {
@@ -415,50 +292,34 @@ const PromptComponent = ({
   const baseEditorHeight = 180; // Increased from 120 to make prompt field bigger
   const tabsBarHeight = 40;
   const refinedContentHeight = baseEditorHeight - tabsBarHeight;
-  
   const renderViewInput = () => {
-    const contentStyle = { minHeight: `${refinedContentHeight}px` };
-    
+    const contentStyle = {
+      minHeight: `${refinedContentHeight}px`
+    };
     if (!initialInput) {
-      return (
-        <div 
-          className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
-          style={contentStyle}
-        >
+      return <div className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent" style={contentStyle}>
           <p className="text-sm italic">No original input</p>
-        </div>
-      );
+        </div>;
     }
-    
+
     // Handle different input types
     if (initialInput.type === 'image' && typeof initialInput.data === 'object') {
-      const imageData = initialInput.data as { url: string; name?: string };
-      return (
-        <div 
-          className="p-4 bg-transparent flex flex-col gap-3"
-          style={contentStyle}
-        >
+      const imageData = initialInput.data as {
+        url: string;
+        name?: string;
+      };
+      return <div className="p-4 bg-transparent flex flex-col gap-3" style={contentStyle}>
           <div className="text-sm text-lab-text-muted mb-2">Uploaded Image:</div>
           <div className="flex items-center gap-3">
-            <img 
-              src={imageData.url} 
-              alt="Uploaded reference" 
-              className="w-16 h-16 object-cover rounded-lg border border-lab-border"
-            />
+            <img src={imageData.url} alt="Uploaded reference" className="w-16 h-16 object-cover rounded-lg border border-lab-border" />
             <div className="text-sm text-lab-text-secondary">
               {imageData.name || 'Uploaded Image'}
             </div>
           </div>
-        </div>
-      );
+        </div>;
     }
-    
     if (initialInput.type === 'brief' && typeof initialInput.data === 'string') {
-      return (
-        <div 
-          className="p-4 bg-transparent flex flex-col gap-3"
-          style={contentStyle}
-        >
+      return <div className="p-4 bg-transparent flex flex-col gap-3" style={contentStyle}>
           <div className="text-sm text-lab-text-muted mb-2">Uploaded Brief:</div>
           <div className="flex items-center gap-3">
             <div className="w-16 h-16 bg-lab-interactive-hover rounded-lg border border-lab-border flex items-center justify-center">
@@ -468,71 +329,46 @@ const PromptComponent = ({
               {initialInput.data}
             </div>
           </div>
-        </div>
-      );
+        </div>;
     }
-    
+
     // Handle text input
     if (initialInput.type === 'text' && typeof initialInput.data === 'string' && initialInput.data.trim()) {
-      return (
-        <div 
-          className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60"
-          style={contentStyle}
-        >
+      return <div className="resize-none bg-transparent border-none text-lab-text-muted p-4 whitespace-pre-wrap overflow-auto cursor-default select-text text-sm opacity-60" style={contentStyle}>
           {initialInput.data}
-        </div>
-      );
+        </div>;
     }
-    
+
     // Fallback for empty or invalid input
-    return (
-      <div 
-        className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent"
-        style={contentStyle}
-      >
+    return <div className="p-4 flex items-center justify-center text-lab-text-muted bg-transparent" style={contentStyle}>
         <p className="text-sm italic">No original input</p>
-      </div>
-    );
+      </div>;
   };
 
   // Helper function to remove uploaded files
   const removeUpload = () => {
     onRemoveUpload?.();
   };
-
-  return (
-    <div className="rounded-lg bg-background overflow-hidden relative">
+  return <div className="rounded-lg bg-background overflow-hidden relative">
       {/* Show loading state when processing files */}
-      {isProcessingFile ? (
-        <div 
-          className="flex items-center justify-center gap-3 p-4 bg-transparent border-none text-lab-text-primary"
-          style={{ minHeight: `${baseEditorHeight}px` }}
-        >
+      {isProcessingFile ? <div className="flex items-center justify-center gap-3 p-4 bg-transparent border-none text-lab-text-primary" style={{
+      minHeight: `${baseEditorHeight}px`
+    }}>
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
           <div className="text-sm text-muted-foreground">Processing uploaded content and generating structured prompt...</div>
-        </div>
-      ) : panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? (
-        <div 
-          className="flex items-center gap-3 p-4 bg-transparent border-none text-lab-text-primary"
-          style={{ minHeight: `${baseEditorHeight}px` }}
-        >
-          {initialInput.type === 'image' && typeof initialInput.data === 'object' && (
-            <>
-              <img 
-                src={initialInput.data.url} 
-                alt="Uploaded reference" 
-                className="w-16 h-16 object-cover rounded-md border border-border"
-              />
+        </div> : panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? <div className="flex items-center gap-3 p-4 bg-transparent border-none text-lab-text-primary" style={{
+      minHeight: `${baseEditorHeight}px`
+    }}>
+          {initialInput.type === 'image' && typeof initialInput.data === 'object' && <>
+              <img src={initialInput.data.url} alt="Uploaded reference" className="w-16 h-16 object-cover rounded-md border border-border" />
               <div className="flex-1">
                 <div className="text-sm font-medium text-foreground">
                   {initialInput.data.name || 'Uploaded Image'}
                 </div>
                 <div className="text-xs text-muted-foreground">Image uploaded</div>
               </div>
-            </>
-          )}
-          {initialInput.type === 'brief' && typeof initialInput.data === 'string' && (
-            <>
+            </>}
+          {initialInput.type === 'brief' && typeof initialInput.data === 'string' && <>
               <div className="w-16 h-16 bg-muted rounded-md border border-border flex items-center justify-center">
                 <FileText className="w-6 h-6 text-muted-foreground" />
               </div>
@@ -542,49 +378,28 @@ const PromptComponent = ({
                 </div>
                 <div className="text-xs text-muted-foreground">Document uploaded</div>
               </div>
-            </>
-          )}
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={removeUpload}
-            className="text-muted-foreground hover:text-foreground"
-          >
+            </>}
+          <Button variant="ghost" size="sm" onClick={removeUpload} className="text-muted-foreground hover:text-foreground">
             <X className="w-4 h-4" />
           </Button>
-        </div>
-      ) : (
-        <Textarea 
-          placeholder={placeholder}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              if (value.trim()) {
-                handleGenerate();
-              }
-            }
-          }}
-          className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36"
-          style={{ minHeight: `${baseEditorHeight}px` }}
-        />
-      )}
+        </div> : <Textarea placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)} onKeyDown={e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (value.trim()) {
+          handleGenerate();
+        }
+      }
+    }} className="resize-none bg-transparent border-none focus:ring-0 text-lab-text-primary placeholder:text-lab-text-muted p-4 pr-28 sm:pr-32 md:pr-36" style={{
+      minHeight: `${baseEditorHeight}px`
+    }} />}
       
       {/* Action buttons row */}
       <div className="absolute top-3 right-3 flex gap-2 items-center">
         {/* Upload buttons - only show in generate mode */}
-        {panelMode === 'generate' && (
-          <div className="flex gap-1">
+        {panelMode === 'generate' && <div className="flex gap-1">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  onClick={onUploadImage} 
-                  disabled={isGenerating} 
-                  variant="ghost" 
-                  size="sm" 
-                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-                >
+                <Button onClick={onUploadImage} disabled={isGenerating} variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
                   <Image className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -595,33 +410,18 @@ const PromptComponent = ({
             
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  onClick={onUploadDocument} 
-                  disabled={isGenerating} 
-                  variant="ghost" 
-                  size="sm" 
-                  className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-                >
-                  <FileText className="w-4 h-4" />
-                </Button>
+                
               </TooltipTrigger>
               <TooltipContent>
                 <p>Upload brief document</p>
               </TooltipContent>
             </Tooltip>
-          </div>
-        )}
+          </div>}
          
         {/* Surprise Me button */}
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button 
-              onClick={onSurpriseMe} 
-              disabled={isGenerating} 
-              variant="ghost" 
-              size="sm" 
-              className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200"
-            >
+            <Button onClick={onSurpriseMe} disabled={isGenerating} variant="ghost" size="sm" className="w-8 h-8 rounded-full p-0 text-[#9CA3AF] hover:text-[#F3F4F6] hover:bg-[#374151] bg-transparent transition-all duration-200">
               <Wand2 className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
@@ -747,20 +547,10 @@ const PromptComponent = ({
                 <div className="space-y-2">
                   <div className="text-sm font-medium text-lab-text-primary mb-2">Image Count</div>
                   <div className="flex gap-2">
-                    <Button
-                      variant={resultsCount === 1 ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setResultsCount(1)}
-                      className={resultsCount === 1 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}
-                    >
+                    <Button variant={resultsCount === 1 ? "default" : "outline"} size="sm" onClick={() => setResultsCount(1)} className={resultsCount === 1 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}>
                       1 Image
                     </Button>
-                    <Button
-                      variant={resultsCount === 4 ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setResultsCount(4)}
-                      className={resultsCount === 4 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}
-                    >
+                    <Button variant={resultsCount === 4 ? "default" : "outline"} size="sm" onClick={() => setResultsCount(4)} className={resultsCount === 4 ? "bg-lab-primary text-lab-primary-foreground text-xs" : "bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-xs"}>
                       4 Images
                     </Button>
                   </div>
@@ -784,8 +574,7 @@ const PromptComponent = ({
           </div>
         </div>
       </TooltipProvider>
-    </div>
-  );
+    </div>;
 };
 const ConfigurationPanel = ({
   onImagesGenerated,
@@ -819,7 +608,13 @@ const ConfigurationPanel = ({
   const [preservedFields, setPreservedFields] = useState<Set<string>>(new Set());
   const [isGenerating, setIsGenerating] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-  const [initialInput, setInitialInput] = useState<{ type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null>(null);
+  const [initialInput, setInitialInput] = useState<{
+    type: 'text' | 'image' | 'brief';
+    data: string | {
+      url: string;
+      name?: string;
+    };
+  } | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [uploadedBriefName, setUploadedBriefName] = useState<string | null>(null);
   // Update states when initialConfig changes (e.g., from history click)
@@ -832,7 +627,7 @@ const ConfigurationPanel = ({
       setSeed(initialConfig.seed || "");
       setResultsCount(initialConfig.resultsCount || 4);
       setJsonData(initialConfig.jsonConfig || JSON.stringify(defaultJSON, null, 2));
-      
+
       // Handle refine mode activation from history
       if (initialConfig.panelMode === 'refine') {
         setPanelMode('refine');
@@ -894,32 +689,10 @@ const ConfigurationPanel = ({
   }];
 
   // Random prompts for the "Surprise Me" feature
-  const randomPrompts = [
-    "A social media ad for a new line of sustainable, handcrafted leather boots, with an adventurous and rugged feel.",
-    "A product shot for an e-commerce store, showcasing a minimalist Scandinavian oak coffee table. The setting is a bright, airy living room with soft morning light and elegant props.",
-    "Explore the concept of 'serenity in chaos'.",
-    "A storyboard visualization for a key scene in a sci-fi film. A weary space explorer stands on a Martian ridge, looking out at a vast, alien canyon under two moons. The mood should be one of quiet solitude and awe.",
-    "A photorealistic architectural rendering of a modern glass-and-steel cabin nestled in a snowy pine forest. The time is dusk, with warm light glowing from inside, contrasting with the cool blue of the snow.",
-    "A hero shot for a recipe featuring a rustic, freshly baked apple pie. Key details: visible steam and a golden-brown crust.",
-    "Objective: Test the model's compositional accuracy. Generate an image with a red cube on top of a blue sphere, to the left of a yellow pyramid, with the scene lit from the top right.",
-    "Generate brand mascot concepts for 'Evergreen,' a new eco-friendly cleaning product company. The mascot must be friendly, trustworthy, and inspired by nature.",
-    "An inspirational image for a hotel lobby design. The aesthetic is 'modern art deco,' featuring plush velvet armchairs, geometric brass fixtures, and a dark, moody color palette of deep greens and gold.",
-    "Concept art of an ancient, moss-covered stone golem, glowing with faint magical runes. The golem is standing guard in an enchanted forest, with sunbeams filtering through the dense canopy and illuminating dust motes in the air."
-  ];
+  const randomPrompts = ["A social media ad for a new line of sustainable, handcrafted leather boots, with an adventurous and rugged feel.", "A product shot for an e-commerce store, showcasing a minimalist Scandinavian oak coffee table. The setting is a bright, airy living room with soft morning light and elegant props.", "Explore the concept of 'serenity in chaos'.", "A storyboard visualization for a key scene in a sci-fi film. A weary space explorer stands on a Martian ridge, looking out at a vast, alien canyon under two moons. The mood should be one of quiet solitude and awe.", "A photorealistic architectural rendering of a modern glass-and-steel cabin nestled in a snowy pine forest. The time is dusk, with warm light glowing from inside, contrasting with the cool blue of the snow.", "A hero shot for a recipe featuring a rustic, freshly baked apple pie. Key details: visible steam and a golden-brown crust.", "Objective: Test the model's compositional accuracy. Generate an image with a red cube on top of a blue sphere, to the left of a yellow pyramid, with the scene lit from the top right.", "Generate brand mascot concepts for 'Evergreen,' a new eco-friendly cleaning product company. The mascot must be friendly, trustworthy, and inspired by nature.", "An inspirational image for a hotel lobby design. The aesthetic is 'modern art deco,' featuring plush velvet armchairs, geometric brass fixtures, and a dark, moody color palette of deep greens and gold.", "Concept art of an ancient, moss-covered stone golem, glowing with faint magical runes. The golem is standing guard in an enchanted forest, with sunbeams filtering through the dense canopy and illuminating dust motes in the air."];
 
   // Refinement suggestions for when in refinement mode
-  const refinementSuggestions = [
-    "Shift the scene to a dramatic, moonlit night.",
-    "Introduce a sense of tranquility and peace, with soft, diffused morning light.",
-    "Add a mysterious, dense fog to the environment.",
-    "Transform the visual style into a vibrant, impressionist oil painting.",
-    "Re-render the image as a vintage, high-contrast black and white photograph.",
-    "Change the composition to an extreme close-up, focusing on the main subject.",
-    "Reframe this as a cinematic wide shot, revealing more of the surrounding environment.",
-    "Inject a warm, autumnal color palette of reds, oranges, and browns.",
-    "Shift the entire color scheme to be cool and monochromatic.",
-    "Make it more futuristic and add subtle sci-fi elements."
-  ];
+  const refinementSuggestions = ["Shift the scene to a dramatic, moonlit night.", "Introduce a sense of tranquility and peace, with soft, diffused morning light.", "Add a mysterious, dense fog to the environment.", "Transform the visual style into a vibrant, impressionist oil painting.", "Re-render the image as a vintage, high-contrast black and white photograph.", "Change the composition to an extreme close-up, focusing on the main subject.", "Reframe this as a cinematic wide shot, revealing more of the surrounding environment.", "Inject a warm, autumnal color palette of reds, oranges, and browns.", "Shift the entire color scheme to be cool and monochromatic.", "Make it more futuristic and add subtle sci-fi elements."];
 
   // Handle translate prompt to structured prompt
   const handleTranslatePrompt = useCallback(() => {
@@ -929,7 +702,10 @@ const ConfigurationPanel = ({
     // Capture the initial input if not already done
     if (panelMode === 'generate') {
       if (mainPrompt.trim()) {
-        setInitialInput({ type: 'text', data: mainPrompt });
+        setInitialInput({
+          type: 'text',
+          data: mainPrompt
+        });
         setOriginalPrompt(mainPrompt);
       }
       // Switch to refine mode by setting panelMode to 'refine'
@@ -1018,7 +794,11 @@ const ConfigurationPanel = ({
     }
   };
   const handleGenerate = () => {
-    console.log('[ConfigurationPanel] handleGenerate', { mode: panelMode, hasGenerated, refinementPrompt });
+    console.log('[ConfigurationPanel] handleGenerate', {
+      mode: panelMode,
+      hasGenerated,
+      refinementPrompt
+    });
     // Determine the effective seed to use for generation
     let effectiveSeed = seed;
     if (!seed.trim()) {
@@ -1026,17 +806,28 @@ const ConfigurationPanel = ({
       effectiveSeed = Math.floor(Math.random() * 1000000).toString();
       // Don't update the UI seed field - keep it clean/random for next generation
     }
-
     const wasFirstGeneration = !hasGenerated;
     if (wasFirstGeneration) {
       // Capture the initial input for the first generation
       if (mainPrompt.trim()) {
-        setInitialInput({ type: 'text', data: mainPrompt });
+        setInitialInput({
+          type: 'text',
+          data: mainPrompt
+        });
         setOriginalPrompt(mainPrompt);
       } else if (uploadedImageUrl) {
-        setInitialInput({ type: 'image', data: { url: uploadedImageUrl, name: 'uploaded-image' } });
+        setInitialInput({
+          type: 'image',
+          data: {
+            url: uploadedImageUrl,
+            name: 'uploaded-image'
+          }
+        });
       } else if (uploadedBriefName) {
-        setInitialInput({ type: 'brief', data: uploadedBriefName });
+        setInitialInput({
+          type: 'brief',
+          data: uploadedBriefName
+        });
       }
     }
     setIsGenerating(true);
@@ -1068,7 +859,10 @@ const ConfigurationPanel = ({
         // Just capture the initial input for potential future refine mode
         const currentPrompt = panelMode === 'refine' ? refinementPrompt : mainPrompt;
         if (currentPrompt.trim()) {
-          setInitialInput({ type: 'text', data: currentPrompt });
+          setInitialInput({
+            type: 'text',
+            data: currentPrompt
+          });
           setOriginalPrompt(currentPrompt);
         }
         // Don't auto-switch to refine mode - user must manually click the Refine tab
@@ -1084,7 +878,7 @@ const ConfigurationPanel = ({
       const preservedFields = new Set([...allFields].filter(field => !fieldsToUpdate.has(field) && !lockedFields.has(field)));
       setPreservedFields(preservedFields);
 
-// Generate concept-based mock images with correct aspect ratio
+      // Generate concept-based mock images with correct aspect ratio
       const dimensions = getImageDimensions(aspectRatio);
       const currentPrompt = panelMode === 'refine' ? refinementPrompt : mainPrompt;
       const conceptImageId = getConceptImageId(currentPrompt);
@@ -1096,10 +890,12 @@ const ConfigurationPanel = ({
         refinementPrompt,
         aspectRatio,
         steps: steps[0],
-        seed: effectiveSeed, // Use the effective seed (either user-provided or generated)
+        seed: effectiveSeed,
+        // Use the effective seed (either user-provided or generated)
         lastGeneratedSeed: effectiveSeed,
         resultsCount,
-        jsonConfig: generatedJSONString, // Use the actual generated JSON string
+        jsonConfig: generatedJSONString,
+        // Use the actual generated JSON string
         prompt: panelMode === 'refine' ? refinementPrompt : mainPrompt,
         panelMode
       };
@@ -1153,15 +949,18 @@ const ConfigurationPanel = ({
     if (uploadedImageUrl) {
       URL.revokeObjectURL(uploadedImageUrl);
     }
-    
+
     // Create object URL for the uploaded image
     const imageUrl = URL.createObjectURL(file);
     setUploadedImageUrl(imageUrl);
 
     // Set initial input but stay in generate mode
-    setInitialInput({ 
-      type: 'image', 
-      data: { url: imageUrl, name: file.name } 
+    setInitialInput({
+      type: 'image',
+      data: {
+        url: imageUrl,
+        name: file.name
+      }
     });
 
     // Stay in generate mode instead of switching to refine
@@ -1170,7 +969,7 @@ const ConfigurationPanel = ({
     setIsProcessingFile(true);
     setTimeout(() => {
       setIsProcessingFile(false);
-      
+
       // Populate structured prompt with varied data
       const variedData = generateVariedStructuredPrompt();
       const newJsonData = {
@@ -1184,11 +983,11 @@ const ConfigurationPanel = ({
       // Mark fields as updated
       const updatedFieldsSet = new Set(['short_description', 'context', 'style_medium']);
       setUpdatedFields(updatedFieldsSet);
-      
+
       // Mark all other fields as preserved
       const preservedFieldsSet = markPreservedFields(newJsonData, updatedFieldsSet, lockedFields);
       setPreservedFields(preservedFieldsSet);
-  }, 2000);
+    }, 2000);
   };
   // Helper function to check if structured prompt has meaningful content
   const hasStructuredPromptContent = useCallback(() => {
@@ -1215,7 +1014,6 @@ const ConfigurationPanel = ({
       return false;
     }
   }, [jsonData]);
-
   const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -1224,9 +1022,9 @@ const ConfigurationPanel = ({
     setUploadedBriefName(file.name);
 
     // Set initial input but stay in generate mode
-    setInitialInput({ 
-      type: 'brief', 
-      data: file.name 
+    setInitialInput({
+      type: 'brief',
+      data: file.name
     });
 
     // Stay in generate mode instead of switching to refine
@@ -1235,7 +1033,7 @@ const ConfigurationPanel = ({
     setIsProcessingFile(true);
     setTimeout(() => {
       setIsProcessingFile(false);
-      
+
       // Populate structured prompt with varied data
       const variedData = generateVariedStructuredPrompt();
       const newJsonData = {
@@ -1249,11 +1047,11 @@ const ConfigurationPanel = ({
       // Mark fields as updated
       const updatedFieldsSet = new Set(['short_description', 'context', 'artistic_style']);
       setUpdatedFields(updatedFieldsSet);
-      
+
       // Mark all other fields as preserved
       const preservedFieldsSet = markPreservedFields(newJsonData, updatedFieldsSet, lockedFields);
       setPreservedFields(preservedFieldsSet);
-  }, 2000);
+    }, 2000);
   };
 
   // Helper function to remove uploaded files
@@ -1265,40 +1063,38 @@ const ConfigurationPanel = ({
     setUploadedBriefName(null);
     setInitialInput(null);
   };
-
-  return (
-    <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
+  return <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
       <input ref={imageInputRef} type="file" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg" onChange={handleImageUpload} className="hidden" />
       <input ref={briefInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.md,.rtf" onChange={handleDocumentUpload} className="hidden" />
 
       {/* Mode Tabs - affects whole panel */}
       <div className="flex-shrink-0 bg-lab-surface border-b border-lab-border">
-        <Tabs value={panelMode} onValueChange={(value) => {
-          const newMode = value as 'generate' | 'refine';
-          setPanelMode(newMode);
-          
-          // When switching to refine mode, clear the refinement prompt
-          if (newMode === 'refine' && panelMode === 'generate') {
-            console.log('[ConfigurationPanel] Switched to Refine tab: clearing refinementPrompt');
-            setRefinementPrompt(""); // Clear the prompt box only
-          }
-          
-          // When switching back to generate mode, clear all highlights
-          if (newMode === 'generate' && panelMode === 'refine') {
-            setUpdatedFields(new Set());
-            setPreservedFields(new Set());
-          }
-          
-          // Seed management based on mode changes
-          if (newMode === 'refine' && lastGeneratedSeed && !seed.trim()) {
-            // When switching to refine mode after generation, preserve the last generated seed
-            setSeed(lastGeneratedSeed);
-          } else if (newMode === 'generate' && !seed.trim()) {
-            // When switching back to generate mode, clear seed to keep it random (unless user defined)
-            setSeed('');
-          }
-        }} className="w-full">
+        <Tabs value={panelMode} onValueChange={value => {
+        const newMode = value as 'generate' | 'refine';
+        setPanelMode(newMode);
+
+        // When switching to refine mode, clear the refinement prompt
+        if (newMode === 'refine' && panelMode === 'generate') {
+          console.log('[ConfigurationPanel] Switched to Refine tab: clearing refinementPrompt');
+          setRefinementPrompt(""); // Clear the prompt box only
+        }
+
+        // When switching back to generate mode, clear all highlights
+        if (newMode === 'generate' && panelMode === 'refine') {
+          setUpdatedFields(new Set());
+          setPreservedFields(new Set());
+        }
+
+        // Seed management based on mode changes
+        if (newMode === 'refine' && lastGeneratedSeed && !seed.trim()) {
+          // When switching to refine mode after generation, preserve the last generated seed
+          setSeed(lastGeneratedSeed);
+        } else if (newMode === 'generate' && !seed.trim()) {
+          // When switching back to generate mode, clear seed to keep it random (unless user defined)
+          setSeed('');
+        }
+      }} className="w-full">
           <TabsList className="w-full justify-start rounded-none bg-lab-surface h-12 px-6">
             <TabsTrigger value="generate" className="text-sm" disabled={!hasGenerated && panelMode === 'refine'}>
               Generate
@@ -1313,91 +1109,48 @@ const ConfigurationPanel = ({
       {/* Content */}
       <div className="flex-1 flex flex-col min-h-0 p-6 gap-4">
         {/* Prompt Section - Fixed height */}
-        <div className="flex-shrink-0" style={{ height: '240px' }}>
-          <PromptComponent
-            value={panelMode === 'refine' ? refinementPrompt : mainPrompt} 
-            onChange={panelMode === 'refine' ? setRefinementPrompt : setMainPrompt} 
-            placeholder={panelMode === 'refine' ? "Refine with new instructions..." : "What's your objective? Describe it here, or start with an image or a brief."}
-            aspectRatio={aspectRatio} 
-            aspectRatios={aspectRatios} 
-            setAspectRatio={setAspectRatio} 
-          steps={steps}
-          setSteps={setSteps}
-          guidanceScale={guidanceScale}
-          setGuidanceScale={setGuidanceScale}
-          seed={seed}
-          setSeed={setSeed}
-          resultsCount={resultsCount}
-          setResultsCount={setResultsCount}
-          handleGenerate={handleGenerate}
-            hasGenerated={hasGenerated} 
-            isGenerating={isGenerating} 
-            onSurpriseMe={handleSurpriseMe} 
-            onTranslatePrompt={handleTranslatePrompt} 
-            onUploadImage={handleUploadImage}
-            onUploadDocument={handleUploadDocument}
-            panelMode={panelMode}
-            initialInput={initialInput}
-            onRemoveUpload={handleRemoveUpload}
-            isProcessingFile={isProcessingFile}
-          />
+        <div className="flex-shrink-0" style={{
+        height: '240px'
+      }}>
+          <PromptComponent value={panelMode === 'refine' ? refinementPrompt : mainPrompt} onChange={panelMode === 'refine' ? setRefinementPrompt : setMainPrompt} placeholder={panelMode === 'refine' ? "Refine with new instructions..." : "What's your objective? Describe it here, or start with an image or a brief."} aspectRatio={aspectRatio} aspectRatios={aspectRatios} setAspectRatio={setAspectRatio} steps={steps} setSteps={setSteps} guidanceScale={guidanceScale} setGuidanceScale={setGuidanceScale} seed={seed} setSeed={setSeed} resultsCount={resultsCount} setResultsCount={setResultsCount} handleGenerate={handleGenerate} hasGenerated={hasGenerated} isGenerating={isGenerating} onSurpriseMe={handleSurpriseMe} onTranslatePrompt={handleTranslatePrompt} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} panelMode={panelMode} initialInput={initialInput} onRemoveUpload={handleRemoveUpload} isProcessingFile={isProcessingFile} />
         </div>
 
         {/* Structured Prompt Editor - Flexible height that grows */}
         <div className="flex-1 min-h-0 overflow-hidden">
           <div className="h-full">
-            <StructuredPromptEditor 
-              value={jsonData} 
-              onChange={setJsonData} 
-              isGenerating={isProcessingFile || isGenerating} 
-              lockedFields={lockedFields} 
-              onFieldLock={handleFieldLock} 
-              onBatchFieldLock={handleBatchFieldLock} 
-              onUploadImage={handleUploadImage} 
-              onUploadDocument={handleUploadDocument} 
-              updatedFields={updatedFields} 
-              preservedFields={preservedFields} 
-              forceStructuredView={panelMode === 'refine' || isGenerating || isProcessingFile} 
-              readOnly={true}
-              onRefineClick={() => {
-                setPanelMode('refine');
-                // Clear the refinement prompt when switching to refine mode
-                setRefinementPrompt("");
-                // When switching to refine mode after generation, preserve the last generated seed
-                if (lastGeneratedSeed && !seed.trim()) {
-                  setSeed(lastGeneratedSeed);
-                }
-              }}
-              currentMode={panelMode}
-            />
+            <StructuredPromptEditor value={jsonData} onChange={setJsonData} isGenerating={isProcessingFile || isGenerating} lockedFields={lockedFields} onFieldLock={handleFieldLock} onBatchFieldLock={handleBatchFieldLock} onUploadImage={handleUploadImage} onUploadDocument={handleUploadDocument} updatedFields={updatedFields} preservedFields={preservedFields} forceStructuredView={panelMode === 'refine' || isGenerating || isProcessingFile} readOnly={true} onRefineClick={() => {
+            setPanelMode('refine');
+            // Clear the refinement prompt when switching to refine mode
+            setRefinementPrompt("");
+            // When switching to refine mode after generation, preserve the last generated seed
+            if (lastGeneratedSeed && !seed.trim()) {
+              setSeed(lastGeneratedSeed);
+            }
+          }} currentMode={panelMode} />
           </div>
         </div>
 
         {/* Action Buttons - Fixed at bottom */}
         <div className="flex-shrink-0 pt-4 border-t border-lab-border">
           <div className="flex justify-center">
-            <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || (!hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent())} className="w-full bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
+            <Button onClick={handleGenerate} disabled={isGenerating || isProcessingFile || !hasGenerated && !mainPrompt.trim() && !hasStructuredPromptContent()} className="w-full bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground px-6 py-3 rounded-md font-medium transition-colors">
               {isGenerating ? "Generating..." : panelMode === 'refine' ? "Refine" : "Generate"}
             </Button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
 
 // Helper function to mark all preserved fields comprehensively
 function markPreservedFields(jsonObj: any, updatedFieldsSet: Set<string>, lockedFieldsSet: Set<string>): Set<string> {
   const preserved = new Set<string>();
-  
   const getAllPaths = (obj: any, basePath: string = ''): string[] => {
     const paths: string[] = [];
-    
     const traverse = (current: any, currentPath: string) => {
       if (currentPath) {
         paths.push(currentPath);
       }
-      
       if (typeof current === 'object' && current !== null) {
         if (Array.isArray(current)) {
           current.forEach((item, index) => {
@@ -1412,46 +1165,38 @@ function markPreservedFields(jsonObj: any, updatedFieldsSet: Set<string>, locked
         }
       }
     };
-    
     traverse(obj, basePath);
     return paths;
   };
-
   const isPathPreserved = (path: string): boolean => {
     // If this exact path was updated, it's not preserved
     if (updatedFieldsSet.has(path)) {
       return false;
     }
-    
+
     // Check if any child of this path was updated
     const allPaths = getAllPaths(jsonObj);
-    const hasUpdatedChildren = allPaths.some(childPath => 
-      childPath.startsWith(path + '.') || 
-      childPath.startsWith(path + '[') ||
-      (path === '' && updatedFieldsSet.has(childPath))
-    );
-    
+    const hasUpdatedChildren = allPaths.some(childPath => childPath.startsWith(path + '.') || childPath.startsWith(path + '[') || path === '' && updatedFieldsSet.has(childPath));
     return !hasUpdatedChildren;
   };
 
   // Get all possible paths in the JSON structure
   const allPaths = getAllPaths(jsonObj);
-  
+
   // Add the root level fields
   if (typeof jsonObj === 'object' && jsonObj !== null && !Array.isArray(jsonObj)) {
     Object.keys(jsonObj).forEach(key => {
       allPaths.unshift(key);
     });
   }
-  
+
   // Mark each path as preserved if it and its children weren't updated
   allPaths.forEach(path => {
     if (isPathPreserved(path)) {
       preserved.add(path);
     }
   });
-  
   return preserved;
-};
-
+}
+;
 export default ConfigurationPanel;
