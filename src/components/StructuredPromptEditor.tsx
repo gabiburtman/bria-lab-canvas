@@ -21,6 +21,7 @@ interface StructuredPromptEditorProps {
   forceStructuredView?: boolean;
   readOnly?: boolean;
   onRefineClick?: () => void;
+  currentMode?: 'generate' | 'refine';
 }
 type ViewState = 'empty' | 'structured' | 'source';
 
@@ -37,7 +38,8 @@ const StructuredPromptEditor = ({
   preservedFields = new Set(),
   forceStructuredView = false,
   readOnly = false,
-  onRefineClick
+  onRefineClick,
+  currentMode = 'generate'
 }: StructuredPromptEditorProps) => {
   const [viewState, setViewState] = useState<ViewState>('empty');
   const [parsedJSON, setParsedJSON] = useState<any>(null);
@@ -1145,15 +1147,15 @@ const StructuredPromptEditor = ({
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Refine button - only show if callback is provided */}
-          {onRefineClick && (
+          {/* Refine button - only show if callback is provided and not in refine mode */}
+          {onRefineClick && currentMode !== 'refine' && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
-                    variant="default" 
+                    variant="link" 
                     size="sm" 
-                    className="h-8 px-3 bg-lab-primary hover:bg-lab-primary/90 text-lab-primary-foreground"
+                    className="h-8 px-2 text-muted-foreground hover:text-foreground"
                     onClick={onRefineClick}
                   >
                     <Edit className="w-3 h-3 mr-1" />

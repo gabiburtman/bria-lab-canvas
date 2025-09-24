@@ -1266,6 +1266,7 @@ const ConfigurationPanel = ({
               forceStructuredView={panelMode === 'refine' || isGenerating} 
               readOnly={true}
               onRefineClick={() => setPanelMode('refine')}
+              currentMode={panelMode}
             />
           </div>
         </div>
