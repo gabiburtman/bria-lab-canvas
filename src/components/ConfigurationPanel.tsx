@@ -1210,6 +1210,27 @@ const ConfigurationPanel = ({
           const newMode = value as 'generate' | 'refine';
           setPanelMode(newMode);
           
+          // When switching to refine mode, clear the refinement prompt and prepare highlights
+          if (newMode === 'refine' && panelMode === 'generate') {
+            setRefinementPrompt(""); // Clear the prompt box
+            
+            // Prepare structured prompt with highlights (simulate what will change)
+            const potentialUpdatedFields = new Set(['short_description', 'background_setting', 'lighting.conditions', 'aesthetics.mood_atmosphere']);
+            const fieldsToUpdate = new Set([...potentialUpdatedFields].filter(field => !lockedFields.has(field)));
+            setUpdatedFields(fieldsToUpdate);
+            
+            // Mark all other fields as preserved
+            const allFields = new Set(['short_description', 'objects', 'background_setting', 'lighting.conditions', 'lighting.direction', 'lighting.shadows', 'aesthetics.composition', 'aesthetics.color_scheme', 'aesthetics.mood_atmosphere', 'photographic_characteristics.depth_of_field', 'photographic_characteristics.camera_angle', 'style_medium', 'context']);
+            const preservedFieldsSet = new Set([...allFields].filter(field => !fieldsToUpdate.has(field) && !lockedFields.has(field)));
+            setPreservedFields(preservedFieldsSet);
+          }
+          
+          // When switching back to generate mode, clear all highlights
+          if (newMode === 'generate' && panelMode === 'refine') {
+            setUpdatedFields(new Set());
+            setPreservedFields(new Set());
+          }
+          
           // Seed management based on mode changes
           if (newMode === 'refine' && lastGeneratedSeed && !seed.trim()) {
             // When switching to refine mode after generation, preserve the last generated seed
