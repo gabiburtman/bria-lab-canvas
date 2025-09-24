@@ -322,7 +322,7 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
         
         <div className="flex-1 overflow-hidden flex gap-6">
           {/* Sidebar - Example Selection */}
-          <div className="w-80 flex-shrink-0">
+          <div className="flex-1 min-w-0">
             <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-4">
               <h3 className="text-sm font-semibold text-gray-200 mb-4 uppercase tracking-wide">Examples</h3>
               <div className="space-y-2">
