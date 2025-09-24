@@ -379,7 +379,8 @@ const PromptComponent = ({
   onUploadImage,
   panelMode = 'generate',
   initialInput,
-  onRemoveUpload
+  onRemoveUpload,
+  isProcessingFile
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -408,6 +409,7 @@ const PromptComponent = ({
   panelMode?: 'generate' | 'refine';
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
   onRemoveUpload?: () => void;
+  isProcessingFile?: boolean;
 }) => {
   // Height constants to maintain exact same total height
   const baseEditorHeight = 180; // Increased from 120 to make prompt field bigger
@@ -500,8 +502,16 @@ const PromptComponent = ({
 
   return (
     <div className="rounded-lg bg-background overflow-hidden relative">
-      {/* Show uploaded files directly in textarea area or regular textarea */}
-      {panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? (
+      {/* Show loading state when processing files */}
+      {isProcessingFile ? (
+        <div 
+          className="flex items-center justify-center gap-3 p-4 bg-transparent border-none text-lab-text-primary"
+          style={{ minHeight: `${baseEditorHeight}px` }}
+        >
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="text-sm text-muted-foreground">Processing uploaded content and generating structured prompt...</div>
+        </div>
+      ) : panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? (
         <div 
           className="flex items-center gap-3 p-4 bg-transparent border-none text-lab-text-primary"
           style={{ minHeight: `${baseEditorHeight}px` }}
@@ -1329,6 +1339,7 @@ const ConfigurationPanel = ({
             panelMode={panelMode}
             initialInput={initialInput}
             onRemoveUpload={handleRemoveUpload}
+            isProcessingFile={isProcessingFile}
           />
         </div>
 
@@ -1338,7 +1349,7 @@ const ConfigurationPanel = ({
             <StructuredPromptEditor 
               value={jsonData} 
               onChange={setJsonData} 
-              isGenerating={isProcessingFile} 
+              isGenerating={isProcessingFile || isGenerating} 
               lockedFields={lockedFields} 
               onFieldLock={handleFieldLock} 
               onBatchFieldLock={handleBatchFieldLock} 
@@ -1346,7 +1357,7 @@ const ConfigurationPanel = ({
               onUploadDocument={handleUploadDocument} 
               updatedFields={updatedFields} 
               preservedFields={preservedFields} 
-              forceStructuredView={panelMode === 'refine' || isGenerating} 
+              forceStructuredView={panelMode === 'refine' || isGenerating || isProcessingFile} 
               readOnly={true}
               onRefineClick={() => {
                 setPanelMode('refine');
