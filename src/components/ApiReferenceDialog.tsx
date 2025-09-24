@@ -362,12 +362,6 @@ export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiRe
               {/* Code Header */}
               <div className="flex items-center justify-between px-6 py-4 bg-gray-800/80 border-b border-gray-700">
                 <div className="flex items-center gap-4">
-                  <div className="flex space-x-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  </div>
-                  <div className="h-4 w-px bg-gray-600"></div>
                   <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
                     <SelectTrigger className="w-36 bg-gray-700 border-gray-600 text-white h-8">
                       <SelectValue />
