@@ -253,7 +253,12 @@ const LabInterface = () => {
           
           {/* Results Canvas with History Panel */}
           <div className="w-[48.5%] min-w-0 relative">
-            <ResultsCanvas images={images} isGenerating={isGenerating} />
+            <ResultsCanvas 
+              images={images} 
+              isGenerating={isGenerating} 
+              structuredPromptUrl={currentConfig?.structuredPromptUrl}
+              seed={currentConfig?.seed || currentConfig?.lastGeneratedSeed}
+            />
           </div>
           
           {/* History Panel - Normal layout when collapsed, overlay when expanded */}

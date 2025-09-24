@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Copy, ExternalLink, Code } from "lucide-react";
+import { Copy, ExternalLink, Code, Wand2, RotateCcw, Edit } from "lucide-react";
 import { FaPython, FaJs, FaNodeJs, FaJava, FaPhp, FaGolang } from "react-icons/fa6";
 import { SiCurl } from "react-icons/si";
 import { Code2 } from "lucide-react";
@@ -10,99 +10,160 @@ import { toast } from "sonner";
 
 interface ApiReferenceDialogProps {
   trigger: React.ReactNode;
+  structuredPromptUrl?: string;
+  seed?: string;
 }
+
+type ExampleType = 'generate' | 'regenerate' | 'refine';
 
 interface LanguageConfig {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
-  code: string;
+}
+
+interface ExampleConfig {
+  name: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const languages: Record<string, LanguageConfig> = {
   python: {
     name: "Python",
-    icon: FaPython,
-    code: `import requests
-import json
-
-url = "https://api.bria.ai/v1/text-to-image/base/2.3/base"
-headers = {
-    "Authorization": "Bearer YOUR_API_KEY",
-    "Content-Type": "application/json"
-}
-
-payload = {
-    "api": {
-        "prompt": "A serene landscape with mountains",
-        "num_results": 1,
-        "sync": True,
-        "width": 1024,
-        "height": 1024,
-        "seed": 123456,
-        "aspect_ratio": "1:1",
-        "steps": 20,
-        "cfg": 7.5,
-        "json": {
-            "scene": {
-                "type": "landscape",
-                "lighting": "natural",
-                "weather": "clear"
-            },
-            "objects": [
-                {
-                    "type": "mountains",
-                    "position": "background",
-                    "style": "majestic"
-                }
-            ]
-        }
-    }
-}
-
-try:
-    response = requests.post(url, headers=headers, json=payload)
-    response.raise_for_status()
-    result = response.json()
-    print(f"Image URL: {result['result'][0]['urls'][0]}")
-except requests.exceptions.RequestException as e:
-    print(f"Error: {e}")`
+    icon: FaPython
   },
   javascript: {
     name: "JavaScript",
-    icon: FaJs,
-    code: `const generateImage = async () => {
-  const response = await fetch('https://api.bria.ai/v1/text-to-image/base/2.3/base', {
+    icon: FaJs
+  },
+  nodejs: {
+    name: "Node.js",
+    icon: FaNodeJs
+  },
+  curl: {
+    name: "cURL",
+    icon: SiCurl
+  },
+  java: {
+    name: "Java",
+    icon: FaJava
+  },
+  csharp: {
+    name: "C#",
+    icon: Code2
+  },
+  php: {
+    name: "PHP",
+    icon: FaPhp
+  },
+  go: {
+    name: "Go",
+    icon: FaGolang
+  }
+};
+
+const examples: Record<ExampleType, ExampleConfig> = {
+  generate: {
+    name: "Generate another image",
+    description: "Create a new image with a text prompt",
+    icon: Wand2
+  },
+  regenerate: {
+    name: "Regenerate this image",
+    description: "Recreate the exact same image using structured prompt and seed",
+    icon: RotateCcw
+  },
+  refine: {
+    name: "Refine this image",
+    description: "Create a new version by refining the structured prompt",
+    icon: Edit
+  }
+};
+
+const getCodeExample = (language: string, example: ExampleType, structuredPromptUrl?: string, seed?: string): string => {
+  const apiUrl = "https://engine.prod.bria-api.com/v2/image/generate";
+  const defaultSeed = seed || "123456789";
+  const defaultStructuredPrompt = structuredPromptUrl || "https://cdn.bria.ai/prompts/your-previous-prompt.json";
+
+  switch (language) {
+    case 'python':
+      switch (example) {
+        case 'generate':
+          return `import requests
+
+url = "${apiUrl}"
+
+payload = {
+    "prompt": "A photorealistic product shot of a minimalist oak coffee table in a bright, airy living room.",
+    "aspect_ratio": "16:9"
+}
+
+headers = {
+    "Content-Type": "application/json",
+    "api_token": "YOUR_API_TOKEN"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+data = response.json()
+print(data)`;
+
+        case 'regenerate':
+          return `import requests
+
+url = "${apiUrl}"
+
+payload = {
+    "structured_prompt": "${defaultStructuredPrompt}",
+    "seed": ${defaultSeed}
+}
+
+headers = {
+    "Content-Type": "application/json",
+    "api_token": "YOUR_API_TOKEN"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+data = response.json()
+print(data)`;
+
+        case 'refine':
+          return `import requests
+
+url = "${apiUrl}"
+
+payload = {
+    "prompt": "Make the aesthetics more minimalist and change the style to impressionistic.",
+    "structured_prompt": "${defaultStructuredPrompt}",
+    "seed": ${defaultSeed}
+}
+
+headers = {
+    "Content-Type": "application/json",
+    "api_token": "YOUR_API_TOKEN"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+data = response.json()
+print(data)`;
+      }
+      break;
+
+    case 'javascript':
+      switch (example) {
+        case 'generate':
+          return `const generateImage = async () => {
+  const response = await fetch('${apiUrl}', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer YOUR_API_KEY',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'api_token': 'YOUR_API_TOKEN'
     },
     body: JSON.stringify({
-      api: {
-        prompt: 'A serene landscape with mountains',
-        num_results: 1,
-        sync: true,
-        width: 1024,
-        height: 1024,
-        seed: 123456,
-        aspect_ratio: '1:1',
-        steps: 20,
-        cfg: 7.5,
-        json: {
-          scene: {
-            type: 'landscape',
-            lighting: 'natural',
-            weather: 'clear'
-          },
-          objects: [
-            {
-              type: 'mountains',
-              position: 'background',
-              style: 'majestic'
-            }
-          ]
-        }
-      }
+      prompt: 'A photorealistic product shot of a minimalist oak coffee table in a bright, airy living room.',
+      aspect_ratio: '16:9'
     })
   });
   
@@ -111,424 +172,120 @@ except requests.exceptions.RequestException as e:
   }
   
   const data = await response.json();
-  console.log('Image URL:', data.result[0].urls[0]);
+  console.log(data);
   return data;
 };
 
-generateImage().catch(console.error);`
-  },
-  nodejs: {
-    name: "Node.js",
-    icon: FaNodeJs,
-    code: `const https = require('https');
+generateImage().catch(console.error);`;
 
-const options = {
-  hostname: 'api.bria.ai',
-  port: 443,
-  path: '/v1/text-to-image/base/2.3/base',
-  method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_API_KEY',
-    'Content-Type': 'application/json'
+        case 'regenerate':
+          return `const regenerateImage = async () => {
+  const response = await fetch('${apiUrl}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api_token': 'YOUR_API_TOKEN'
+    },
+    body: JSON.stringify({
+      structured_prompt: '${defaultStructuredPrompt}',
+      seed: ${defaultSeed}
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error(\`HTTP error! status: \${response.status}\`);
   }
+  
+  const data = await response.json();
+  console.log(data);
+  return data;
 };
 
-const postData = JSON.stringify({
-  api: {
-    prompt: 'A serene landscape with mountains',
-    num_results: 1,
-    sync: true,
-    width: 1024,
-    height: 1024,
-    seed: 123456,
-    aspect_ratio: '1:1',
-    steps: 20,
-    cfg: 7.5,
-    json: {
-      scene: {
-        type: 'landscape',
-        lighting: 'natural',
-        weather: 'clear'
-      },
-      objects: [
-        {
-          type: 'mountains',
-          position: 'background',
-          style: 'majestic'
-        }
-      ]
-    }
+regenerateImage().catch(console.error);`;
+
+        case 'refine':
+          return `const refineImage = async () => {
+  const response = await fetch('${apiUrl}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api_token': 'YOUR_API_TOKEN'
+    },
+    body: JSON.stringify({
+      prompt: 'Make the aesthetics more minimalist and change the style to impressionistic.',
+      structured_prompt: '${defaultStructuredPrompt}',
+      seed: ${defaultSeed}
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error(\`HTTP error! status: \${response.status}\`);
   }
-});
-
-const req = https.request(options, (res) => {
-  let data = '';
   
-  res.on('data', (chunk) => {
-    data += chunk;
-  });
-  
-  res.on('end', () => {
-    const result = JSON.parse(data);
-    console.log('Image URL:', result.result[0].urls[0]);
-  });
-});
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
 
-req.on('error', (e) => {
-  console.error(\`Problem with request: \${e.message}\`);
-});
-
-req.write(postData);
-req.end();`
-  },
-  curl: {
-    name: "cURL",
-    icon: SiCurl,
-    code: `curl -X POST "https://api.bria.ai/v1/text-to-image/base/2.3/base" \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "api": {
-      "prompt": "A serene landscape with mountains",
-      "num_results": 1,
-      "sync": true,
-      "width": 1024,
-      "height": 1024,
-      "seed": 123456,
-      "aspect_ratio": "1:1",
-      "steps": 20,
-      "cfg": 7.5,
-      "json": {
-        "scene": {
-          "type": "landscape",
-          "lighting": "natural",
-          "weather": "clear"
-        },
-        "objects": [
-          {
-            "type": "mountains",
-            "position": "background",
-            "style": "majestic"
-          }
-        ]
+refineImage().catch(console.error);`;
       }
-    }
-  }' \\
-  | jq '.result[0].urls[0]'`
-  },
-  java: {
-    name: "Java",
-    icon: FaJava,
-    code: `import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+      break;
 
-public class BriaImageGenerator {
-    private static final String API_URL = "https://api.bria.ai/v1/text-to-image/base/2.3/base";
-    private static final String API_KEY = "YOUR_API_KEY";
-    
-    public static void main(String[] args) throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
-        ObjectMapper mapper = new ObjectMapper();
-        
-        String requestBody = mapper.writeValueAsString(Map.of(
-            "api", Map.of(
-                "prompt", "A serene landscape with mountains",
-                "num_results", 1,
-                "sync", true,
-                "width", 1024,
-                "height", 1024,
-                "seed", 123456,
-                "aspect_ratio", "1:1",
-                "steps", 20,
-                "cfg", 7.5,
-                "json", Map.of(
-                    "scene", Map.of(
-                        "type", "landscape",
-                        "lighting", "natural",
-                        "weather", "clear"
-                    ),
-                    "objects", List.of(
-                        Map.of(
-                            "type", "mountains",
-                            "position", "background",
-                            "style", "majestic"
-                        )
-                    )
-                )
-            )
-        ));
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(API_URL))
-            .header("Authorization", "Bearer " + API_KEY)
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-            .build();
-            
-        HttpResponse<String> response = client.send(request, 
-            HttpResponse.BodyHandlers.ofString());
-            
-        if (response.statusCode() == 200) {
-            System.out.println("Response: " + response.body());
-        } else {
-            System.err.println("Error: " + response.statusCode());
-        }
-    }
-}`
-  },
-  csharp: {
-    name: "C#",
-    icon: Code2,
-    code: `using System;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+    case 'curl':
+      switch (example) {
+        case 'generate':
+          return `curl -X POST "${apiUrl}" \\
+  -H "Content-Type: application/json" \\
+  -H "api_token: YOUR_API_TOKEN" \\
+  -d '{
+    "prompt": "A photorealistic product shot of a minimalist oak coffee table in a bright, airy living room.",
+    "aspect_ratio": "16:9"
+  }'`;
 
-public class BriaImageGenerator 
-{
-    private static readonly HttpClient client = new HttpClient();
-    private const string ApiUrl = "https://api.bria.ai/v1/text-to-image/base/2.3/base";
-    private const string ApiKey = "YOUR_API_KEY";
-    
-    public static async Task Main(string[] args)
-    {
-        var payload = new
-        {
-            api = new
-            {
-                prompt = "A serene landscape with mountains",
-                num_results = 1,
-                sync = true,
-                width = 1024,
-                height = 1024,
-                seed = 123456,
-                aspect_ratio = "1:1",
-                steps = 20,
-                cfg = 7.5,
-                json = new
-                {
-                    scene = new
-                    {
-                        type = "landscape",
-                        lighting = "natural",
-                        weather = "clear"
-                    },
-                    objects = new[]
-                    {
-                        new
-                        {
-                            type = "mountains",
-                            position = "background",
-                            style = "majestic"
-                        }
-                    }
-                }
-            }
-        };
-        
-        var json = JsonConvert.SerializeObject(payload);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {ApiKey}");
-        
-        try
-        {
-            var response = await client.PostAsync(ApiUrl, content);
-            response.EnsureSuccessStatusCode();
-            
-            var result = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Response: {result}");
-        }
-        catch (HttpRequestException e)
-        {
-            Console.WriteLine($"Error: {e.Message}");
-        }
-    }
-}`
-  },
-  php: {
-    name: "PHP",
-    icon: FaPhp,
-    code: `<?php
+        case 'regenerate':
+          return `curl -X POST "${apiUrl}" \\
+  -H "Content-Type: application/json" \\
+  -H "api_token: YOUR_API_TOKEN" \\
+  -d '{
+    "structured_prompt": "${defaultStructuredPrompt}",
+    "seed": ${defaultSeed}
+  }'`;
 
-$url = 'https://api.bria.ai/v1/text-to-image/base/2.3/base';
-$api_key = 'YOUR_API_KEY';
+        case 'refine':
+          return `curl -X POST "${apiUrl}" \\
+  -H "Content-Type: application/json" \\
+  -H "api_token: YOUR_API_TOKEN" \\
+  -d '{
+    "prompt": "Make the aesthetics more minimalist and change the style to impressionistic.",
+    "structured_prompt": "${defaultStructuredPrompt}",
+    "seed": ${defaultSeed}
+  }'`;
+      }
+      break;
 
-$data = array(
-    'api' => array(
-        'prompt' => 'A serene landscape with mountains',
-        'num_results' => 1,
-        'sync' => true,
-        'width' => 1024,
-        'height' => 1024,
-        'seed' => 123456,
-        'aspect_ratio' => '1:1',
-        'steps' => 20,
-        'cfg' => 7.5,
-        'json' => array(
-            'scene' => array(
-                'type' => 'landscape',
-                'lighting' => 'natural',
-                'weather' => 'clear'
-            ),
-            'objects' => array(
-                array(
-                    'type' => 'mountains',
-                    'position' => 'background',
-                    'style' => 'majestic'
-                )
-            )
-        )
-    )
-);
+    default:
+      return `# ${example} example for ${language}
+# Implementation coming soon
 
-$options = array(
-    'http' => array(
-        'header' => array(
-            'Authorization: Bearer ' . $api_key,
-            'Content-Type: application/json'
-        ),
-        'method' => 'POST',
-        'content' => json_encode($data)
-    )
-);
+url = "${apiUrl}"
+api_token = "YOUR_API_TOKEN"
 
-$context = stream_context_create($options);
-$result = file_get_contents($url, false, $context);
-
-if ($result === FALSE) {
-    die('Error occurred');
-}
-
-$response = json_decode($result, true);
-echo "Image URL: " . $response['result'][0]['urls'][0] . "\\n";
-
-?>`
-  },
-  go: {
-    name: "Go",
-    icon: FaGolang,
-    code: `package main
-
-import (
-    "bytes"
-    "encoding/json"
-    "fmt"
-    "io/ioutil"
-    "net/http"
-)
-
-type JsonStructure struct {
-    Scene   Scene    \`json:"scene"\`
-    Objects []Object \`json:"objects"\`
-}
-
-type Scene struct {
-    Type     string \`json:"type"\`
-    Lighting string \`json:"lighting"\`
-    Weather  string \`json:"weather"\`
-}
-
-type Object struct {
-    Type     string \`json:"type"\`
-    Position string \`json:"position"\`
-    Style    string \`json:"style"\`
-}
-
-type ApiRequest struct {
-    Prompt      string        \`json:"prompt"\`
-    NumResults  int           \`json:"num_results"\`
-    Sync        bool          \`json:"sync"\`
-    Width       int           \`json:"width"\`
-    Height      int           \`json:"height"\`
-    Seed        int           \`json:"seed"\`
-    AspectRatio string        \`json:"aspect_ratio"\`
-    Steps       int           \`json:"steps"\`
-    CFG         float64       \`json:"cfg"\`
-    Json        JsonStructure \`json:"json"\`
-}
-
-type GenerateRequest struct {
-    Api ApiRequest \`json:"api"\`
-}
-
-func main() {
-    url := "https://api.bria.ai/v1/text-to-image/base/2.3/base"
-    apiKey := "YOUR_API_KEY"
-    
-    payload := GenerateRequest{
-        Api: ApiRequest{
-            Prompt:      "A serene landscape with mountains",
-            NumResults:  1,
-            Sync:        true,
-            Width:       1024,
-            Height:      1024,
-            Seed:        123456,
-            AspectRatio: "1:1",
-            Steps:       20,
-            CFG:         7.5,
-            Json: JsonStructure{
-                Scene: Scene{
-                    Type:     "landscape",
-                    Lighting: "natural",
-                    Weather:  "clear",
-                },
-                Objects: []Object{
-                    {
-                        Type:     "mountains",
-                        Position: "background",
-                        Style:    "majestic",
-                    },
-                },
-            },
-        },
-    }
-    
-    jsonData, err := json.Marshal(payload)
-    if err != nil {
-        fmt.Printf("Error marshaling JSON: %v\\n", err)
-        return
-    }
-    
-    req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-    if err != nil {
-        fmt.Printf("Error creating request: %v\\n", err)
-        return
-    }
-    
-    req.Header.Set("Authorization", "Bearer "+apiKey)
-    req.Header.Set("Content-Type", "application/json")
-    
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        fmt.Printf("Error making request: %v\\n", err)
-        return
-    }
-    defer resp.Body.Close()
-    
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        fmt.Printf("Error reading response: %v\\n", err)
-        return
-    }
-    
-    fmt.Printf("Response: %s\\n", body)
-}`
+# This example will be available soon for ${language}`;
   }
+  
+  return '';
 };
 
-export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
+export const ApiReferenceDialog = ({ trigger, structuredPromptUrl, seed }: ApiReferenceDialogProps) => {
   const [selectedLanguage, setSelectedLanguage] = useState("python");
+  const [selectedExample, setSelectedExample] = useState<ExampleType>("generate");
   const [copied, setCopied] = useState(false);
+
+  const currentCode = getCodeExample(selectedLanguage, selectedExample, structuredPromptUrl, seed);
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(languages[selectedLanguage].code);
+      await navigator.clipboard.writeText(currentCode);
       setCopied(true);
       toast.success("Code copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
@@ -538,32 +295,58 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
   };
 
   const currentLanguage = languages[selectedLanguage];
+  const currentExample = examples[selectedExample];
   const IconComp = currentLanguage.icon;
+  const ExampleIcon = currentExample.icon;
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         {trigger}
       </DialogTrigger>
-      <DialogContent className="max-w-4xl h-[80vh] bg-gray-900 border-gray-700 text-white">
+      <DialogContent className="max-w-5xl h-[85vh] bg-gray-900 border-gray-700 text-white">
         <DialogHeader className="border-b border-gray-700 pb-4">
           <DialogTitle className="text-xl font-semibold text-white flex items-center gap-2">
             <Code className="w-5 h-5" />
-            API Reference - Text to Image
+            API Reference - GAIA Image Generation
           </DialogTitle>
           <div className="text-sm text-gray-400 mt-2">
             <span className="bg-green-600 text-white px-2 py-1 rounded text-xs font-mono mr-3">POST</span>
-            <span className="font-mono">/v1/text-to-image/base/2.3/base</span>
+            <span className="font-mono">/v2/image/generate</span>
           </div>
         </DialogHeader>
         
         <div className="flex-1 overflow-hidden flex flex-col">
-          {/* Language Selector and Actions */}
-          <div className="flex items-center justify-between mb-4">
+          {/* Example Type and Language Selectors */}
+          <div className="flex items-center justify-between mb-4 gap-4">
             <div className="flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-300">Example:</label>
+              <Select value={selectedExample} onValueChange={(value) => setSelectedExample(value as ExampleType)}>
+                <SelectTrigger className="w-64 bg-gray-800 border-gray-600 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-gray-800 border-gray-600">
+                  {Object.entries(examples).map(([key, example]) => {
+                    const Icon = example.icon;
+                    return (
+                      <SelectItem 
+                        key={key} 
+                        value={key}
+                        className="text-white hover:bg-gray-700 focus:bg-gray-700"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Icon className="w-4 h-4" />
+                          {example.name}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+              
               <label className="text-sm font-medium text-gray-300">Language:</label>
               <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger className="w-48 bg-gray-800 border-gray-600 text-white">
+                <SelectTrigger className="w-40 bg-gray-800 border-gray-600 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-800 border-gray-600">
@@ -586,17 +369,24 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
               </Select>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={copyToClipboard}
-                className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                {copied ? "Copied!" : "Copy"}
-              </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={copyToClipboard}
+              className="bg-gray-800 border-gray-600 text-white hover:bg-gray-700"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              {copied ? "Copied!" : "Copy"}
+            </Button>
+          </div>
+
+          {/* Example Description */}
+          <div className="mb-4 p-3 bg-gray-800 rounded-lg border border-gray-700">
+            <div className="flex items-center gap-2 mb-1">
+              <ExampleIcon className="w-4 h-4 text-blue-400" />
+              <span className="font-medium text-white">{currentExample.name}</span>
             </div>
+            <p className="text-sm text-gray-400">{currentExample.description}</p>
           </div>
           
           {/* Code Block */}
@@ -615,7 +405,7 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
               </div>
               <pre className="p-4 text-sm text-gray-100 overflow-auto leading-relaxed">
                 <code className={`language-${selectedLanguage}`}>
-                  {currentLanguage.code}
+                  {currentCode}
                 </code>
               </pre>
             </div>
@@ -627,7 +417,7 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
               <Button
                 variant="link"
                 className="text-blue-400 hover:text-blue-300 p-0 h-auto"
-                onClick={() => window.open('https://docs.bria.ai/api-reference', '_blank')}
+                onClick={() => window.open('https://docs.bria.ai/', '_blank')}
               >
                 <ExternalLink className="w-4 h-4 mr-1" />
                 API Documentation
@@ -635,7 +425,7 @@ export const ApiReferenceDialog = ({ trigger }: ApiReferenceDialogProps) => {
               <Button
                 variant="link"
                 className="text-blue-400 hover:text-blue-300 p-0 h-auto"
-                onClick={() => window.open('https://bria.ai/api-keys', '_blank')}
+                onClick={() => window.open('https://platform.bria.ai/', '_blank')}
               >
                 <ExternalLink className="w-4 h-4 mr-1" />
                 Get API Key

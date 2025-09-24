@@ -9,10 +9,14 @@ import { ApiReferenceDialog } from "@/components/ApiReferenceDialog";
 interface ImageCardProps {
   src?: string;
   index: number;
+  structuredPromptUrl?: string;
+  seed?: string;
 }
 const ImageCard = ({
   src,
-  index
+  index,
+  structuredPromptUrl,
+  seed
 }: ImageCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [liked, setLiked] = useState<boolean | null>(null);
@@ -48,7 +52,10 @@ const ImageCard = ({
       </div>
       
       <div className="flex gap-2">
-        <ApiReferenceDialog trigger={<Button size="sm" variant="ghost" onClick={e => e.stopPropagation()} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+        <ApiReferenceDialog 
+          structuredPromptUrl={structuredPromptUrl}
+          seed={seed}
+          trigger={<Button size="sm" variant="ghost" onClick={e => e.stopPropagation()} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
               <Code className="w-4 h-4" />
             </Button>} />
       </div>
@@ -139,7 +146,10 @@ const ImageCard = ({
               <div className="flex gap-2">
                 <SharePopover inDialog={true} />
                 
-                <ApiReferenceDialog trigger={<Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+                <ApiReferenceDialog 
+                  structuredPromptUrl={structuredPromptUrl}
+                  seed={seed}
+                  trigger={<Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
                       <Code className="w-4 h-4" />
                     </Button>} />
               </div>
@@ -157,10 +167,14 @@ const ImageCard = ({
 };
 const ResultsCanvas = ({
   images = [],
-  isGenerating = false
+  isGenerating = false,
+  structuredPromptUrl,
+  seed
 }: {
   images?: string[];
   isGenerating?: boolean;
+  structuredPromptUrl?: string;
+  seed?: string;
 }) => {
   const hasResults = images.length > 0;
 
@@ -197,12 +211,12 @@ const ResultsCanvas = ({
       )}>
         {images.length === 1 ? (
           <div className="max-w-lg w-full">
-            <ImageCard src={images[0]} index={0} />
+            <ImageCard src={images[0]} index={0} structuredPromptUrl={structuredPromptUrl} seed={seed} />
           </div>
         ) : (
           Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="flex flex-col">
-              <ImageCard src={images[index]} index={index} />
+              <ImageCard src={images[index]} index={index} structuredPromptUrl={structuredPromptUrl} seed={seed} />
             </div>
           ))
         )}
