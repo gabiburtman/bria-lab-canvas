@@ -575,22 +575,24 @@ const StructuredPromptEditor = ({
 
   // Helper function to check if any fields in the General group are updated
   const hasUpdatedGeneralFields = (generalData: Record<string, any>): boolean => {
-    // Only show update indicators in refine mode
-    return currentMode === 'refine' && Object.keys(generalData).some(key => updatedFields.has(key));
+    // Only show update indicators in refine mode AND after refinement has been performed
+    const hasPerformedRefinement = updatedFields.size > 0 || preservedFields.size > 0;
+    return currentMode === 'refine' && hasPerformedRefinement && Object.keys(generalData).some(key => updatedFields.has(key));
   };
   const renderFieldValue = (key: string, val: any, path: string = '', level: number = 0, isLast: boolean = false, rowIndex: number = 0) => {
     const fieldPath = path ? `${path}.${key}` : key;
     const isLocked = isFieldLocked(fieldPath);
     const isUpdated = updatedFields.has(fieldPath);
     const hasUpdatedChild = hasUpdatedChildren(fieldPath, val);
-    // Only show highlights and indicators in refine mode
-    const isHighlighted = currentMode === 'refine' && (isUpdated || hasUpdatedChild);
+    // Only show highlights and indicators in refine mode AND after refinement has been performed
+    const hasPerformedRefinement = updatedFields.size > 0 || preservedFields.size > 0;
+    const isHighlighted = currentMode === 'refine' && hasPerformedRefinement && (isUpdated || hasUpdatedChild);
     
     // New logic per user requirements:
     // For parameters: if changed -> highlight, if not changed -> show lock icon
     // For groups: if any child changed -> highlight, if no children changed -> show lock icon
-    const shouldShowParameterLock = currentMode === 'refine' && !isUpdated && !Array.isArray(val) && (typeof val !== 'object' || val === null);
-    const shouldShowGroupLock = currentMode === 'refine' && !hasUpdatedChild && (Array.isArray(val) || (typeof val === 'object' && val !== null));
+    const shouldShowParameterLock = currentMode === 'refine' && hasPerformedRefinement && !isUpdated && !Array.isArray(val) && (typeof val !== 'object' || val === null);
+    const shouldShowGroupLock = currentMode === 'refine' && hasPerformedRefinement && !hasUpdatedChild && (Array.isArray(val) || (typeof val === 'object' && val !== null));
     
     const typeInfo = getTypeDisplay(val);
     const hasChildren = typeof val === 'object' && val !== null;
@@ -743,7 +745,7 @@ const StructuredPromptEditor = ({
                                 <span className="text-foreground font-medium">
                                   {key === 'objects' ? `Object [${index}]` : `Text Element [${index}]`}
                                 </span>
-                                {currentMode === 'refine' && !hasUpdatedChildren(`${fieldPath}[${index}]`, item) && (
+                                {currentMode === 'refine' && (updatedFields.size > 0 || preservedFields.size > 0) && !hasUpdatedChildren(`${fieldPath}[${index}]`, item) && (
                                   <TooltipProvider>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
@@ -1012,7 +1014,7 @@ const StructuredPromptEditor = ({
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
                           <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                           <span className="text-foreground font-medium">general</span>
-                          {currentMode === 'refine' && !isGeneralHighlighted && (
+                          {currentMode === 'refine' && (updatedFields.size > 0 || preservedFields.size > 0) && !isGeneralHighlighted && (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
