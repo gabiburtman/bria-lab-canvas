@@ -1012,7 +1012,7 @@ const StructuredPromptEditor = ({
                         <div className="flex items-center gap-2 cursor-pointer flex-1">
                           <ChevronDown className="w-3 h-3 text-muted-foreground group-data-[state=closed]:rotate-[-90deg] transition-transform" />
                           <span className="text-foreground font-medium">general</span>
-                          {!isGeneralHighlighted && (
+                          {currentMode === 'refine' && !isGeneralHighlighted && (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
