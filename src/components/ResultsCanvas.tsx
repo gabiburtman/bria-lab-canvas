@@ -52,10 +52,7 @@ const ImageCard = ({
       </div>
       
       <div className="flex gap-2">
-        <ApiReferenceDialog 
-          structuredPromptUrl={structuredPromptUrl}
-          seed={seed}
-          trigger={<Button size="sm" variant="ghost" onClick={e => e.stopPropagation()} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+        <ApiReferenceDialog structuredPromptUrl={structuredPromptUrl} seed={seed} trigger={<Button size="sm" variant="ghost" onClick={e => e.stopPropagation()} className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
               <Code className="w-4 h-4" />
             </Button>} />
       </div>
@@ -101,10 +98,7 @@ const ImageCard = ({
     };
     return <Popover>
       <PopoverTrigger asChild>
-        <Button variant={inDialog ? "ghost" : "outline"} size={inDialog ? "sm" : "default"} className={inDialog ? "w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm" : "w-full bg-lab-surface hover:bg-lab-interactive-hover border-lab-border hover:border-lab-border-hover text-lab-text-primary transition-all duration-200"}>
-          <Share className={inDialog ? "w-4 h-4" : "w-4 h-4 mr-2"} />
-          {!inDialog && "Share"}
-        </Button>
+        
       </PopoverTrigger>
       <PopoverContent className="w-auto bg-lab-surface border-lab-border shadow-lg p-2">
         <div className="flex gap-2">
@@ -146,10 +140,7 @@ const ImageCard = ({
               <div className="flex gap-2">
                 <SharePopover inDialog={true} />
                 
-                <ApiReferenceDialog 
-                  structuredPromptUrl={structuredPromptUrl}
-                  seed={seed}
-                  trigger={<Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
+                <ApiReferenceDialog structuredPromptUrl={structuredPromptUrl} seed={seed} trigger={<Button size="sm" variant="ghost" className="w-8 h-8 rounded-full p-0 bg-background/80 backdrop-blur-sm border border-border/50 text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent-foreground/20 transition-all duration-200 shadow-sm">
                       <Code className="w-4 h-4" />
                     </Button>} />
               </div>
@@ -205,21 +196,14 @@ const ResultsCanvas = ({
       <div className="mb-4 flex-shrink-0">
         
       </div>
-      <div className={cn(
-        "flex-1",
-        images.length === 1 ? "flex items-center justify-center" : "grid grid-cols-2 gap-4"
-      )}>
-        {images.length === 1 ? (
-          <div className="max-w-lg w-full">
+      <div className={cn("flex-1", images.length === 1 ? "flex items-center justify-center" : "grid grid-cols-2 gap-4")}>
+        {images.length === 1 ? <div className="max-w-lg w-full">
             <ImageCard src={images[0]} index={0} structuredPromptUrl={structuredPromptUrl} seed={seed} />
-          </div>
-        ) : (
-          Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="flex flex-col">
+          </div> : Array.from({
+        length: 4
+      }).map((_, index) => <div key={index} className="flex flex-col">
               <ImageCard src={images[index]} index={index} structuredPromptUrl={structuredPromptUrl} seed={seed} />
-            </div>
-          ))
-        )}
+            </div>)}
       </div>
     </div>;
 };
