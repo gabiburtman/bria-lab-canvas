@@ -1286,6 +1286,8 @@ const ConfigurationPanel = ({
               readOnly={true}
               onRefineClick={() => {
                 setPanelMode('refine');
+                // Clear the refinement prompt when switching to refine mode
+                setRefinementPrompt("");
                 // When switching to refine mode after generation, preserve the last generated seed
                 if (lastGeneratedSeed && !seed.trim()) {
                   setSeed(lastGeneratedSeed);
