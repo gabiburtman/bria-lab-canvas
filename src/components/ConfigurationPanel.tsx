@@ -546,13 +546,17 @@ const PromptComponent = ({
       
       {/* Single textarea for both modes */}
       <Textarea 
-        placeholder={placeholder}
+        placeholder={
+          panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief')
+            ? "Add additional instructions or descriptions for your uploaded content..."
+            : placeholder
+        }
         value={value}
         onChange={e => onChange(e.target.value)}
         onKeyDown={e => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            if (value.trim()) {
+            if (value.trim() || (initialInput && (initialInput.type === 'image' || initialInput.type === 'brief'))) {
               handleGenerate();
             }
           }
