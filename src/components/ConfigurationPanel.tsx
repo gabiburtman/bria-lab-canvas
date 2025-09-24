@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import StructuredPromptEditor from "./StructuredPromptEditor";
-import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Image } from "lucide-react";
+import { ArrowRight, Upload, FileText, Copy, Lock, Unlock, Sliders, Crop, Wand2, Languages, Hash, Target, Sprout, Zap, Image, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AspectRatioIcon from "./AspectRatioIcon";
 const defaultJSON = {
@@ -378,7 +378,8 @@ const PromptComponent = ({
   onTranslatePrompt,
   onUploadImage,
   panelMode = 'generate',
-  initialInput
+  initialInput,
+  onRemoveUpload
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -406,6 +407,7 @@ const PromptComponent = ({
   onUploadDocument: () => void;
   panelMode?: 'generate' | 'refine';
   initialInput?: { type: 'text' | 'image' | 'brief'; data: string | { url: string; name?: string } } | null;
+  onRemoveUpload?: () => void;
 }) => {
   // Height constants to maintain exact same total height
   const baseEditorHeight = 180; // Increased from 120 to make prompt field bigger
@@ -491,8 +493,57 @@ const PromptComponent = ({
     );
   };
 
+  // Helper function to remove uploaded files
+  const removeUpload = () => {
+    onRemoveUpload?.();
+  };
+
   return (
     <div className="rounded-lg bg-background overflow-hidden relative">
+      {/* Show uploaded files in generate mode */}
+      {panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') && (
+        <div className="p-3 border-b border-border bg-muted/30">
+          <div className="flex items-center gap-3">
+            {initialInput.type === 'image' && typeof initialInput.data === 'object' && (
+              <>
+                <img 
+                  src={initialInput.data.url} 
+                  alt="Uploaded reference" 
+                  className="w-12 h-12 object-cover rounded-md border border-border"
+                />
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-foreground">
+                    {initialInput.data.name || 'Uploaded Image'}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Image uploaded</div>
+                </div>
+              </>
+            )}
+            {initialInput.type === 'brief' && typeof initialInput.data === 'string' && (
+              <>
+                <div className="w-12 h-12 bg-muted rounded-md border border-border flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-muted-foreground" />
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-foreground">
+                    {initialInput.data}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Document uploaded</div>
+                </div>
+              </>
+            )}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={removeUpload}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+      
       {/* Single textarea for both modes */}
       <Textarea 
         placeholder={placeholder}
@@ -1097,14 +1148,13 @@ const ConfigurationPanel = ({
     const imageUrl = URL.createObjectURL(file);
     setUploadedImageUrl(imageUrl);
 
-    // Set initial input and switch to refine mode
+    // Set initial input but stay in generate mode
     setInitialInput({ 
       type: 'image', 
       data: { url: imageUrl, name: file.name } 
     });
 
-  // Switch to refine mode immediately
-  setPanelMode('refine');
+    // Stay in generate mode instead of switching to refine
 
     // Simulate processing the image and extracting experiment spec
     setIsProcessingFile(true);
@@ -1163,14 +1213,13 @@ const ConfigurationPanel = ({
     // Store the uploaded brief name
     setUploadedBriefName(file.name);
 
-    // Set initial input and switch to refine mode
+    // Set initial input but stay in generate mode
     setInitialInput({ 
       type: 'brief', 
       data: file.name 
     });
 
-  // Switch to refine mode immediately
-  setPanelMode('refine');
+    // Stay in generate mode instead of switching to refine
 
     // Simulate processing the brief and extracting structured prompt
     setIsProcessingFile(true);
@@ -1196,6 +1245,17 @@ const ConfigurationPanel = ({
       setPreservedFields(preservedFieldsSet);
   }, 2000);
   };
+
+  // Helper function to remove uploaded files
+  const handleRemoveUpload = () => {
+    if (uploadedImageUrl) {
+      URL.revokeObjectURL(uploadedImageUrl);
+    }
+    setUploadedImageUrl(null);
+    setUploadedBriefName(null);
+    setInitialInput(null);
+  };
+
   return (
     <div className="w-full h-full bg-lab-surface rounded-lg shadow-lg flex flex-col overflow-hidden">
       {/* Hidden file inputs */}
@@ -1268,6 +1328,7 @@ const ConfigurationPanel = ({
             onUploadDocument={handleUploadDocument}
             panelMode={panelMode}
             initialInput={initialInput}
+            onRemoveUpload={handleRemoveUpload}
           />
         </div>
 
