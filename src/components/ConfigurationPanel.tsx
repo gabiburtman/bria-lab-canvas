@@ -350,13 +350,7 @@ const PromptComponent = ({
     onRemoveUpload?.();
   };
   return <div className="rounded-lg bg-background overflow-hidden relative">
-      {/* Show loading state when processing files */}
-      {isProcessingFile ? <div className="flex items-center justify-center gap-3 p-4 bg-transparent border-none text-lab-text-primary" style={{
-      minHeight: `${baseEditorHeight}px`
-    }}>
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-          <div className="text-sm text-muted-foreground">Processing uploaded content and generating structured prompt...</div>
-        </div> : panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? <div className="flex items-center gap-3 p-4 bg-transparent border-none text-lab-text-primary" style={{
+      {panelMode === 'generate' && initialInput && (initialInput.type === 'image' || initialInput.type === 'brief') ? <div className="flex items-center gap-3 p-4 bg-transparent border-none text-lab-text-primary" style={{
       minHeight: `${baseEditorHeight}px`
     }}>
           {initialInput.type === 'image' && typeof initialInput.data === 'object' && <>
