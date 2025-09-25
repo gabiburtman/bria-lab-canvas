@@ -1095,14 +1095,14 @@ const ConfigurationPanel = ({
           setSeed('');
         }
       }} className="w-full">
-          <TabsList className="w-full justify-start rounded-none bg-lab-surface h-12 px-6 border-b border-lab-border">
+          <TabsList className="w-full justify-start px-6">
             <Tooltip>
               <TooltipTrigger asChild>
                 <TabsTrigger 
                   value="generate" 
-                  className="text-sm data-[state=active]:bg-lab-primary data-[state=active]:text-white border-b-2 border-transparent data-[state=active]:border-lab-primary rounded-none px-4 py-2" 
                   disabled={!hasGenerated && panelMode === 'refine'}
                 >
+                  <Wand2 className="h-4 w-4" />
                   Generate
                 </TabsTrigger>
               </TooltipTrigger>
@@ -1114,9 +1114,9 @@ const ConfigurationPanel = ({
               <TooltipTrigger asChild>
                 <TabsTrigger 
                   value="refine" 
-                  className="text-sm data-[state=active]:bg-lab-primary data-[state=active]:text-white border-b-2 border-transparent data-[state=active]:border-lab-primary rounded-none px-4 py-2" 
                   disabled={!hasGenerated}
                 >
+                  <Sliders className="h-4 w-4" />
                   Refine
                 </TabsTrigger>
               </TooltipTrigger>
