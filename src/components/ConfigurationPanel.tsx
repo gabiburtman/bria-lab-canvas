@@ -558,7 +558,7 @@ const PromptComponent = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button onClick={onTranslatePrompt} disabled={isGenerating || panelMode !== 'refine' && !value.trim() || panelMode === 'refine' && !value.trim()} variant="link" size="sm" className="text-[#9CA3AF] hover:text-[#F3F4F6] h-auto p-0 font-normal text-sm underline-offset-4">
-                  {panelMode === 'refine' ? 'Update Structured Prompt' : 'Show Structured Prompt'}
+                  {panelMode === 'refine' ? 'Update Structured Prompt' : 'Examine Structured Prompt'}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
