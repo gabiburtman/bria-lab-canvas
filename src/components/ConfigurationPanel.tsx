@@ -1096,12 +1096,26 @@ const ConfigurationPanel = ({
         }
       }} className="w-full">
           <TabsList className="w-full justify-start rounded-none bg-lab-surface h-12 px-6">
-            <TabsTrigger value="generate" className="text-sm" disabled={!hasGenerated && panelMode === 'refine'}>
-              Generate
-            </TabsTrigger>
-            <TabsTrigger value="refine" className="text-sm" disabled={!hasGenerated}>
-              Refine
-            </TabsTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger value="generate" className="text-sm" disabled={!hasGenerated && panelMode === 'refine'}>
+                  Generate
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Generate a new image</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <TabsTrigger value="refine" className="text-sm" disabled={!hasGenerated}>
+                  Refine
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Refine your generated results</p>
+              </TooltipContent>
+            </Tooltip>
           </TabsList>
         </Tabs>
       </div>
