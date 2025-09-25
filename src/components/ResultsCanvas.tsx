@@ -98,7 +98,15 @@ const ImageCard = ({
     };
     return <Popover>
       <PopoverTrigger asChild>
-        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="w-full bg-lab-surface border-lab-border hover:bg-lab-interactive-hover text-lab-text-primary"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Share className="w-4 h-4 mr-2" />
+          Share
+        </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto bg-lab-surface border-lab-border shadow-lg p-2">
         <div className="flex gap-2">
