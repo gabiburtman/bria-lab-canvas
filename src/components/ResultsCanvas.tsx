@@ -6,6 +6,7 @@ import { Download, Share, ThumbsUp, ThumbsDown, Code, Grid3X3, Badge, HelpCircle
 import { FaReddit, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { cn } from "@/lib/utils";
 import { ApiReferenceDialog } from "@/components/ApiReferenceDialog";
+import { toast } from "sonner";
 interface ImageCardProps {
   src?: string;
   index: number;
@@ -86,7 +87,12 @@ const ImageCard = ({
     const handleLinkedInShare = async (e: React.MouseEvent) => {
       e.stopPropagation();
       
-      if (!src) return;
+      if (!src) {
+        toast.error('No image to share');
+        return;
+      }
+
+      const toastId = toast.loading('Creating shareable link...');
       
       try {
         // Call edge function to create share
@@ -112,12 +118,15 @@ const ImageCard = ({
         const { shareUrl } = await response.json();
         console.log('Share URL created:', shareUrl);
 
+        toast.success('Share link created!', { id: toastId });
+
         // Open LinkedIn with the share URL
         const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
         window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
         
       } catch (error) {
         console.error('Error creating share:', error);
+        toast.error('Failed to create share link', { id: toastId });
         
         // Fallback: Open LinkedIn feed
         window.open('https://www.linkedin.com/feed/', '_blank', 'noopener,noreferrer');

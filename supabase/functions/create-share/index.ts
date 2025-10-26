@@ -1,93 +1,116 @@
-import { createClient } from 'jsr:@supabase/supabase-js@2'
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { imageUrl, shareMessage } = await req.json()
+    // Get the image data from the request
+    const { imageUrl, shareMessage } = await req.json();
     
-    console.log('Creating share for image:', imageUrl)
-
-    // Fetch the image
-    const imageResponse = await fetch(imageUrl)
-    if (!imageResponse.ok) {
-      throw new Error('Failed to fetch image')
+    if (!imageUrl) {
+      throw new Error('No image URL provided');
     }
 
-    const imageBlob = await imageResponse.blob()
-    const fileName = `share-${Date.now()}.jpg`
-    const filePath = `${fileName}`
+    console.log('Fetching image from:', imageUrl);
+
+    // Fetch the image
+    const imageResponse = await fetch(imageUrl);
+    if (!imageResponse.ok) {
+      throw new Error(`Failed to fetch image: ${imageResponse.statusText}`);
+    }
+    
+    const imageBlob = await imageResponse.blob();
+    console.log('Image fetched, size:', imageBlob.size);
+
+    // Generate a unique filename
+    const filename = `${crypto.randomUUID()}.jpg`;
+    const storagePath = `shares/${filename}`;
+
+    console.log('Uploading to storage:', storagePath);
 
     // Upload to storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('shared-images')
-      .upload(filePath, imageBlob, {
+      .upload(storagePath, imageBlob, {
         contentType: 'image/jpeg',
-        upsert: false
-      })
+        cacheControl: '3600',
+      });
 
     if (uploadError) {
-      console.error('Upload error:', uploadError)
-      throw uploadError
+      console.error('Upload error:', uploadError);
+      throw uploadError;
     }
 
-    console.log('Image uploaded successfully:', uploadData.path)
+    console.log('Upload successful:', uploadData);
 
     // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('shared-images')
-      .getPublicUrl(uploadData.path)
+      .getPublicUrl(storagePath);
 
-    console.log('Public URL:', publicUrl)
+    console.log('Public URL:', publicUrl);
 
-    // Create database record
-    const { data: shareData, error: dbError } = await supabase
+    // Create share record
+    const { data: shareData, error: shareError } = await supabase
       .from('shared_images')
       .insert({
-        storage_path: uploadData.path,
-        share_message: shareMessage,
-        image_url: publicUrl
+        storage_path: storagePath,
+        share_message: shareMessage || 'Generated in the Bria GAIA Lab',
+        image_url: publicUrl,
       })
       .select()
-      .single()
+      .single();
 
-    if (dbError) {
-      console.error('Database error:', dbError)
-      throw dbError
+    if (shareError) {
+      console.error('Share record error:', shareError);
+      throw shareError;
     }
 
-    console.log('Share record created:', shareData.id)
+    console.log('Share record created:', shareData);
 
-    // Return the share URL
-    const shareUrl = `${req.headers.get('origin')}/share/${shareData.id}`
+    // Get the origin from the request headers
+    const origin = req.headers.get('origin') || 'http://localhost:8080';
+    const shareUrl = `${origin}/share/${shareData.id}`;
+    
+    console.log('Share URL:', shareUrl);
     
     return new Response(
-      JSON.stringify({ shareUrl, shareId: shareData.id }),
+      JSON.stringify({ 
+        shareUrl,
+        shareId: shareData.id,
+        imageUrl: publicUrl
+      }),
       { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
       }
-    )
+    );
+
   } catch (error) {
-    console.error('Error creating share:', error)
+    console.error('Error in create-share:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500
+        status: 500,
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json' 
+        } 
       }
-    )
+    );
   }
-})
+});
