@@ -115,13 +115,16 @@ const ImageCard = ({
           throw new Error('Failed to create share');
         }
 
-        const { shareUrl } = await response.json();
-        console.log('Share URL created:', shareUrl);
+        const { shareId } = await response.json();
+        
+        // Use edge function URL for social sharing (has proper meta tags)
+        const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-page/${shareId}`;
+        console.log('Share URL created:', edgeFunctionUrl);
 
         toast.success('Share link created!', { id: toastId });
 
-        // Open LinkedIn with the share URL
-        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        // Open LinkedIn with the edge function URL
+        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(edgeFunctionUrl)}`;
         window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
         
       } catch (error) {
@@ -133,10 +136,56 @@ const ImageCard = ({
       }
     };
     
-    const handleXShare = (e: React.MouseEvent) => {
+    const handleXShare = async (e: React.MouseEvent) => {
       e.stopPropagation();
-      const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}`;
-      window.open(xUrl, '_blank', 'noopener,noreferrer');
+      
+      if (!src) {
+        toast.error('No image to share');
+        return;
+      }
+
+      const toastId = toast.loading('Creating shareable link...');
+      
+      try {
+        // Call edge function to create share
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-share`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify({
+              imageUrl: src,
+              shareMessage: shareMessage
+            })
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to create share');
+        }
+
+        const { shareId } = await response.json();
+        
+        // Use edge function URL for social sharing
+        const edgeFunctionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/share-page/${shareId}`;
+
+        toast.success('Share link created!', { id: toastId });
+
+        // Open Twitter with the edge function URL
+        const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}&url=${encodeURIComponent(edgeFunctionUrl)}`;
+        window.open(xUrl, '_blank', 'noopener,noreferrer');
+        
+      } catch (error) {
+        console.error('Error creating share:', error);
+        toast.error('Failed to create share link', { id: toastId });
+        
+        // Fallback: Open Twitter feed
+        const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}`;
+        window.open(xUrl, '_blank', 'noopener,noreferrer');
+      }
     };
     
     const handleRedditShare = (e: React.MouseEvent) => {
