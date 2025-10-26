@@ -78,22 +78,49 @@ const ImageCard = ({
   }: {
     inDialog?: boolean;
   }) => {
-    const shareMessage = "Generated in the Bria GAIA Lab [LINK] #BRIAAI #GAIA #BRIAGAIA";
-    const imageUrl = encodeURIComponent(src || '');
+    const labUrl = window.location.origin;
+    const shareMessage = `Generated in the Bria GAIA Lab ${labUrl} #BRIAAI #GAIA #BRIAGAIA`;
     const encodedMessage = encodeURIComponent(shareMessage);
-    const handleLinkedInShare = (e: React.MouseEvent) => {
+    const encodedLabUrl = encodeURIComponent(labUrl);
+    
+    const handleLinkedInShare = async (e: React.MouseEvent) => {
       e.stopPropagation();
-      const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${imageUrl}&summary=${encodedMessage}`;
-      window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+      
+      // Download image as blob to share
+      try {
+        const response = await fetch(src || '');
+        const blob = await response.blob();
+        const file = new File([blob], `bria-gaia-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        
+        // Check if Web Share API is available and supports files
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            title: 'Generated in Bria GAIA Lab',
+            text: shareMessage,
+            files: [file]
+          });
+        } else {
+          // Fallback to LinkedIn URL share
+          const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedLabUrl}`;
+          window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+        }
+      } catch (error) {
+        console.error('Error sharing:', error);
+        // Fallback to LinkedIn URL share
+        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedLabUrl}`;
+        window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
+      }
     };
+    
     const handleXShare = (e: React.MouseEvent) => {
       e.stopPropagation();
-      const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}&url=${imageUrl}`;
+      const xUrl = `https://x.com/intent/tweet?text=${encodedMessage}`;
       window.open(xUrl, '_blank', 'noopener,noreferrer');
     };
+    
     const handleRedditShare = (e: React.MouseEvent) => {
       e.stopPropagation();
-      const redditUrl = `https://reddit.com/submit?url=${imageUrl}&title=${encodedMessage}`;
+      const redditUrl = `https://reddit.com/submit?url=${encodedLabUrl}&title=${encodedMessage}`;
       window.open(redditUrl, '_blank', 'noopener,noreferrer');
     };
     return <Popover>
