@@ -86,48 +86,41 @@ const ImageCard = ({
     const handleLinkedInShare = async (e: React.MouseEvent) => {
       e.stopPropagation();
       
-      // Try Web Share API first (works well on mobile)
-      if (navigator.share) {
-        try {
-          const response = await fetch(src || '');
-          const blob = await response.blob();
-          const file = new File([blob], `bria-gaia-${Date.now()}.jpg`, { type: 'image/jpeg' });
-          
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              title: 'Generated in Bria GAIA Lab',
-              text: shareMessage,
-              files: [file]
-            });
-            return;
-          }
-        } catch (error) {
-          console.log('Web Share API failed, using fallback:', error);
-        }
-      }
+      if (!src) return;
       
-      // Fallback: Download image and open LinkedIn
-      if (src) {
-        // Download the image
-        const link = document.createElement('a');
-        link.href = src;
-        link.download = `bria-gaia-${Date.now()}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Copy message to clipboard
-        try {
-          await navigator.clipboard.writeText(shareMessage);
-          console.log('Message copied to clipboard');
-        } catch (error) {
-          console.log('Could not copy to clipboard:', error);
+      try {
+        // Call edge function to create share
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-share`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify({
+              imageUrl: src,
+              shareMessage: shareMessage
+            })
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to create share');
         }
+
+        const { shareUrl } = await response.json();
+        console.log('Share URL created:', shareUrl);
+
+        // Open LinkedIn with the share URL
+        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        window.open(linkedinUrl, '_blank', 'noopener,noreferrer');
         
-        // Open LinkedIn post creation
-        setTimeout(() => {
-          window.open('https://www.linkedin.com/feed/', '_blank', 'noopener,noreferrer');
-        }, 500);
+      } catch (error) {
+        console.error('Error creating share:', error);
+        
+        // Fallback: Open LinkedIn feed
+        window.open('https://www.linkedin.com/feed/', '_blank', 'noopener,noreferrer');
       }
     };
     
